@@ -20,7 +20,7 @@ import { PlaySharedVitals } from '../play/PlaySharedVitals';
 import { SourceBadge } from '../ui/SourceBadge';
 
 import type { WeaponItem, ArmorItem, ShieldItem } from '../../types/regeldaten';
-import { alleAusruestung } from '../../regelwerk/ausruestung';
+import { alleAusruestung, waffenAttribute, waffenlosImPaket } from '../../regelwerk/ausruestung';
 import { useRegelwerk } from '../../regelwerk/RegelwerkContext';
 import { bausteineAktiv, reliktZauber } from '../../regelwerk/relikte';
 import { getMasteryDetails } from '../../utils/gameResourceManager';
@@ -193,11 +193,15 @@ export const CombatMagicTab: React.FC = () => {
   const ARMORS_DATA = useMemo(() => ausruestung.filter((i): i is ArmorItem => i.type === 'armor'), [ausruestung]);
   const SHIELDS_DATA = useMemo(() => ausruestung.filter((i): i is ShieldItem => i.type === 'shield'), [ausruestung]);
   const session = usePlaySession();
+  // Waffenloser Angriff aus dem GRW-Paket (Schaden, WGS, Merkmale, Attribute; GRW S. 183)
+  const waffenlos = useMemo(() => waffenlosImPaket(katalog), [katalog]);
+  const waffenlosSchaden = waffenlos?.damage || '';
 
   const { spellsList, masteries, inventory = [] } = state;
   const {
     getSkillTotal,
     getSkillValue,
+    getAttackValue,
     currentAttributes,
     derived,
     armorSR,
@@ -205,6 +209,7 @@ export const CombatMagicTab: React.FC = () => {
     currentWoundPenalty,
   } = calc;
 
+  const waffenlosAT = getAttackValue('Handgemenge', waffenlos?.kampfAttribute ?? []);
   const channeledSpells = state.playState?.channeledSpells ?? [];
   const hoechstbonusZauber = zauberHoechstbonus(calc);
   const zw = useMemo(() => zustandswerte(state.playState?.conditions ?? []), [state.playState?.conditions]);
@@ -446,7 +451,7 @@ export const CombatMagicTab: React.FC = () => {
                   <div className="bg-flaeche rounded-knopf border border-rahmen p-2 text-center">
                     <span className="text-[11px] uppercase font-bold text-leise block leading-tight">AT</span>
                     <span className="text-base font-bold tabular-nums text-schrift mt-0.5 block">
-                      {getSkillValue('Handgemenge')}
+                      {waffenlosAT}
                       {currentWoundPenalty !== 0 && (
                         <span className="text-schaden text-xs font-normal"> ({currentWoundPenalty})</span>
                       )}
@@ -455,13 +460,13 @@ export const CombatMagicTab: React.FC = () => {
                   <div className="bg-flaeche rounded-knopf border border-rahmen p-2 text-center">
                     <span className="text-[11px] uppercase font-bold text-leise block leading-tight">Schaden</span>
                     <span className="text-base font-bold tabular-nums text-schaden mt-0.5 block">
-                      1W6 <span className="text-xs text-leise font-normal">(Stumpf)</span>
+                      {waffenlosSchaden} <span className="text-xs text-leise font-normal">({waffenlos?.attributes ?? ''})</span>
                     </span>
                   </div>
                   <div className="bg-flaeche rounded-knopf border border-rahmen p-2 text-center">
                     <span className="text-[11px] uppercase font-bold text-leise block leading-tight">WGS</span>
                     <span className="text-base font-bold tabular-nums text-schrift mt-0.5 block">
-                      5 <span className="text-xs text-leise font-normal">Ticks</span>
+                      {waffenlos?.wgs ?? ''} <span className="text-xs text-leise font-normal">Ticks</span>
                     </span>
                   </div>
                 </div>
@@ -469,7 +474,7 @@ export const CombatMagicTab: React.FC = () => {
                 {/* Primary Action Buttons */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-rahmen">
                   <Knopf art="sekundaer"
-                    onClick={() => session.openRollForWeapon('Waffenlos', 'Handgemenge', 0, 15, { id: 'waffenlos', damage: '1W6', wgs: 5, attributes: 'Stumpf' })}
+                    onClick={() => session.openRollForWeapon('Waffenlos', 'Handgemenge', 0, 15, { id: 'waffenlos', damage: waffenlosSchaden, wgs: Number(waffenlos?.wgs) || undefined, attributes: waffenlos?.attributes ?? '' })}
                     className="w-full text-xs gap-1.5 active:scale-95"
                     title="Angriffsprobe & Manöver öffnen (2W10 + AT vs. VTD)"
                   >
@@ -477,12 +482,12 @@ export const CombatMagicTab: React.FC = () => {
                     <span>Angriff (Handgemenge)</span>
                   </Knopf>
                   <Knopf
-                    onClick={() => session.handleRollDiceFormula(getWeaponEnchantments({ id: 'waffenlos', name: 'Waffenlos', damage: '1W6' }, channeledSpells).damageRollFormula, 'Waffenloser Schaden')}
+                    onClick={() => session.handleRollDiceFormula(getWeaponEnchantments({ id: 'waffenlos', name: 'Waffenlos', damage: waffenlosSchaden }, channeledSpells).damageRollFormula, 'Waffenloser Schaden')}
                     className="damage-roll-btn w-full text-xs gap-1.5 active:scale-95"
-                    title="Schaden würfeln (1W6)"
+                    title={`Schaden würfeln (${waffenlosSchaden})`}
                   >
                     <span className="text-xs"></span>
-                    <span className="tracking-wide text-schrift font-extrabold">1W6 Schaden</span>
+                    <span className="tracking-wide text-schrift font-extrabold">{waffenlosSchaden} Schaden</span>
                   </Knopf>
                 </div>
               </div>
@@ -490,7 +495,8 @@ export const CombatMagicTab: React.FC = () => {
               {/* Character Weapons from Inventory */}
               {weapons.map((w) => {
                 const skillName = w.weaponSkill || 'Klingenwaffen';
-                const skillVal = getSkillValue(skillName);
+                // Angriffswert: Fertigkeitspunkte + Attribute der Waffe (GRW S. 181)
+                const skillVal = getAttackValue(skillName, waffenAttribute(w, katalog));
                 const itemSrc = getItemSource(w);
                 const enchantments = getWeaponEnchantments(w, channeledSpells);
                 const effectiveAT = skillVal + enchantments.atBonus;

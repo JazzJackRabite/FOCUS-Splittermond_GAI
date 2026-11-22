@@ -24,8 +24,10 @@ describe('Grundregelwerk ohne Netz', () => {
 
   it('ladeBasis liefert die Texte zum Speichern mit und nutzt den Basispfad', async () => {
     const abgerufen: string[] = [];
-    const abruf = (async (url: string) => {
+    const modi: (RequestCache | undefined)[] = [];
+    const abruf = (async (url: string, init?: RequestInit) => {
       abgerufen.push(url);
+      modi.push(init?.cache);
       const text = url.endsWith('manifest.json') ? manifest : paket;
       return new Response(text, { status: 200 });
     }) as unknown as typeof fetch;
@@ -33,5 +35,7 @@ describe('Grundregelwerk ohne Netz', () => {
     expect(abgerufen).toEqual(['/fokus/regelpakete/manifest.json', '/fokus/regelpakete/grw.srp.json']);
     expect(b.roh?.paket.length).toBe(paket.length);
     expect(b.warnungen).toEqual([]);
+    // das Hosting schickt „immutable“ für alle Dateien: ohne Nachfrage bliebe der Browser bei einer alten Fassung
+    expect(modi).toEqual(['no-cache', 'no-cache']);
   });
 });

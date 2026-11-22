@@ -262,7 +262,7 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
     const entry = filteredMasteries.find((m) => m.name === finalName);
     const page = entry?.page;
     const desc = entry?.desc;
-    const source = isCustom ? (customSource || 'Eigen') : 'GRW';
+    const source = isCustom ? (customSource || 'Eigen') : (entry?.source || 'GRW');
 
     onAdd(finalName, tier, isFree, cost, page, desc, isCreationBonus, source, userNote);
     onClose();
@@ -500,7 +500,7 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
               {selectedEntry.page && (
                 <div className="flex justify-between text-[11px] text-leise pt-1 border-t border-rahmen">
                   <span>Regelwerk-Nachweis:</span>
-                  <span className="tabular-nums text-schrift">GRW S. {selectedEntry.page}</span>
+                  <span className="tabular-nums text-schrift">{selectedEntry.source || 'GRW'} S. {selectedEntry.page}</span>
                 </div>
               )}
 

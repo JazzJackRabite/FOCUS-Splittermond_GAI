@@ -231,7 +231,7 @@ export const SpellModal: React.FC<SpellModalProps> = ({
                 {selectedSpell.page && (
                   <div className="flex justify-between">
                     <span className="text-leise">Seite:</span>
-                    <span className="font-medium text-schrift">GRW S. {selectedSpell.page}</span>
+                    <span className="font-medium text-schrift">{selectedSpell.source || 'GRW'} S. {selectedSpell.page}</span>
                   </div>
                 )}
                 {mods.allowedNames.length > 0 && (

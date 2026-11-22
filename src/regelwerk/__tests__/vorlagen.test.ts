@@ -31,3 +31,12 @@ describe('Beispielcharaktere nennen nur Einträge des GRW-Pakets', () => {
     expect(grwMondzeichen(K)).toContain(c.moonSign);
   });
 });
+
+describe('Protokoll der Vorlagen', () => {
+  it('nennt die Quelle aus dem Paket, nicht „unbekannt“ (Vorlage wird erst beim Zugriff aufgelöst)', () => {
+    for (const p of CHARACTER_PRESETS) {
+      const unbekannt = (p.fullState.advancementLog ?? []).filter((e) => /Quelle: unbekannt/.test(e.detail ?? ''));
+      expect(unbekannt.map((e) => `${p.name}: ${e.title}`)).toEqual([]);
+    }
+  });
+});

@@ -38,6 +38,8 @@ export interface CharacterCalculationResult {
   groupedSpells: Array<{ skill: string; items: Spell[] }>;
   getSkillValue: (skill: string) => number;
   getSkillTotal: (skill: string) => number | null;
+  /** Angriffswert: Punkte der Kampffertigkeit + die Attribute der Waffe + Boni aus Wirkungen (GRW S. 181) */
+  getAttackValue: (skill: string, attribute: string[]) => number;
   armorSR: number;
   gearVtdBonus: number;
   gearHandicap: number;
@@ -412,6 +414,9 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     return val + currentAttributes[attrs[0]] + currentAttributes[attrs[1]] + getSkillBonus(skill);
   };
 
+  const getAttackValue = (skill: string, attribute: string[]): number =>
+    getSkillValue(skill) + attribute.reduce((s, a) => s + (currentAttributes[a as keyof typeof currentAttributes] ?? 0), 0) + getSkillBonus(skill);
+
   const xpAvailable = xpTotal - xpSpent;
 
   return {
@@ -438,6 +443,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     groupedSpells,
     getSkillValue,
     getSkillTotal,
+    getAttackValue,
     armorSR,
     gearVtdBonus,
     gearHandicap,

@@ -92,8 +92,9 @@ export function alsAusruestung(e: Eintrag, quelle: string): AusruestungsItem | n
     const skill = txt(d.fertigkeit_name) || txt(d.gruppe);
     const zeile = werteZeile([['Fertigkeit', skill], ['Schaden', d.schaden], ['WGS', d.wgs], ['Reichweite', d.reichweite], ['Attribute', (d.attribute ?? []).join(', ')],
       ['Mindestattribute', d.mindestattribute_text], ['Last', last], ['Härte', d.haerte], ['Preis', preis(d)], ['Verfügbarkeit', d.verfuegbarkeit], ['Merkmale', merkmale]]);
+    const kampfAttribute = (Array.isArray(d.attribute) ? d.attribute : []).map((a: unknown) => (String(a) === 'STÄ' ? 'STA' : String(a)));
     return { id: e.id, name: e.name, type: 'weapon', category: txt(d.modus) || 'Nahkampf', skill, damage: txt(d.schaden), wgs: d.wgs ?? '',
-      range: txt(d.reichweite), price: preis(d), load: last, attributes: merkmale, source: quelle, page, desc: beschreibung(zeile, d), ...haerte(d) };
+      range: txt(d.reichweite), price: preis(d), load: last, attributes: merkmale, kampfAttribute, source: quelle, page, desc: beschreibung(zeile, d), ...haerte(d) };
   }
   if (t.art === 'armor' || t.art === 'shield') {
     const zeile = werteZeile([['VTD+', d.vtd_bonus], ['SR', d.sr], ['Behinderung', d.behinderung], ['Tick-Zuschlag', d.tick_zuschlag],
@@ -220,4 +221,21 @@ export function alleAusruestung(k: Katalog | null = aktiverKatalog()): Ausruestu
   let c = CACHE.get(k);
   if (!c) { c = { grw: grwMitGrimoireAenderungen(k), buch: grimoireAusruestung(k) }; CACHE.set(k, c); }
   return [...c.grw, ...c.buch];
+}
+
+/** Waffe aus den Paketen zu einem Gegenstand des Inventars: nach ID, sonst nach Name (bei gleichem Namen dieselbe Fertigkeit) */
+export function waffeImPaket(w: { id?: string; name: string; weaponSkill?: string }, k: Katalog | null = aktiverKatalog()): WeaponItem | null {
+  const waffen = alleAusruestung(k).filter((i): i is WeaponItem => i.type === 'weapon');
+  return waffen.find(i => i.id === w.id) ?? waffen.find(i => i.name === w.name && (!w.weaponSkill || i.skill === w.weaponSkill))
+    ?? waffen.find(i => i.name === w.name) ?? null;
+}
+
+/** Attribute für den Angriffswert einer Waffe (Fertigkeitspunkte + diese beiden Attribute, GRW S. 181); leer, wenn unbekannt */
+export function waffenAttribute(w: { id?: string; name: string; weaponSkill?: string }, k: Katalog | null = aktiverKatalog()): string[] {
+  return waffeImPaket(w, k)?.kampfAttribute ?? [];
+}
+
+/** Waffenloser Angriff des Grundregelwerks (Waffe ohne Preis mit der Fertigkeit Handgemenge, GRW S. 183) */
+export function waffenlosImPaket(k: Katalog | null = aktiverKatalog()): WeaponItem | null {
+  return grwAusruestung(k).find((i): i is WeaponItem => i.type === 'weapon' && i.skill === 'Handgemenge' && /^waffenlos/i.test(i.name)) ?? null;
 }

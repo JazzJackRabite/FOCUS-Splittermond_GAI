@@ -22,16 +22,22 @@ async function sha256Hex(daten: ArrayBuffer): Promise<string | null> {
 
 export interface Basis { manifest: Manifest; basis: LadePaket; warnungen: string[]; /** geladene Texte, zum Speichern für den Start ohne Netz */ roh?: { manifest: string; paket: string } }
 
-/** Lädt Manifest und Grundregelwerk aus dem public-Ordner des Editors. */
+/**
+ * Lädt Manifest und Grundregelwerk aus dem public-Ordner des Editors.
+ * Immer beim Server nachfragen (cache: 'no-cache'): Das Hosting schickt für alle Dateien „max-age=1 Jahr, immutable“,
+ * sonst bliebe der Browser bei einer alten Fassung des Grundregelwerks. Unverändert antwortet der Server kurz mit 304.
+ */
+const FRISCH: RequestInit = { cache: 'no-cache' };
+
 export async function ladeBasis(basisUrl: string = (import.meta.env?.BASE_URL ?? '/') + BASIS_ORDNER, abruf: typeof fetch = fetch): Promise<Basis> {
   const warnungen: string[] = [];
-  const mRes = await abruf(basisUrl + 'manifest.json');
+  const mRes = await abruf(basisUrl + 'manifest.json', FRISCH);
   if (!mRes.ok) throw new Error(`Regelpakete: manifest.json nicht ladbar (${mRes.status})`);
   const manifestText = await mRes.text();
   const manifest = JSON.parse(manifestText) as Manifest;
   const info = manifest.pakete.find(p => p.id === manifest.basis_paket);
   if (!info?.datei) throw new Error('Regelpakete: Basispaket fehlt im Manifest');
-  const pRes = await abruf(basisUrl + info.datei);
+  const pRes = await abruf(basisUrl + info.datei, FRISCH);
   if (!pRes.ok) throw new Error(`Regelpakete: ${info.datei} nicht ladbar (${pRes.status})`);
   const roh = await pRes.arrayBuffer();
   const sha = await sha256Hex(roh);

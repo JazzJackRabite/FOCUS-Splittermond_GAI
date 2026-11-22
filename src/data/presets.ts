@@ -698,8 +698,10 @@ const RAW_CHARACTER_PRESETS: ArchetypePreset[] = [
   },
 ];
 
+// Erst beim Zugriff auflösen: beim Laden des Moduls ist das Grundregelwerk noch nicht da, das Protokoll bekäme sonst
+// „Quelle: unbekannt“ für alle Einträge der Vorlage
 export const CHARACTER_PRESETS: ArchetypePreset[] = RAW_CHARACTER_PRESETS.map((preset) => ({
   ...preset,
-  fullState: referenceCharacterResources(preset.fullState),
+  get fullState() { return referenceCharacterResources(preset.fullState); },
 }));
 

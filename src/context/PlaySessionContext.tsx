@@ -1,3 +1,4 @@
+import { waffeImPaket, waffenlosImPaket } from '../regelwerk/ausruestung';
 import { fokusDurchZustaende, zustandswerte } from '../regelwerk/zustandswerte';
 import { alleZustaende, nachPause, ohneNatuerlicheHeilung } from '../regelwerk/zustaende';
 import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
@@ -168,6 +169,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
     currentAttributes,
     getSkillTotal,
     getSkillValue,
+    getAttackValue,
     splinterPoints: maxSplitter,
     totalHandicap,
   } = calc;
@@ -366,7 +368,9 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
   ) => {
     const characterWeapons = (state.inventory || []).filter((item) => item.type === 'weapon');
     const foundWeapon = characterWeapons.find((w) => w.name === weaponName);
-    const totalVal = getSkillTotal(skill) ?? getSkillValue(skill) ?? 0;
+    // Angriffswert: Punkte der Kampffertigkeit + die Attribute der Waffe aus dem Paket (GRW S. 181)
+    const waffe = skill === 'Handgemenge' && weaponName === 'Waffenlos' ? waffenlosImPaket() : waffeImPaket(foundWeapon ?? { id: weaponData?.id, name: weaponName, weaponSkill: skill });
+    const totalVal = getAttackValue(skill, waffe?.kampfAttribute ?? []);
 
     const payload: AttackWeaponData = {
       name: weaponName,
