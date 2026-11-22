@@ -340,10 +340,11 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const freieEg = streiftreffer ? 0 : Math.max(0, totalEgAvailable - manoeverKosten);
   const totalEgAllocated = egDamageSpent + egStoerendSpent + (betaeubungsschlag ? (betaeubung?.eg ?? 1) : 0) + egManoeverExtra;
   const remainingEG = Math.max(0, freieEg - totalEgAllocated);
-  const verteileStandard = (eg: number, erfolg: boolean) => {
-    const nachDeckung = eg - egDeckung;
-    const frei = erfolg && nachDeckung >= manoeverKosten ? nachDeckung - manoeverKosten : 0;
-    setEgDamageSpent(frei);
+  // Nach dem Wurf ist nichts vorbelegt: Die Spieler verteilen die EG selbst; vor dem Schadenswurf fragt der Dialog nach.
+  const [egNachfrage, setEgNachfrage] = useState(false);
+  const verteileStandard = (_eg: number, _erfolg: boolean) => {
+    setEgNachfrage(false);
+    setEgDamageSpent(0);
     setEgStoerendSpent(0);
     setBetaeubungsschlag(false);
     setEgManoeverExtraJe({});
@@ -419,8 +420,18 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   };
 
   // Perform the Damage Roll
-  const handleRollDamage = () => {
-    const egBonus = streiftreffer ? 0 : egDamageSpent * wuchtJeEg;
+  /** Schaden würfeln; sind noch EG frei, erst nachfragen (Wuchtangriff oder verfallen lassen) */
+  useEffect(() => {
+    if (egNachfrage) (document.querySelector('[data-testid="eg-nachfrage"]') as HTMLElement | null)?.scrollIntoView?.({ block: 'nearest' });
+  }, [egNachfrage]);
+  const schadenAnfragen = () => {
+    if (!streiftreffer && remainingEG > 0 && !damageRollResult) setEgNachfrage(true);
+    else handleRollDamage();
+  };
+  const handleRollDamage = (zusatzWucht = 0) => {
+    setEgNachfrage(false);
+    if (zusatzWucht) setEgDamageSpent(w => w + zusatzWucht);
+    const egBonus = streiftreffer ? 0 : (egDamageSpent + zusatzWucht) * wuchtJeEg;
     const res = executeAttackDamageRoll({
       baseFormula: weapon.damage || '1W6',
       // Beim Streiftreffer bleiben die Effekte der Manöver aus; Schadenseinschränkungen (halber Schaden) gelten für den ganzen Angriff weiter
@@ -1115,9 +1126,22 @@ export const AttackModal: React.FC<AttackModalProps> = ({
                 </span>
               </div>
 
+              {egNachfrage && (
+                <div role="alertdialog" aria-label="Erfolgsgrade nicht eingesetzt" data-testid="eg-nachfrage" className="p-3 rounded-knopf bg-erhoeht border border-gold space-y-2 text-xs text-schrift">
+                  <p><strong>{remainingEG} EG</strong> {remainingEG === 1 ? 'ist' : 'sind'} noch nicht eingesetzt.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Knopf art="sekundaer" onClick={() => handleRollDamage(remainingEG)} data-testid="eg-nachfrage-wucht">
+                      Als Wuchtangriff (+{remainingEG * wuchtJeEg} Schaden) und würfeln
+                    </Knopf>
+                    <Knopf art="neutral" onClick={() => handleRollDamage()} data-testid="eg-nachfrage-verfallen">Verfallen lassen und würfeln</Knopf>
+                    <Knopf art="neutral" onClick={() => setEgNachfrage(false)}>Zurück</Knopf>
+                  </div>
+                </div>
+              )}
+
               {/* Damage Action Button */}
               <Knopf
-                onClick={handleRollDamage}
+                onClick={schadenAnfragen}
                 className="w-full damage-roll-btn text-sm gap-2 active:scale-98"
               >
                 <Flame size={16} />
@@ -1224,7 +1248,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
                     Ohne Schaden vollenden
                   </Knopf>
                   <Knopf art="primaer"
-                    onClick={handleRollDamage}
+                    onClick={schadenAnfragen}
                     className="text-xs sm:text-sm gap-1.5 active:scale-95"
                   >
                     <Flame size={16} className="text-schaden" />
