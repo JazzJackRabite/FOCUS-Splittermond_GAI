@@ -9,6 +9,7 @@ import type { Begleiter } from '../../../types';
 import { Auswahl, Eingabe, Knopf, Marke } from '../../../fundament';
 import { Feinschliff } from '../Feinschliff';
 import { Erklaerung, Titel3, UEBERSICHT } from './teile';
+import { golemRessourcenBelegung } from '../besitzer';
 import type { Schritt, SchrittProps } from './typen';
 
 const ART_TEXT: Record<string, string> = {
@@ -90,8 +91,10 @@ const Korpus: React.FC<SchrittProps> = ({ k, b, aendern, besitzer }) => {
 };
 
 const Grundangaben: React.FC<SchrittProps> = (p) => {
-  const { k, b, aendern, besitzer } = p;
+  const { k, b, aendern, besitzer, alle, index } = p;
   const g = golemWerte(k, b);
+  // Belegung, wenn dieser Golem über die Ressource läuft (so wie er jetzt ist)
+  const belegung = golemRessourcenBelegung(k, besitzer, alle, { ...b, golemRessource: true }, index).find(x => x.eigener);
   const kennt = g.animierung ? besitzer.zauber.includes(g.animierung.name) : false;
   return (
     <div className="space-y-4">
@@ -107,6 +110,13 @@ const Grundangaben: React.FC<SchrittProps> = (p) => {
         <input type="checkbox" className="w-5 h-5 accent-gold" checked={!!b.golemRessource} onChange={ev => aendern({ golemRessource: ev.target.checked || undefined })} />
         über Ressource Golem
       </label>
+      <p className="text-xs text-leise m-0" data-testid="golem-ressource">
+        {!besitzer.golemPunkte.length ? 'Der Charakter hat keine Ressource Golem.'
+          : belegung?.ressource != null && belegung.ressource >= g.stufe
+            ? `${b.golemRessource ? 'Belegt' : 'Frei wäre'}: Ressource Golem ${belegung.ressource} für diesen Golem der Stufe ${g.stufe}.`
+            : `Keine freie Ressource Golem für Stufe ${g.stufe} (vorhanden: ${besitzer.golemPunkte.join(', ')}; jeder Golem belegt eine eigene).`}
+        {' '}Auslegung: Stufe des Golems höchstens so hoch wie die Ressource (Die Magie S. 203).
+      </p>
       <Erklaerung>
         {g.animierung ? <>Animierungszauber: <strong className="text-schrift">{g.animierung.name}</strong>{kennt ? ' (bekannt)' : ''}. </> : 'Kein Animierungszauber für diese Stufe. '}
         Konstruktion: Schwierigkeit {g.konstruktion.schwierigkeit}, {g.konstruktion.fortschritt} Fortschrittspunkte

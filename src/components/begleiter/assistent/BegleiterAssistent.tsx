@@ -18,7 +18,7 @@ import type { Katalog } from '../../../regelwerk/katalog';
 import type { Begleiter } from '../../../types';
 import { ARTEN, VERTRAUTER, artInfo, begleiterTitel, type BegleiterArt } from '../ansicht';
 import { useHausregeln } from '../../../fundament/hausregeln';
-import { gefolgeVerbraucht, type Besitzer } from '../besitzer';
+import { golemRessourceVerstoesse, gefolgeVerbraucht, type Besitzer } from '../besitzer';
 import { Erklaerung, Wahlkarte } from './teile';
 import { tierSchritte } from './tier';
 import { gefolgeSchritte } from './gefolge';
@@ -147,7 +147,8 @@ export const BegleiterAssistent: React.FC<{
       } else if (entwurf.art === 'untoter') {
         if (aenderungGesperrt(untotWerte(k, entwurf, besitzer).verstoesse, untotWerte(k, nach, besitzer).verstoesse)) return;
       } else if (entwurf.art === 'golem') {
-        if (aenderungGesperrt(golemWerte(k, entwurf).verstoesse, golemWerte(k, nach).verstoesse)) return;
+        const vor = [...golemWerte(k, entwurf).verstoesse, ...golemRessourceVerstoesse(k, besitzer, alle, entwurf, index)];
+        if (aenderungGesperrt(vor, [...golemWerte(k, nach).verstoesse, ...golemRessourceVerstoesse(k, besitzer, alle, nach, index)])) return;
       }
     }
     setEntwurf(nach);

@@ -12,7 +12,7 @@ import { spielDaten } from '../../components/begleiter/BegleiterSpiel';
 import { fokusFrei, gesundheitsstufen, lebenslage } from '../../regelwerk/vitals';
 import type { Begleiter as BegleiterTyp } from '../../types';
 import type { Besitzer } from '../../components/begleiter/besitzer';
-import { gefolgeVerbraucht, kreaturZuordnung, useBesitzer } from '../../components/begleiter/besitzer';
+import { gefolgeVerbraucht, golemRessourcenBelegung, kreaturZuordnung, useBesitzer } from '../../components/begleiter/besitzer';
 
 /**
  * Tab „Begleiter“: je Begleiter ein Blatt wie „Kampf & Magie“ (Leiste oben wählt den Begleiter).
@@ -46,6 +46,7 @@ const Begleiter: React.FC<{ k: Katalog }> = ({ k }) => {
     ...(vertraute > 1 ? ['Mehr als ein Vertrauter.'] : []),
     ...(vertraute > 0 && !besitzer.tiervertrauter ? ['Vertrauter ohne die Stärke Tiervertrauter.'] : []),
     ...(gefolge > besitzer.gefolgePunkte ? ['Das Gefolge braucht mehr Punkte, als die Ressource Gefolge hergibt.'] : []),
+    ...(golemRessourcenBelegung(k, besitzer, alle).some(g => (g.ressource ?? 0) < g.stufe) ? ['Die Golems nutzen mehr oder höhere Ressourcen Golem, als der Charakter hat.'] : []),
   ];
   const ressourcen = [
     `Kreatur: ${besitzer.kreatur.length ? besitzer.kreatur.join(', ') : 'keine'}`,

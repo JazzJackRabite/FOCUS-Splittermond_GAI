@@ -9,6 +9,8 @@ import type { BedingungsCharakter } from '../../regelwerk/bedingungen';
 import { nekromantenMeisterschaften } from '../../regelwerk/untote';
 import { heldengrade } from '../../regelwerk/steigerungsregeln';
 import { gefolgeWerte } from '../../regelwerk/gefolge';
+import { golemWerte } from '../../regelwerk/golem';
+import type { Verstoss } from '../../fundament/hausregeln';
 import type { Katalog } from '../../regelwerk/katalog';
 import type { Begleiter, CharacterState } from '../../types';
 
@@ -69,6 +71,27 @@ export function besitzerBerechnen(k: Katalog, state: BesitzerStand, calc: Besitz
 export function kreaturZuordnung(ressourcen: number[], tiere: number[]): boolean {
   const r = [...ressourcen].sort((a, b) => b - a); const t = tiere.filter(x => x > 0).sort((a, b) => b - a);
   return t.length <= r.length && t.every((x, i) => x <= r[i]);
+}
+
+/**
+ * Ressource Golem (Die Magie S. 203: „Ein Punkt in der Ressource Golem entspricht einer Stufe im Merkmal Golem.“):
+ * Jeder Golem „über Ressource Golem“ belegt eine eigene Ressource. Auslegung: Die Stufe des Golems darf höchstens so hoch
+ * sein wie die Punkte der Ressource (wie bei Kreatur). Größte Golems an die größten Ressourcen.
+ * `b`/`index`: der gerade bearbeitete Golem (ersetzt den Eintrag an `index` bzw. kommt neu hinzu).
+ */
+export function golemRessourcenBelegung(k: Katalog, besitzer: Besitzer, alle: Begleiter[], b?: Begleiter, index?: number): { stufe: number; ressource: number | null; eigener: boolean }[] {
+  const liste = alle.map((x, i) => ({ x: i === index && b ? b : x, eigener: i === index })).filter(v => v.x.art === 'golem');
+  if (b && b.art === 'golem' && (index === undefined || index >= alle.length)) liste.push({ x: b, eigener: true });
+  const golems = liste.filter(v => v.x.golemRessource && v.x.id).map(v => ({ stufe: golemWerte(k, v.x).stufe, eigener: v.eigener }));
+  golems.sort((a, c) => c.stufe - a.stufe);
+  const res = [...besitzer.golemPunkte].sort((a, c) => c - a);
+  return golems.map((g, i) => ({ ...g, ressource: res[i] ?? null }));
+}
+
+/** Verstoß gegen die Ressource Golem (für aenderungGesperrt): Ausmaß = fehlende Punkte über alle Golems */
+export function golemRessourceVerstoesse(k: Katalog, besitzer: Besitzer, alle: Begleiter[], b: Begleiter, index?: number): Verstoss[] {
+  const fehlt = golemRessourcenBelegung(k, besitzer, alle, b, index).reduce((s, g) => s + Math.max(0, g.stufe - (g.ressource ?? 0)), 0);
+  return fehlt > 0 ? [{ schluessel: 'ressource:golem', mass: fehlt, text: 'Dafür reicht die Ressource Golem nicht: Jeder Golem braucht eine eigene Ressource Golem mindestens in seiner Stufe (Auslegung, Die Magie S. 203).' }] : [];
 }
 
 /** Gefolge-Punkte, die die übrigen Gefolgsleute verbrauchen (ohne den Begleiter an Stelle `ohne`) */
