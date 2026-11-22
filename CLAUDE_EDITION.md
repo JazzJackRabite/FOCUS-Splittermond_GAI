@@ -1016,6 +1016,25 @@ Ab hier ist das Repository **FOCUS-Splittermond_GAI** maßgeblich (aus Google AI
   Test `regelwerk/__tests__/rastGrenzen.test.tsx`.
 - Tests: 484 grün ohne Bücher; 545 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 43 (22.11.2026): Regeln aus dem Paket statt aus dem Code
+
+- Rast-Karten: Welche Zustände Verschnaufpause und Ruhephase abbauen oder aufheben, steht im Text aus `pause_ende`
+  (`pausenZustandstext`); kein fester Satz mehr.
+- Liegend: Die Beschreibung kommt aus der Tabelle der Kampfpositionen (`positionsText`, GRW S. 170).
+- Verwundet: über das Paketfeld `zustandswirkung.probe.art` „wundstufe“ statt über den Namen (`wundstufenVerschiebung`).
+  Fehler behoben: Beim Abenteurer zählte Verwundet doppelt (verschobener Wundabzug und zusätzlicher Zustandsabzug in der
+  Probe). Jetzt steckt es genau einmal im Wundabzug, auch bei Begleitern (`lebenslage`).
+- Zauber-Verstärkungen: neue Paketangabe `erfolgsgrade_strukturiert.verstaerkungen[].zustaende` (Datenseite
+  `zustaende.py`, Abschnitt 5; Name, Stufe, Ticks, Beleg; Liegend nur „bei misslungener Probe“). GRW 27 Verstärkungen,
+  Die Magie 11, Die Götter 2, Hinter dem Schleier 1. Der Editor liest Optionen und Verstärkungen aus dem Paket
+  (`zauberErfolgsgrade`); die Textsuche nach Zustandsnamen ist entfernt (sie traf auch „unterdrückt“ und „geheilt“). Der
+  Zaubern-Dialog zeigt den verursachten Zustand je Verstärkung. Eigene Zauber ohne Paketeintrag werden weiter aus ihrem
+  Text gelesen, ohne Zustände.
+- Ideen-Seite: Idee 1 nennt die fest verdrahteten Schwellen für Sterbend 2/3, Bewusstlos und Tod als offenen Punkt.
+- Code: `regelwerk/{zustaende,vitals,kampflage,zauberEg}.ts`, `utils/{characterCalculations,conditionModifiers,magicRules}.ts`,
+  `components/play/{RestSection,CastSpellModal}.tsx`. Tests `regelnAusPaket.test.ts`, `regelwerk/__tests__/verstaerkungen.test.ts`.
+- Tests: 494 grün ohne Bücher; 555 mit Grimoires, Falldatei und Volltest; Praxistest 109 ok; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
