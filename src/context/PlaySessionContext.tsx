@@ -649,7 +649,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
       },
       ...gesenkt.map((g) => ({ label: `Zustand ${g.name}`, value: `-${g.stufen} Stufe(n)`, type: 'exhaust' as const })),
       ...(healthSlots.some((s) => s.type === 'channeled') || focus.channeled > 0
-        ? [{ label: 'Kanalisiert', value: 'bleibt (Schaden bis zum Ende seines Zustands, Fokus bis zum Ende des Zaubers)', type: 'fo' as const }] : []),
+        ? [{ label: 'Kanalisiert', value: 'bleibt (Schaden, bis sein Zustand endet; Fokus, bis der Zauber endet)', type: 'fo' as const }] : []),
     ];
 
     if (removedConds.length > 0) {
@@ -723,7 +723,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
           : (focus.consumed === 0 ? '0 FO (kein verzehrter Fokus)' : '+0 FO'),
         type: 'fo',
       },
-      ...(healthSlots.some((s) => s.type === 'channeled') ? [{ label: 'Kanalisierter Schaden', value: 'bleibt bis zum Ende seines Zustands', type: 'hp' as const }] : []),
+      ...(healthSlots.some((s) => s.type === 'channeled') ? [{ label: 'Kanalisierter Schaden', value: 'bleibt, bis sein Zustand endet', type: 'hp' as const }] : []),
     ];
 
     if (removedConds.length > 0) {

@@ -57,8 +57,8 @@ FOCUS ersetzt den klassischen Papiercharakterbogen durch eine digitale, benutzer
 
 ```bash
 # Repository klonen
-git clone https://github.com/JazzJackRabite/FOKUS-1.2.git
-cd FOKUS-1.2
+git clone https://github.com/JazzJackRabite/FOCUS-Splittermond_GAI.git
+cd FOCUS-Splittermond_GAI
 
 # Abhängigkeiten installieren
 npm install
@@ -208,7 +208,7 @@ FOCUS basiert vollständig auf dem **Splittermond Grundregelwerk**. Alle Berechn
 
 Fehler gefunden? Ideen für neue Features? Dein Input ist willkommen!
 
-- **Issues**: [GitHub Issues](https://github.com/JazzJackRabite/FOKUS-1.2/issues)
+- **Issues**: [GitHub Issues](https://github.com/JazzJackRabite/FOCUS-Splittermond_GAI/issues)
 - **Pull Requests**: Wir freuen uns über Verbesserungen!
 
 ## 📄 Lizenz

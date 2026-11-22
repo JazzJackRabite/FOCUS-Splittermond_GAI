@@ -961,6 +961,30 @@ Bakebakeku bleiben; die eingebauten Listen in `src/data`, die Stand 33 noch erg�
   Editor startet, Hinweis erscheint. Ein Browser, der die App noch nie mit Netz geöffnet hat, kann sie ohne Netz
   erwartungsgemäß nicht laden.
 
+## Stand 40 (22.11.2026): Ressource Golem, EG-Verteilung, Heilung und Pausen nach GRW
+
+Ab hier ist das Repository **FOCUS-Splittermond_GAI** maßgeblich (aus Google AI Studio übernommen, Stand 39 identisch).
+
+- **Angriff:** Nach einem Treffer sind keine EG mehr vorbelegt (bisher steckte der Editor alle freien EG still in den
+  Wuchtangriff). Vor dem Schadenswurf fragt der Dialog nach, wenn noch EG frei sind: als Wuchtangriff verwenden,
+  verfallen lassen oder zurück.
+- **Ressource Golem** (Die Magie S. 203): Jeder Golem „über Ressource Golem“ belegt eine eigene Ressource; Auslegung wie
+  bei Kreatur: Stufe des Golems höchstens so hoch wie die Ressource. Ohne passende freie Ressource gesperrt bzw. mit
+  Hausregeln eine Warnung; der Assistent zeigt die Belegung, die Begleiter-Übersicht warnt.
+- **Heilung (GRW S. 15, 119–120, 173–174):** Heilkunde, Heilzauber und Heiltränke heilen echten Schaden; eine Verteilung auf
+  Betäubungsschaden ist im GRW nicht geregelt und nur mit Hausregeln wählbar, ebenso „Freie Heilung“. Die Verschnaufpause
+  ist aus dem Heildialog heraus (sie steht unter „Rast“). Kanalisierter Schaden heilt nicht; ist sein Zustand
+  aufgehoben, wird er im Heildialog zu Betäubungsschaden („freigeben“, neue Aktion `PLAY_KANALISIERT_FREIGEBEN`).
+- **Pausen:** Verschnaufpause und Ruhephase heilen keinen kanalisierten Schaden mehr; die Verschnaufpause beendet keine
+  kanalisierten Zauber mehr (erst die Ruhephase, S. 196). Welche Zustände eine Pause aufhebt oder abbaut, kommt aus dem
+  neuen Paketfeld `pause_ende` (Datenseite `zustaende.py`, allgemein aus dem Beschreibungstext: GRW Erschöpft, Glaubenskrise,
+  Lahm, dazu ein Zustand aus „Hinter dem Schleier“) statt aus Zustandsnamen im Code. Auch die Ruhephase der Begleiter
+  lässt kanalisierten Schaden stehen.
+- Tests: 474 grün ohne Bücher, 535 mit allen Grimoires, Falldatei und Volltest; Prüfsuite 0 neue Befunde, Praxistest
+  109/109; Build. Neue Tests: `egVerteilung`, `golemRessource`, `pausen`, Heildialog.
+- **Offen (gefunden, nicht geändert):** Die Ruhephase setzt den Sterbend-Zähler auf 0; laut GRW heilt ein Sterbender nicht
+  natürlich. Ruhephasen je Tag (`je_tag` im Paket) werden nicht gezählt.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
