@@ -13,7 +13,8 @@ import {
   calculateSpellEG,
   parseFocusCost,
 } from '../utils/magicRules';
-import { getConditionMalus, getActiveRollModifiers } from '../utils/conditionModifiers';
+import { getConditionMalus, getActiveRollModifiers, getConditionDescription } from '../utils/conditionModifiers';
+import { positionsModifikator } from '../regelwerk/kampflage';
 import { CHARACTER_PRESETS } from '../data/presets';
 import { grwRassen } from '../regelwerk/grwListen';
 const RACES = grwRassen();
@@ -297,10 +298,11 @@ describe('Splittermond GRW – Umfassende Regelprüfung, 5 Testcharaktere & Kamp
 
       expect(result.current.state.playState.conditions.some((c) => c.key === 'Liegend')).toBe(true);
 
-      // Kampfposition liegend: eigene Nahkampfangriffe −6 (GRW S. 170)
-      const conditionInfo = getConditionMalus({ id: 'cond_liegend', key: 'Liegend', level: 1 }, { bereich: 'kampf' });
-      expect(conditionInfo?.malus).toBe(-6);
-      expect(conditionInfo?.description).toContain('eigene Angriffe');
+      // Kampfposition liegend: eigene Nahkampfangriffe −6 (GRW S. 170) – über die eigene Position im Angriffsdialog,
+      // nicht als Abzug auf die Probe
+      expect(getConditionMalus({ id: 'cond_liegend', key: 'Liegend', level: 1 }, { bereich: 'kampf' })).toBeNull();
+      expect(positionsModifikator('Liegend', 'nahkampf', 'eigene', '', KAT)).toBe(-6);
+      expect(getConditionDescription({ id: 'cond_liegend', key: 'Liegend', level: 1 })).toContain('eigene Angriffe');
     });
 
     it('Schritt 5: Magie im Kampf – Kampfzauber wirken & Fokusverwaltung (GRW S. 192-198)', () => {

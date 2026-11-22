@@ -1,9 +1,9 @@
 import type { StatusCondition } from '../types';
 import { aktiverKatalog } from '../regelwerk/bruecke';
-import { positionsText } from '../regelwerk/kampflage';
 
 import type { Probenbereich } from '../types/regeldaten';
-import { zustand, zustandQuelle } from '../regelwerk/zustaende';
+import { zustand, zustandQuelle, KAMPFPOSITION_LIEGEND } from '../regelwerk/zustaende';
+import { positionsQuelle, positionsText } from '../regelwerk/kampflage';
 import { grwFertigkeitsKategorien, grwFertigkeitsattribute } from '../regelwerk/grwListen';
 
 export interface ActiveRollModifier {
@@ -52,17 +52,6 @@ export interface Zustandskontext {
   fertigkeit?: string;
 }
 
-/** Abzug auf eigene Angriffe im Liegen aus der Tabelle der Kampfpositionen (GRW S. 170); Rückfall −6 */
-function liegendEigeneAngriffe(): number {
-  const d = aktiverKatalog()?.get('grw:regel:kampf-regeln:kampfpositionen')?.daten as { tabellen?: { zeilen?: string[][] }[] } | undefined;
-  for (const t of d?.tabellen ?? []) {
-    const zeile = t.zeilen?.find((z) => z[0] === 'Liegend, Nahkampf');
-    const wert = Number(String(zeile?.[1] ?? '').replace('−', '-'));
-    if (zeile && Number.isFinite(wert) && wert !== 0) return wert;
-  }
-  return -6;
-}
-
 /**
  * Abzug eines Zustands auf eine Probe. Die Zahlen stehen als Daten in data/zustaende.ts, nicht hier.
  * null = der Zustand ändert den Probenwert nicht (z. B. Benommen: verlangsamt nur; Angsterfüllt: nur Sicherheitswürfe).
@@ -72,12 +61,9 @@ export function getConditionMalus(condition: StatusCondition, kontext: Zustandsk
   const level = condition.level || 1;
   const bereich = kontext.bereich ?? 'allgemein';
 
-  if (condition.key === 'Liegend') {
-    if (bereich !== 'kampf') return null;
-    const malus = liegendEigeneAngriffe();
-    // Text aus der Tabelle der Kampfpositionen im Paket (GRW S. 170)
-    return { label: 'Liegend', malus, description: positionsText('Liegend') };
-  }
+  // Kampfposition: wirkt nur auf Angriffe und wird im Angriffsdialog als eigene Position gewählt (dort vorausgewählt),
+  // nicht als Abzug auf Proben – sonst zählte sie doppelt und träfe auch Proben, die kein Angriff sind (GRW S. 170)
+  if (condition.key === KAMPFPOSITION_LIEGEND) return null;
 
   // Zahlen aus dem Regelpaket (daten.zustandswirkung); ohne Paket der Grundregelwerk-Rückfall
   const z = zustand(condition.key);
@@ -103,7 +89,10 @@ export function getConditionMalus(condition: StatusCondition, kontext: Zustandsk
 
 /** Beschreibung eines Zustands aus dem Regelpaket (ohne Paket leer; „Liegend“: Text der Kampfposition) */
 export function getConditionDescription(condition: StatusCondition): string {
-  if (condition.key === 'Liegend') return getConditionMalus(condition, { bereich: 'kampf' })?.description ?? '';
+  if (condition.key === KAMPFPOSITION_LIEGEND) {
+    const text = positionsText(KAMPFPOSITION_LIEGEND);
+    return text ? `Kampfposition – ${text}. Im Angriffsdialog als eigene Position vorausgewählt (${positionsQuelle()}).` : '';
+  }
   return zustand(condition.key)?.beschreibung ?? '';
 }
 

@@ -1075,6 +1075,23 @@ Relikt-Werkstatt, Handy-Breite). Behoben:
 - Vorlage Arrou: Wildnisläufer ist eine der drei freien Start-Meisterschaften (kostete 5 EP).
 - Tests: 506 grün ohne Bücher; 567 mit Grimoires, Falldatei und Volltest; Praxistest 109 ok; Build.
 
+## Stand 41 (22.11.2026): Kampfpositionen vollständig nach GRW S. 170 (Idee #16)
+
+- **Geprüft:** Die Tabelle im GRW-Paket stimmt in allen sieben Zeilen mit S. 170 überein (neuer Test schreibt sie ab).
+- **Doppelter Abzug behoben:** „Liegend“ aus den Zuständen zog im Angriffsdialog −6 als Zustand ab, und die eigene
+  Position ließ sich zusätzlich auf „Liegend“ stellen (−12). Jetzt ist „Liegend“ (und jeder Zustand, der als liegend gilt)
+  im Angriffsdialog als **eigene Position vorausgewählt** („liegt laut Zuständen“) und wirkt nur darüber.
+- **Armbrust im Liegen:** kein Abzug mehr (vorher −6 über den Zustand, obwohl die Tabelle keinen vorsieht).
+- **Andere Proben:** Der Abzug für „Liegend“ traf jede Probe mit einer Kampffertigkeit; laut Tabelle gilt er nur für
+  Angriffe. `getConditionMalus` liefert für „Liegend“ keinen Abzug mehr.
+- **Zauber gegen die Verteidigung:** Im Zauberdialog gibt es „Position des Ziels“; die Modifikatoren gegnerischer
+  Fernkampfangriffe gelten auch für diese Zauber (S. 170). Steht im Würfelprotokoll.
+- **Keine Zahlen im Code:** eingebaute −6 und das Lesen der Tabelle über ihren Zeilentext entfernt; Beschreibung und Hinweis
+  („Angriffe gegen den Charakter Nahkampf +6, Fernkampf −6, mit Armbrust −6“) entstehen aus der Tabelle
+  (`positionsBeschreibung`, `positionsQuelle` in `regelwerk/kampflage.ts`, `liegtLautZustaenden` in `regelwerk/zustandswerte.ts`).
+- Tests: neu `kampfpositionen.test.tsx` (Tabelle, Armbrust, Beschreibung, Angriffsdialog mit und ohne Zustand, Zauberdialog);
+  drei ältere Tests auf die neue Regel umgestellt. 470 grün ohne Bücher; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

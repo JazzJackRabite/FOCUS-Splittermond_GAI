@@ -38,7 +38,7 @@ describe('Zustände und abgeleitete Werte (GRW S. 168–169)', () => {
   it('Bewusstlos und Schlafend gelten als liegend; Liegend selbst ebenso – als Hinweis, ohne Wertänderung', () => {
     for (const k of ['Bewusstlos', 'Schlafend', 'Liegend']) {
       const zw = zustandswerte([z(k)], K);
-      expect(zw.hinweise[0], k).toMatch(/gilt als liegend.*\+6.*−6/);
+      expect(zw.hinweise[0], k).toMatch(/gilt als liegend – Angriffe gegen den Charakter Nahkampf \+6, Fernkampf −6.*GRW S\. 170/);
       expect(mitZustaenden('VTD', 20, zw)).toBe(20);
     }
   });

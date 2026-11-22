@@ -127,6 +127,8 @@ import { wuerfeln } from '../../utils/wuerfeln';
 import { SituativeBoni, useSituativeBoni } from './SituativeBoni';
 import { wurfgrenzen } from '../../regelwerk/proben';
 import { ignoriertSituation, kampfsituationen, positionsModifikator, positionsNamen, vorbereitungsBonus } from '../../regelwerk/kampflage';
+import { liegtLautZustaenden } from '../../regelwerk/zustandswerte';
+import { KAMPFPOSITION_LIEGEND } from '../../regelwerk/zustaende';
 
 
 /** Stabile leere Liste: ein `= []` als Vorgabe erzeugt bei jedem Rendern ein neues Array und löst über den Effekt unten eine Endlosschleife aus. */
@@ -202,7 +204,9 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const lage = useMemo(() => kampfsituationen(), []);
   const positionen = useMemo(() => positionsNamen(), []);
   const art = nahkampf ? 'nahkampf' as const : 'fernkampf' as const;
-  const [eigenePosition, setEigenePosition] = useState<string>(positionen[0] ?? '');
+  // Liegt der Charakter laut Zuständen, ist „Liegend“ als eigene Position vorausgewählt (statt als Abzug auf die Probe)
+  const liegtSchon = useMemo(() => liegtLautZustaenden(conditions) && positionen.includes(KAMPFPOSITION_LIEGEND), [conditions, positionen]);
+  const [eigenePosition, setEigenePosition] = useState<string>(liegtSchon ? KAMPFPOSITION_LIEGEND : (positionen[0] ?? ''));
   const [zielPosition, setZielPosition] = useState<string>(positionen[0] ?? '');
   const [taktischeVorteile, setTaktischeVorteile] = useState<number>(0);
   const [ueberzahl, setUeberzahl] = useState<number>(0);
@@ -690,7 +694,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
               {positionen.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <label className="flex flex-col gap-1" title={lage.quellen.positionen}>
-                    <span className="text-leise">Eigene Position</span>
+                    <span className="text-leise">Eigene Position{liegtSchon && <span data-testid="position-aus-zustand"> · liegt laut Zuständen</span>}</span>
                     <select value={eigenePosition} onChange={(e) => setEigenePosition(e.target.value)} data-testid="position-eigene"
                       className="min-h-11 bg-seite border border-rahmen rounded-knopf px-2 text-schrift">
                       {positionen.map((p) => { const w = positionsModifikator(p, art, 'eigene', weapon.name); return <option key={p} value={p}>{p}{w ? ` (${w > 0 ? '+' : ''}${w})` : ''}</option>; })}

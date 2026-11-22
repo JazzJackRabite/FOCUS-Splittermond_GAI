@@ -111,3 +111,28 @@ export function ignoriertSituation(situation: string, masteries: GelernteMeister
   return null;
 }
 
+
+const zeichen = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0');
+const artName = (a: string) => (a === 'nahkampf' ? 'Nahkampf' : a === 'fernkampf' ? 'Fernkampf' : a === 'beide' ? 'Nah- und Fernkampf' : a.charAt(0).toUpperCase() + a.slice(1));
+
+/**
+ * Wirkung einer Position in Worten, aus der Tabelle im Paket (GRW S. 170):
+ * `eigene` – Modifikatoren der eigenen Angriffe, `gegnerisch` – Modifikatoren für Angriffe gegen die Person.
+ * Leere Zeichenkette, wenn die Position nicht im Paket steht.
+ */
+export function positionsBeschreibung(position: string, rolle: 'eigene' | 'gegnerisch', k: Katalog | null = aktiverKatalog()): string {
+  const zeilen = kampfsituationen(k).positionen.filter((p) => p.position === position);
+  if (!zeilen.length) return '';
+  // allgemeine Zeilen zuerst, Zeilen für eine bestimmte Waffe (Armbrust) danach in Klammern
+  const RANG = ['nahkampf', 'fernkampf', 'beide'];
+  const allg = zeilen.filter((p) => RANG.includes(p.angriff)).sort((a, b) => RANG.indexOf(a.angriff) - RANG.indexOf(b.angriff));
+  const bes = zeilen.filter((p) => !['nahkampf', 'fernkampf', 'beide'].includes(p.angriff));
+  const teile = allg.map((p) => `${artName(p.angriff)} ${zeichen(p[rolle])}`);
+  for (const p of bes) teile.push(`mit ${artName(p.angriff)} ${zeichen(p[rolle])}`);
+  return teile.join(', ');
+}
+
+/** Quelle der Tabelle der Kampfpositionen, z. B. „GRW S. 170“ */
+export function positionsQuelle(k: Katalog | null = aktiverKatalog()): string {
+  return kampfsituationen(k).quellen.positionen ?? '';
+}

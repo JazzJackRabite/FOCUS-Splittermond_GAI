@@ -54,6 +54,7 @@ import { wuerfeln } from '../../utils/wuerfeln';
 import { SituativeBoni, useSituativeBoni, useZauberAnpassungen, ZauberAnpassungen } from './SituativeBoni';
 import { kostenAnwenden, zauberdauerAnpassen } from '../../regelwerk/wirkungen';
 import { wurfgrenzen } from '../../regelwerk/proben';
+import { positionsModifikator, positionsNamen, positionsQuelle } from '../../regelwerk/kampflage';
 
 export interface CastSpellSuccessResult {
   spell: Spell;
@@ -233,7 +234,12 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
 
   // Total skill modifier
   const situativ = useSituativeBoni('zauber', schoolSkillName, zaubernder === 'begleiter');
-  const totalRollModifier = schoolSkillTotal + woundPenalty + totalConditionPenalty + situationalMod + situativ.summe;
+  // Zauber gegen die Verteidigung: Modifikatoren gegnerischer Fernkampfangriffe nach der Position des Ziels (GRW S. 170)
+  const gegenVTD = spell.difficultyType === 'VTD';
+  const positionen = useMemo(() => (gegenVTD ? positionsNamen() : []), [gegenVTD]);
+  const [zielPosition, setZielPosition] = useState<string>(positionen[0] ?? '');
+  const positionsMod = gegenVTD && zielPosition ? positionsModifikator(zielPosition, 'fernkampf', 'gegnerisch') : 0;
+  const totalRollModifier = schoolSkillTotal + woundPenalty + totalConditionPenalty + situationalMod + situativ.summe + positionsMod;
 
   // Step 2: Roll execution & state
   const [hasRolled, setHasRolled] = useState<boolean>(false);
@@ -423,7 +429,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
           id: generateId(),
           type: 'roll',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-          label: `Zauberprobe: ${spell.name} (${schoolSkillName}) [${type === 'standard' ? 'Standard' : type === 'safe' ? 'Sicherheit' : 'Risiko'}]${situativ.labels.length ? ` [${situativ.labels.join(', ')}]` : ''}`,
+          label: `Zauberprobe: ${spell.name} (${schoolSkillName}) [${type === 'standard' ? 'Standard' : type === 'safe' ? 'Sicherheit' : 'Risiko'}]${situativ.labels.length ? ` [${situativ.labels.join(', ')}]` : ''}${positionsMod ? ` [Ziel ${zielPosition} ${positionsMod > 0 ? '+' : ''}${positionsMod}]` : ''}`,
           d10s,
           baseVal: schoolSkillTotal,
           modifier: totalRollModifier - schoolSkillTotal,
@@ -908,6 +914,16 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                 })}
               </div>
 
+              {positionen.length > 0 && (
+                <label className="flex flex-col gap-1 text-xs" title={positionsQuelle()} data-testid="zauber-position-ziel">
+                  <span className="text-leise">Position des Ziels (wie gegnerischer Fernkampf, {positionsQuelle()})</span>
+                  <select value={zielPosition} onChange={(e) => setZielPosition(e.target.value)}
+                    className="min-h-11 bg-seite border border-rahmen rounded-knopf px-2 text-schrift">
+                    {positionen.map((p) => { const w = positionsModifikator(p, 'fernkampf', 'gegnerisch'); return <option key={p} value={p}>{p}{w ? ` (${w > 0 ? '+' : ''}${w})` : ''}</option>; })}
+                  </select>
+                </label>
+              )}
+
               {/* Optional Target Note */}
               <div>
                 <input
@@ -942,6 +958,11 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                 {totalConditionPenalty !== 0 && (
                   <span className="bg-erhoeht text-schrift border border-magie px-2 py-0.5 rounded-knopf tabular-nums">
                     Zustände {totalConditionPenalty}
+                  </span>
+                )}
+                {positionsMod !== 0 && (
+                  <span className="bg-erhoeht text-schrift border border-rahmen px-2 py-0.5 rounded-knopf tabular-nums" data-testid="zauber-position-mod">
+                    Ziel {zielPosition} {positionsMod > 0 ? '+' : ''}{positionsMod}
                   </span>
                 )}
                 {situativ.summe !== 0 && (

@@ -8,7 +8,8 @@
 import type { StatusCondition } from '../types';
 import type { Katalog } from './katalog';
 import { aktiverKatalog } from './bruecke';
-import { zustand } from './zustaende';
+import { zustand, KAMPFPOSITION_LIEGEND } from './zustaende';
+import { positionsBeschreibung, positionsQuelle } from './kampflage';
 
 export type Wertname = 'VTD' | 'GW' | 'KW' | 'GSW' | 'INI' | 'SR';
 const WERTE: Wertname[] = ['VTD', 'GW', 'KW', 'GSW', 'INI', 'SR'];
@@ -39,7 +40,7 @@ export function zustandswerte(conditions: StatusCondition[] = [], k: Katalog | n
     if (!z) continue;
     const stufe = z.mitStufe ? Math.max(1, c.level || 1) : 1;
     const label = z.mitStufe ? `${c.key} ${stufe}` : c.key;
-    if (c.key === 'Liegend' || z.wirkung?.gilt_als === 'liegend') liegend.add(c.key);
+    if (c.key === KAMPFPOSITION_LIEGEND || z.wirkung?.gilt_als === 'liegend') liegend.add(c.key);
     for (const [w, a] of Object.entries(z.wirkung?.werte ?? {})) {
       if (w === 'FO') {
         if (a.kanalisiert_anteil_pro_stufe) {
@@ -56,7 +57,8 @@ export function zustandswerte(conditions: StatusCondition[] = [], k: Katalog | n
       if (a.setzen !== undefined) { zw.setzen[wn] = Math.min(zw.setzen[wn] ?? Infinity, a.setzen); erkl(wn, `${label}: auf ${a.setzen} gesetzt`); }
     }
   }
-  if (liegend.size) zw.hinweise.push(`${[...liegend].join(', ')}: gilt als liegend – Nahkampfangriffe gegen den Charakter +6, Fernkampfangriffe −6 (GRW S. 170)`);
+  const gegen = liegend.size ? positionsBeschreibung(KAMPFPOSITION_LIEGEND, 'gegnerisch', k) : '';
+  if (gegen) zw.hinweise.push(`${[...liegend].join(', ')}: gilt als liegend – Angriffe gegen den Charakter ${gegen} (${positionsQuelle(k)})`);
   return zw;
 }
 
@@ -90,4 +92,9 @@ export function textMitZustaenden(wert: Wertname, text: string | number | undefi
   if (!m || !wirkt) return { text: basis, basis, geaendert: false };
   const neu = mitZustaenden(wert, Number(m[1]), zw);
   return { text: `${neu}${m[2]}`, basis, geaendert: neu !== Number(m[1]) };
+}
+
+/** Liegt der Charakter laut seinen Zuständen (Kampfposition Liegend oder ein Zustand, der als liegend gilt)? */
+export function liegtLautZustaenden(conditions: StatusCondition[] = [], k: Katalog | null = aktiverKatalog()): boolean {
+  return conditions.some((c) => c.key === KAMPFPOSITION_LIEGEND || zustand(c.key, k)?.wirkung?.gilt_als === 'liegend');
 }
