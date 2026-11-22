@@ -7,7 +7,7 @@ Gemini in Google AI Studio – liest diese Datei zuerst und hält sich daran.
 - Die Prüfungen in `src/fundament/__tests__/` setzen diese Datei durch. Schlägt eine fehl, ist der Code zu ändern, nicht die Prüfung.
 - Änderungen an dieser Datei entscheidet der Projektinhaber.
 
-> **Stand 22.11.2026 (Stand 43).** Teil 2 (Regelquellen) ist gegen den Code geprüft; eine Prüfung hält Tabelle und Code seitdem
+> **Stand 22.11.2026 (Stand 44).** Teil 2 (Regelquellen) ist gegen den Code geprüft; eine Prüfung hält Tabelle und Code seitdem
 > zusammen (`src/fundament/__tests__`).
 
 ---
@@ -56,8 +56,8 @@ Felder stehen unter `daten` des jeweiligen Eintrags. **Was hier nicht steht, dar
 | Zauber durch Erfolgsgrade verbessern: EG je Option (Fokus sparen, Schaden, Reichweite, Wirkungsdauer, Wirkungsbereich, Auslösezeit), Höchstzahl und Mindestwerte; Grunddauer des Auslösens | Kernregeln „Zauber durch Erfolgsgrade verbessern“: `strukturiert.optionen`; „Erläuterung der Zauberbeschreibungen“: `strukturiert.ausloesezeit_ticks` | `regelwerk/zauberEg.ts` |
 | Zulässige Optionen und Verstärkungen eines Zaubers: EG, Zusatzkosten, verursachte Zustände (Stufe, Ticks, nur bei misslungener Probe); eigene Zauber ohne Paketeintrag nur aus ihrem Text, ohne Zustandssuche | Einträge vom Typ `zauber`: `erfolgsgrade_strukturiert.optionen`, `.verstaerkungen[]` mit `eg`, `kosten`, `wirkung`, `zustaende` (je mit `beleg`) | `regelwerk/zauberEg.ts`, `utils/magicRules.ts` |
 | Potenzial von Tieren (Grundwert, Qualität, Kreatur, Vertrauter, Meisterschaften) – nur mit dem Bestienmeister-Grimoire | `strukturiert.potenzial` (Eintrag des Grimoires) | `regelwerk/begleiter.ts` |
-| Ausrüstung des Grundregelwerks | Ausrüstungseinträge des GRW-Pakets (`schaden`, `wgs`, `modus`, `merkmale_text`, `vtd_bonus`, `sr`, `behinderung`, `preis`, `last`, `haerte`) | `regelwerk/ausruestung.ts` |
-| Pakete laden und im Browser speichern; Start ohne Netz aus der zuletzt geladenen Fassung (Prüfsumme gegen das Manifest); die App-Dateien selbst hält der Service Worker `public/sw.js` vor (Regelpakete laufen nicht über ihn) | Paketkopf, Einträge, `sha256` im Manifest | `regelwerk/laden.ts`, `regelwerk/paketSpeicher.ts`, `regelwerk/RegelwerkContext.tsx`, `main.tsx` |
+| Ausrüstung des Grundregelwerks; Angriffswert (Fertigkeitspunkte + Attribute der Waffe), waffenloser Angriff | Ausrüstungseinträge des GRW-Pakets (`schaden`, `wgs`, `modus`, `merkmale_text`, `attribute`, `vtd_bonus`, `sr`, `behinderung`, `preis`, `last`, `haerte`) | `regelwerk/ausruestung.ts`, `utils/characterCalculations.ts` |
+| Pakete laden und im Browser speichern; Start ohne Netz aus der zuletzt geladenen Fassung (Prüfsumme gegen das Manifest); die App-Dateien selbst hält der Service Worker `public/sw.js` vor (Regelpakete laufen nicht über ihn); Manifest und Grundregelwerk immer mit Nachfrage beim Server (das Hosting meldet alle Dateien als unveränderlich) | Paketkopf, Einträge, `sha256` im Manifest | `regelwerk/laden.ts`, `regelwerk/paketSpeicher.ts`, `regelwerk/RegelwerkContext.tsx`, `main.tsx` |
 | Einträge finden, Namen und IDs, Umbenennungen | Einträge mit `id`, `typ`, `name`; ID-Register | `regelwerk/katalog.ts`, `regelwerk/bruecke.ts`, `regelwerk/ids.ts` |
 | Abgeleitete Werte, Heldengrade, Höchstbonus | Kernregeln: `strukturiert`; an Stärken: `abgeleitete_werte_modifikatoren`; `groessenklasse`; an Ausrüstung: `behinderung`, `vtd_bonus`, `mindest_staerke` | `regelwerk/abgeleitet.ts` |
 | Voraussetzungen | `voraussetzungen` (formal, mit IDs; `gleiche_fertigkeit` für „in der gleichen Magieschule“) | `regelwerk/bedingungen.ts` |

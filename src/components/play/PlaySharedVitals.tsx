@@ -1,3 +1,4 @@
+import { standardGesundheitsstufen } from '../../regelwerk/schadenUndHeilung';
 import { fokusDurchZustaende, mitZustaenden, zustandsErklaerung, zustandswerte } from '../../regelwerk/zustandswerte';
 import { alleZustaende, zustandHatStufe, zustandQuelle } from '../../regelwerk/zustaende';
 import { Rauten, Knopf, Wahlknopf, Leistenknopf, Feldknopf } from '../../fundament';
@@ -186,8 +187,10 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
   const consumedLP = healthSlots.filter((s) => s.type === 'consumed').length;
   const exhaustedLP = healthSlots.filter((s) => s.type === 'exhausted').length;
   const channeledLP = healthSlots.filter((s) => s.type === 'channeled').length;
-  const freeLP = healthSlots.filter((s) => s.type === 'empty').length;
-  const totalLP = healthSlots.length || maxLP * 5;
+  // Lebenspunkte = LP je Gesundheitsstufe × Zahl der Stufen (GRW S. 172: 5 × LP). Die Kästchen dahinter gehören zur
+  // Sterbe-Rechnung (Stufe nach Todgeweiht) und zählen nicht als Lebenspunkte.
+  const totalLP = maxLP > 0 ? maxLP * standardGesundheitsstufen().length || healthSlots.length : healthSlots.length;
+  const freeLP = healthSlots.slice(0, totalLP).filter((s) => s.type === 'empty').length;
   const totalDamage = consumedLP + exhaustedLP + channeledLP;
 
   const zwFokus = useMemo(() => zustandswerte(conditions), [conditions]);
@@ -1413,6 +1416,7 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
           currentSplitterPoints={splitterPoints}
           activeTempHP={activeTempHP}
           currentHealthSlots={healthSlots}
+          aktiveZustaende={conditions}
           onApplyDamage={({ kind, amount, spendSplitter, selectedConditions, note }) => {
             if (spendSplitter && splitterPoints > 0) {
               const newSP = splitterPoints - 1;

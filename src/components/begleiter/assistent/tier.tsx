@@ -189,7 +189,7 @@ const Abrichtungen: React.FC<SchrittProps> = ({ k, b, aendern, besitzer }) => {
     <div className="space-y-4">
       <div className="flex items-center gap-2 flex-wrap">
         <Marke ton={verbraucht > pot.gesamt ? 'schaden' : 'neutral'}>Potenzial {verbraucht}/{pot.gesamt}</Marke>
-        <span className="text-sm text-leise">{pot.posten.map(p => `${p.text} ${p.wert}`).join(' + ')} (Bestienmeister S. 15)</span>
+        <span className="text-sm text-leise">{pot.posten.map(p => `${p.text}: ${p.wert}`).join(' + ')} (Bestienmeister S. 15)</span>
       </div>
       {verbraucht > pot.gesamt && <Hinweise liste={['Mehr Abrichtungen, als das Potenzial erlaubt.']} />}
       {tw.hinweise.length > 0 && <Hinweise liste={tw.hinweise} />}

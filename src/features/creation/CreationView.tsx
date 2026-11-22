@@ -424,6 +424,7 @@ export function CreationView() {
                     canDecrease={canDecrease}
                     cost={mode === 'xp' && currentInc < heldengrad.maxAttrMod ? nextCost : 0}
                     mode={mode}
+                    sperrgrund={mode === 'xp' ? (currentInc >= heldengrad.maxAttrMod ? `${heldengrad.name}: jedes Attribut höchstens um ${heldengrad.maxAttrMod} steigern` : `Nicht genug EP (${nextCost} nötig)`) : undefined}
                   />
                 );
               })}
@@ -504,6 +505,7 @@ export function CreationView() {
                     canIncrease={hausregeln || (mode === 'creation' ? val < 6 && creationUsage.skill < 55 : val < heldengrad.maxSkill && xpAvailable >= cost)}
                     canDecrease={mode === 'creation' ? (skillsBase[skill] ?? 0) > 0 : (skillsXp[skill] ?? 0) > 0}
                     cost={mode === 'xp' && val < heldengrad.maxSkill ? cost : 0}
+                    sperrgrund={mode === 'xp' ? (val >= heldengrad.maxSkill ? `${heldengrad.name}: höchstens ${heldengrad.maxSkill} Fertigkeitspunkte` : `Nicht genug EP (${cost} nötig)`) : undefined}
                     masteries={currentMasteries}
                     onAddMastery={() => { setActiveSkillForMastery({ name: skill, val }); setMasteryModalOpen(true); }}
                     onRemoveMastery={(idx) => removeMastery(skill, idx)}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Knopf } from '../../fundament';
+import { ruheregeln } from '../../regelwerk/spielwirkungen';
 import {
   Dices,
   Trash2,
@@ -212,7 +213,7 @@ export const DiceLog: React.FC<DiceLogProps> = ({
                     </div>
 
                     <span className={`protocol-badge text-[11px] px-2.5 py-0.5 rounded-knopf shrink-0 ml-2 font-bold ${badgeClass}`}>
-                      {isVp ? '15 Min' : '6 Std'}
+                      {isVp ? `${ruheregeln().verschnaufMinuten} Min` : `${ruheregeln().ruheStunden} Std`}
                     </span>
                   </div>
                 );

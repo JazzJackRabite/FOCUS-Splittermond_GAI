@@ -65,6 +65,14 @@ export function begleiterTitel(b: Begleiter): string {
 /** Fertigkeiten aus dem Wertekasten („Akrobatik 8, Athletik 10“) */
 const ausText = (w: Wertekasten | null): Fertigkeit[] => (w?.felder?.fertigkeiten ? fertigkeitenAusText(w.felder.fertigkeiten).map(f => ({ name: f.name, wert: f.wert })) : []);
 
+/** Kreatur-Stufe, die ein Tier über die Ressource Kreatur braucht, wenn die gewählte Ressource nicht reicht (GRW S. 78); sonst null */
+export function kreaturFehlt(k: Katalog, b: Begleiter): number | null {
+  if (b.art !== 'tier' || !b.kreatur) return null;
+  const e = k.get(b.id);
+  const st = e && baukastenArt(e) ? wesenBaukastenWerte(k, b).stufe : e ? kreaturStufe(e) : null;
+  return st !== null && st > b.kreatur ? st : null;
+}
+
 export function begleiterAnsicht(k: Katalog, b: Begleiter, besitzer: Besitzer): Ansicht {
   const e = k.get(b.id);
   const titel = begleiterTitel(b);

@@ -143,7 +143,7 @@ export function useBegleiterSpiel(b: Begleiter, index: number, angaben: Begleite
           }} />
       )}
       {lpModal === 'schaden' && (
-        <TakeDamageModal begleiter={angaben.name} stufen={stufen} maxLP={angaben.lp} derivedSR={zahlSR} armorSR={0} currentSplitterPoints={0} activeTempHP={0}
+        <TakeDamageModal begleiter={angaben.name} aktiveZustaende={z.zustaende ?? []} stufen={stufen} maxLP={angaben.lp} derivedSR={zahlSR} armorSR={0} currentSplitterPoints={0} activeTempHP={0}
           currentHealthSlots={gesundheitsfelder(lage.gesamt, z)} onClose={() => setLpModal(null)}
           onApplyDamage={({ kind, amount, note }) => {
             if (amount <= 0) return;

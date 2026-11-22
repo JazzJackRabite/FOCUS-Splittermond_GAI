@@ -645,6 +645,15 @@ export function baseCharacterReducer(
     case 'SET_STRENGTHS_LIST':
       return { ...state, strengthsList: action.payload };
 
+    case 'PLAY_LP_ANPASSEN': {
+      const ziel = Math.max(0, action.payload.maxLP) * 6;
+      const alt = state.playState.healthSlots;
+      if (!ziel || alt.length === ziel) return state;
+      const schaden = normalizeHealthSlots(alt).filter((x) => x.type !== 'empty').slice(0, ziel);
+      const slots: HealthSlot[] = [...schaden, ...Array.from({ length: ziel - schaden.length }, () => ({ type: 'empty' as const }))];
+      return { ...state, playState: { ...state.playState, healthSlots: slots } };
+    }
+
     case 'PLAY_RESET': {
       const { maxLP, maxFocus, maxSplitter } = action.payload;
       const slots: HealthSlot[] = Array.from({ length: maxLP * 6 }, () => ({ type: 'empty' as const }));

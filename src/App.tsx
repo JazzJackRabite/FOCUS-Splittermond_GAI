@@ -101,6 +101,12 @@ const App: React.FC = () => {
     }
   }, [mode, state.playState.healthSlots.length, calc.maxLP, calc.maxFO, calc.splinterPoints, dispatch]);
 
+  // Lebenspunkte je Stufe geändert (Stärke Robust, Konstitution …): Kästchen mitziehen, erlittener Schaden bleibt
+  useEffect(() => {
+    const n = state.playState.healthSlots.length;
+    if (n > 0 && calc.maxLP > 0 && n !== calc.maxLP * 6) dispatch({ type: 'PLAY_LP_ANPASSEN', payload: { maxLP: calc.maxLP } });
+  }, [state.playState.healthSlots.length, calc.maxLP, dispatch]);
+
   const handleTabClick = (targetMode: AppMode) => {
     if (targetMode === mode) return;
 

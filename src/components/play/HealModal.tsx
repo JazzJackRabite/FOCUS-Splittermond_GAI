@@ -1,3 +1,4 @@
+import { wundstufenVerschiebung } from '../../regelwerk/zustaende';
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf, useEscape } from '../../fundament';
 import React, { useId, useMemo, useState } from 'react';
 import { Heart, X, Plus, Minus, Check, Sparkles, Activity } from 'lucide-react';
@@ -153,9 +154,12 @@ export const HealModal: React.FC<HealModalProps> = ({
 
     const curName = HEALTH_LEVEL_NAMES[curLevelIndex] ?? 'Unverletzt';
     const nextName = HEALTH_LEVEL_NAMES[nextLevelIndex] ?? 'Unverletzt';
-    const curPenalty = WOUND_PENALTIES[curLevelIndex] ?? 0;
-    const nextPenalty = WOUND_PENALTIES[nextLevelIndex] ?? 0;
-    const isWoundImproved = nextLevelIndex < curLevelIndex;
+    // Verwundet u. ä. verschiebt den Wundabzug um Stufen (Paketfeld wundstufe); beendete Zustände zählen danach nicht mehr
+    const schiebenVor = wundstufenVerschiebung(activeConditions);
+    const schiebenNach = wundstufenVerschiebung(activeConditions.filter((c) => !conditionsToRemove.has(c.id)));
+    const curPenalty = WOUND_PENALTIES[Math.min(letzte, curLevelIndex + schiebenVor)] ?? 0;
+    const nextPenalty = WOUND_PENALTIES[Math.min(letzte, nextLevelIndex + schiebenNach)] ?? 0;
+    const isWoundImproved = nextLevelIndex < curLevelIndex || nextPenalty > curPenalty;
 
     return {
       curName,
@@ -164,7 +168,7 @@ export const HealModal: React.FC<HealModalProps> = ({
       nextPenalty,
       isWoundImproved,
     };
-  }, [consumedCount, actualConsumed, maxLP, stufen]);
+  }, [consumedCount, actualConsumed, maxLP, stufen, activeConditions, conditionsToRemove]);
 
   // Submit healing
   const handleSubmit = (e?: React.FormEvent) => {

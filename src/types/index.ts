@@ -411,6 +411,8 @@ export type CharacterAction =
   | { type: 'PLAY_REMOVE_TEMP_HP'; payload: { amount: number } }
   | { type: 'PLAY_SET_LP_MODIFIER'; payload: { modifier: number; newMaxLP: number } }
   | { type: 'PLAY_RESET'; payload: { maxLP: number; maxFocus: number; maxSplitter: number } }
+  /** Lebenspunkte je Stufe haben sich geändert (z. B. Robust, KON): Kästchen anpassen, Schaden bleibt */
+  | { type: 'PLAY_LP_ANPASSEN'; payload: { maxLP: number } }
   | { type: 'ADD_INVENTORY_ITEM'; payload: InventoryItem }
   | { type: 'REMOVE_INVENTORY_ITEM'; payload: { id: string } }
   | { type: 'UPDATE_INVENTORY_ITEM'; payload: { id: string; updates: Partial<InventoryItem> } }
@@ -470,4 +472,6 @@ export interface AttributeRowProps {
   canDecrease: boolean;
   cost: number;
   mode: AppMode;
+  /** warum „Erhöhen“ gesperrt ist (Anzeige beim Überfahren mit der Maus) */
+  sperrgrund?: string;
 }

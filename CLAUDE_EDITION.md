@@ -1035,6 +1035,28 @@ Ab hier ist das Repository **FOCUS-Splittermond_GAI** maßgeblich (aus Google AI
   `components/play/{RestSection,CastSpellModal}.tsx`. Tests `regelnAusPaket.test.ts`, `regelwerk/__tests__/verstaerkungen.test.ts`.
 - Tests: 494 grün ohne Bücher; 555 mit Grimoires, Falldatei und Volltest; Praxistest 109 ok; Build.
 
+## Stand 44 (22.11.2026): Befunde aus dem Praxistest der veröffentlichten App
+
+Durchgeklickt mit einem Varg auf Heldengrad 1 (Steigern, Meisterschaft, Zauber, Schaden, Rast, Heilung, Inventar, Begleiter,
+Relikt-Werkstatt, Handy-Breite). Behoben:
+- Angriffswert: zählte nur die Fertigkeitspunkte. Jetzt Punkte + die beiden Attribute der Waffe aus dem Paket
+  (`daten.attribute`, GRW S. 181) + Boni aus Wirkungen (`getAttackValue`, `waffenAttribute`). Waffen im Inventar werden
+  über ID oder Name gefunden. Der waffenlose Angriff nimmt Schaden, WGS, Merkmale und Attribute aus dem GRW-Paket statt fester
+  Werte im Code.
+- Alte Regelpakete im Browser: Das Hosting schickt für alle Dateien „max-age=1 Jahr, immutable“. Manifest und
+  Grundregelwerk werden jetzt mit `cache: 'no-cache'` geladen (Nachfrage beim Server, unverändert 304).
+- Quellenangabe: Zauber- und Meisterschaftsdialog zeigten bei Einträgen aus Grimoires „GRW S. …“. Jetzt das Kürzel des Pakets.
+  Vorlagen werden erst beim Zugriff aufgelöst; vorher stand im Protokoll „Quelle: unbekannt“.
+- Lebenspunkte: Anzeige „54 / 54 LP“ zählte die Kästchen der Sterbe-Rechnung mit; jetzt LP × Zahl der Gesundheitsstufen.
+  Ändern sich die LP je Stufe (Robust, KON), ziehen die Kästchen mit (`PLAY_LP_ANPASSEN`), der Schaden bleibt.
+- Vorschau des Wundabzugs im Schadens- und Heildialog rechnet Verwundet ein (auch Zustände dieses Treffers bzw. beendete).
+- Tiergefährte: Ein Tier über der Stufe der Ressource Kreatur ließ sich anlegen (nur Hinweis). Jetzt `regelverstoss`
+  (mit Hausregeln Warnung), `kreaturFehlt`.
+- Kleinigkeiten: Dauer der Pausen im Protokoll aus dem Paket (stand fest „15 Min“), Tragkraft-Formel aus dem Paket (stand
+  „KON + STA“), Potenzial-Aufschlüsselung mit Doppelpunkt, „Gratis-Slot nutzen“ im Meisterschaftsdialog vorgewählt, wenn
+  eine freie Meisterschaft offen ist, gesperrte Knöpfe für Attribute und Fertigkeiten nennen den Grund.
+- Tests: 501 grün ohne Bücher; 562 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

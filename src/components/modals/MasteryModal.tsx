@@ -1,7 +1,7 @@
 import { calculateItemCost } from '../../utils/costCalculations';
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, useEscape } from '../../fundament';
 import { useHausregeln } from '../../fundament/hausregeln';
-import React, { useEffect, useId, useMemo, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { MasteryEntry as DbMasteryEntry } from '../../types/regeldaten';
 
 import { validateFreeMasteryAssignment } from '../../utils/validation';
@@ -201,6 +201,12 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
 
   const canBeFreeRank = validateFreeMasteryAssignment(skillVal, [...currentFreeTiers, tier]);
   const canBeCreationBonus = creationMode && creationBudget > 0 && skillVal >= 1 && tier === 1;
+
+  // Ist eine freie Meisterschaft offen, ist „Gratis-Slot nutzen“ vorgewählt (wie beim Zauber); abwählen bleibt möglich
+  const freiVorbelegt = useRef(false);
+  useEffect(() => {
+    if (!freiVorbelegt.current && canBeFreeRank && !isCreationBonus) { freiVorbelegt.current = true; setIsFree(true); }
+  }, [canBeFreeRank, isCreationBonus]);
 
   useEffect(() => {
     if (!canBeFreeRank && isFree) setIsFree(false);

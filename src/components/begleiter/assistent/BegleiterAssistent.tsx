@@ -16,7 +16,7 @@ import { erhebungen, untotWerte } from '../../../regelwerk/untote';
 import { golemWerte, korpusse } from '../../../regelwerk/golem';
 import type { Katalog } from '../../../regelwerk/katalog';
 import type { Begleiter } from '../../../types';
-import { ARTEN, VERTRAUTER, artInfo, begleiterTitel, type BegleiterArt } from '../ansicht';
+import { ARTEN, VERTRAUTER, artInfo, begleiterTitel, kreaturFehlt, type BegleiterArt } from '../ansicht';
 import { useHausregeln } from '../../../fundament/hausregeln';
 import { golemRessourceVerstoesse, gefolgeVerbraucht, type Besitzer } from '../besitzer';
 import { Erklaerung, Wahlkarte } from './teile';
@@ -156,6 +156,9 @@ export const BegleiterAssistent: React.FC<{
 
   const fertig = () => {
     if (!entwurf?.id) return;
+    // Tiergefährte über die Ressource Kreatur: Stufe des Tiers höchstens die der Ressource (GRW S. 78)
+    const st = kreaturFehlt(k, entwurf);
+    if (st !== null && (neu || kreaturFehlt(k, alle[index!] ?? entwurf) === null) && regelverstoss(`Das Tier braucht Kreatur ${st}; die gewählte Ressource reicht nicht.`)) return;
     if (neu) {
       if (entwurf.art === 'gefolge') {
         const brauchen = gefolgeVerbraucht(k, alle, besitzer.maxFertigkeit) + gefolgeWerte(k, entwurf, besitzer.maxFertigkeit).punkte;

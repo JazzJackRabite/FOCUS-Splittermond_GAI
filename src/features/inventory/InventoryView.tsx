@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useCharacter } from '../../context/CharacterContext';
 import { alleAusruestung } from '../../regelwerk/ausruestung';
+import { traglast } from '../../regelwerk/spielwirkungen';
 import { useRegelwerk } from '../../regelwerk/RegelwerkContext';
 import { SourceBadge } from '../../components/ui/SourceBadge';
 import { generateId } from '../../utils/id';
@@ -356,7 +357,7 @@ export const InventoryView: React.FC = () => {
             <Weight size={18} className="text-schrift" />
             <h3 className="font-bold text-base text-gold-hell">Tragkraft &amp; Last</h3>
             <span className="text-xs text-leise font-medium">
-              (Tragkraft = KON + STA = {loadCapacity})
+              (Tragkraft = {traglast()?.attribut ?? ''} × {traglast()?.lastJePunkt ?? ''} = {loadCapacity})
             </span>
           </div>
 

@@ -1,3 +1,4 @@
+import { wundstufenVerschiebung } from '../../regelwerk/zustaende';
 import { splitterSchadensminderung, standardGesundheitsstufen, zustaendeFuerSchaden } from '../../regelwerk/schadenUndHeilung';
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf, useEscape } from '../../fundament';
 import React, { useId, useMemo, useState } from 'react';
@@ -12,6 +13,8 @@ export interface TakeDamageModalProps {
   currentSplitterPoints: number;
   activeTempHP: number;
   currentHealthSlots: HealthSlot[];
+  /** aktive Zustände (für die Vorschau des Wundabzugs: Verwundet u. ä.) */
+  aktiveZustaende?: Array<{ key: string; level?: number }>;
   /** Gesundheitsstufen (Standard: die fünf des GRW); Begleiter mit Schwächlich/Zerbrechlich haben weniger */
   stufen?: { name: string; wundabzug: number }[];
   /** Für Begleiter: ohne Splitterpunkte, temporäre LP und Zustände des Helden; Name für die Überschrift */
@@ -34,6 +37,7 @@ export const TakeDamageModal: React.FC<TakeDamageModalProps> = ({
   currentSplitterPoints,
   activeTempHP,
   currentHealthSlots,
+  aktiveZustaende = [],
   onApplyDamage,
 }) => {
   const stufen = useMemo(() => stufenProp ?? standardGesundheitsstufen(), [stufenProp]);
@@ -119,8 +123,10 @@ export const TakeDamageModal: React.FC<TakeDamageModalProps> = ({
 
     const curName = HEALTH_LEVEL_NAMES[curLevelIndex] ?? 'Unverletzt';
     const nextName = HEALTH_LEVEL_NAMES[nextLevelIndex] ?? 'Unverletzt';
-    const nextPenalty = WOUND_PENALTIES[nextLevelIndex] ?? 0;
-    const isWoundIncreased = nextLevelIndex > curLevelIndex;
+    // Verwundet u. ä. (Paketfeld wundstufe): Wundabzug um Stufen tiefer, auch durch Zustände dieses Treffers
+    const schieben = wundstufenVerschiebung([...aktiveZustaende, ...extraConditionsList]);
+    const nextPenalty = WOUND_PENALTIES[Math.min(letzte, nextLevelIndex + schieben)] ?? 0;
+    const isWoundIncreased = nextLevelIndex > curLevelIndex || schieben > wundstufenVerschiebung(aktiveZustaende);
     const isDying = nextLevelIndex === letzte || simTotalFilled >= totalSlots;
 
     return {
@@ -132,7 +138,7 @@ export const TakeDamageModal: React.FC<TakeDamageModalProps> = ({
       simTotalFilled,
       totalSlots,
     };
-  }, [currentHealthSlots, maxLP, damageHittingHealth, damageKind, stufen]);
+  }, [currentHealthSlots, maxLP, damageHittingHealth, damageKind, stufen, aktiveZustaende, extraConditionsList]);
 
   // Handlers
   const gewaehlterZustand = zustaende.find((x) => x.name === extraCondition);

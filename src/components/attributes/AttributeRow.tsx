@@ -14,6 +14,7 @@ export const AttributeRow: React.FC<AttributeRowProps> = ({
   canDecrease,
   cost,
   mode,
+  sperrgrund,
 }) => (
   <div className="flex items-center justify-between py-2 border-b border-rahmen last:border-0 print:border-leise gap-2">
     <div className="flex flex-col min-w-0 flex-1 pr-1">
@@ -52,7 +53,7 @@ export const AttributeRow: React.FC<AttributeRowProps> = ({
         disabled={!canIncrease}
         className="sm:w-7 sm:h-7 active:scale-95 disabled:pointer-events-none shrink-0 text-sm touch-manipulation"
         aria-label={`${grwAttribute()[attrKey as keyof ReturnType<typeof grwAttribute>]} erhöhen`}
-        title="Erhöhen"
+        title={!canIncrease && sperrgrund ? sperrgrund : 'Erhöhen'}
       >
         +
       </Knopf>

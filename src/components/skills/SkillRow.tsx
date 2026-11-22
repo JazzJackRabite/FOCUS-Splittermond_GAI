@@ -8,6 +8,8 @@ import type { Mastery, Spell, AppMode } from '../../types';
 import { grwAllgemeineKampfmeisterschaften, grwAttribute, grwFertigkeitsKategorien, grwMeisterschaften } from '../../regelwerk/grwListen';
 
 interface SkillRowProps {
+  /** warum „Erhöhen“ gesperrt ist (Anzeige beim Überfahren mit der Maus) */
+  sperrgrund?: string;
   name: string;
   val: number;
   totalValue: number | null;
@@ -35,6 +37,7 @@ interface SkillRowProps {
 }
 
 export const SkillRow: React.FC<SkillRowProps> = ({
+  sperrgrund,
   name,
   val,
   totalValue,
@@ -181,7 +184,7 @@ export const SkillRow: React.FC<SkillRowProps> = ({
               onClick={onIncrease}
               disabled={!canIncrease}
               className="sm:w-7 sm:h-7 active:scale-95 disabled:pointer-events-none shrink-0 text-sm touch-manipulation"
-              title="Erhöhen"
+              title={!canIncrease && sperrgrund ? sperrgrund : 'Erhöhen'}
               aria-label={`${name} erhöhen`}
             >
               +
