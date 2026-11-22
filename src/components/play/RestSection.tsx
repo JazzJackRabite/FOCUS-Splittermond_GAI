@@ -2,6 +2,7 @@ import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf } from '../
 import React, { useState, useEffect } from 'react';
 import { Sun, Moon, RotateCcw, Settings, Heart, Sparkles, X, Check, Clock } from 'lucide-react';
 import type { ItemEntry, Mastery } from '../../types';
+import { regelverstoss } from '../../fundament/hausregeln';
 import { ruheregeln, ruhephasenRegeneration, ruhewirkungen, type Ruhewirkung } from '../../regelwerk/spielwirkungen';
 
 export interface VerschnaufpauseOptions {
@@ -24,6 +25,11 @@ interface RestSectionProps {
   onRuhephase: (lpAmount: number, foAmount: number, mitBegleitern?: boolean) => void;
   /** Anzahl der Begleiter; bei mehr als 0 erscheint „Begleiter rasten mit“ */
   begleiterAnzahl?: number;
+  /** Ruhephasen seit dem letzten „Neuer Tag“ (Höchstzahl: ruheregeln().ruhephasenJeTag) */
+  ruhephasenHeute?: number;
+  onNeuerTag?: () => void;
+  /** aktive Zustände, die natürliche Heilung verhindern (Paketfeld keine_natuerliche_heilung) */
+  ohneHeilung?: string[];
 }
 
 export const RestSection: React.FC<RestSectionProps> = ({
@@ -35,6 +41,9 @@ export const RestSection: React.FC<RestSectionProps> = ({
   onVerschnaufpause,
   onRuhephase,
   begleiterAnzahl = 0,
+  ruhephasenHeute = 0,
+  onNeuerTag,
+  ohneHeilung = [],
 }) => {
   const [mitBegleitern, setMitBegleitern] = useState(true);
   const mit = begleiterAnzahl > 0 && mitBegleitern;
@@ -129,6 +138,8 @@ export const RestSection: React.FC<RestSectionProps> = ({
   };
 
   const handleExecuteRuhephase = () => {
+    if (regeln.ruhephasenJeTag > 0 && ruhephasenHeute >= regeln.ruhephasenJeTag
+      && regelverstoss(`Höchstens ${regeln.ruhephasenJeTag} Ruhephasen pro Tag (${regeln.quelle}). Mit „Neuer Tag“ zurücksetzen.`)) return;
     onRuhephase(customLP, customFO, mit);
     if (activeModal === 'ruhephase') {
       setActiveModal(null);
@@ -160,6 +171,12 @@ export const RestSection: React.FC<RestSectionProps> = ({
           />
           <span>Begleiter rasten mit ({begleiterAnzahl})</span>
         </label>
+      )}
+
+      {ohneHeilung.length > 0 && (
+        <p id="rast-ohne-heilung" className="text-xs text-schrift rounded-knopf border border-rahmen bg-erhoeht px-3 py-2">
+          Keine natürliche Heilung ({ohneHeilung.join(', ')}): Pausen heilen keine Lebenspunkte, die Sterbe-Stufe bleibt. Heilkunde und Heilzauber wirken weiter.
+        </p>
       )}
 
       {/* Two Action Cards (gestapelt für rechte Spalte) */}
@@ -289,6 +306,18 @@ export const RestSection: React.FC<RestSectionProps> = ({
             <p className="text-xs text-schrift leading-relaxed min-h-[36px]">
               Heilt zusätzlich echten Schaden &amp; verzehrten Fokus, baut Erschöpfung komplett ab.
             </p>
+            {regeln.ruhephasenJeTag > 0 && (
+              <div className="flex items-center justify-between gap-2 text-xs">
+                <span id="ruhephasen-heute" className={`tabular-nums ${ruhephasenHeute >= regeln.ruhephasenJeTag ? 'text-gold font-bold' : 'text-leise'}`}>
+                  Ruhephasen heute: {ruhephasenHeute} von {regeln.ruhephasenJeTag}
+                </span>
+                {onNeuerTag && (
+                  <Knopf eng id="btn-neuer-tag" onClick={onNeuerTag} title="Zähler der Ruhephasen für einen neuen Tag zurücksetzen">
+                    Neuer Tag
+                  </Knopf>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Action Row */}

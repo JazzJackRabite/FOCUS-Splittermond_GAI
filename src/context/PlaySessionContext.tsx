@@ -1,5 +1,5 @@
 import { fokusDurchZustaende, zustandswerte } from '../regelwerk/zustandswerte';
-import { alleZustaende, nachPause } from '../regelwerk/zustaende';
+import { alleZustaende, nachPause, ohneNatuerlicheHeilung } from '../regelwerk/zustaende';
 import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
 import type {
@@ -486,17 +486,12 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
         if (exhaustedCount > 0) {
           dispatch({ type: 'PLAY_UNDO_DAMAGE', payload: { kind: 'exhausted', amount: exhaustedCount, maxLP } });
         }
-        const badConditions = ['Erschöpft', 'Blutend', 'Brennend', 'Vergiftet', 'Benommen', 'Geblendet', 'Siechtum', 'Lahm'];
-        if (castResult.healSelf.curesPoisonDisease) {
-          badConditions.push('Krankheit');
-        }
-        const cleanConditions = conditions.filter((c) => !badConditions.includes(c.key));
-        dispatch({ type: 'PLAY_SET_STATE', payload: { ...playState, conditions: cleanConditions } });
-        toast.success(
-          castResult.healSelf.curesPoisonDisease
-            ? 'Wiederherstellung (EG-verstärkt): Alle LP geheilt, Zustände entfernt & Gifte/Krankheiten aufgehoben!'
-            : 'Wiederherstellung: Alle LP geheilt & schwere Zustände aufgehoben!'
-        );
+        // welche Zustände der Zauber aufhebt, hat der Spieler im Zauberdialog gewählt (keine Zustandsnamen im Code)
+        const weg = new Set(castResult.healSelf.conditionIdsToRemove ?? []);
+        const entfernt = conditions.filter((c) => weg.has(c.id)).map((c) => c.key);
+        // einzeln entfernen: PLAY_SET_STATE mit dem alten playState würde die eben geheilten Lebenspunkte überschreiben
+        for (const c of conditions) if (weg.has(c.id)) dispatch({ type: 'PLAY_REMOVE_CONDITION', payload: { id: c.id } });
+        toast.success(`${spellName}: alle LP geheilt${entfernt.length ? `, aufgehoben: ${entfernt.join(', ')}` : ''}`);
       } else if (castResult.healSelf.hp && castResult.healSelf.hp > 0) {
         const healAmount = castResult.healSelf.hp;
         const consumedCount = healthSlots.filter((s) => s.type === 'consumed').length;
@@ -623,7 +618,8 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
     const removeConditions = options?.removeConditions ?? true;
 
     const stunSlotsCount = healthSlots.filter((s) => s.type === 'exhausted').length;
-    const actualStunHealed = healAllStun ? stunSlotsCount : Math.min(stunAmount, stunSlotsCount);
+    const sperrt = ohneNatuerlicheHeilung(conditions);
+    const actualStunHealed = sperrt.length > 0 ? 0 : healAllStun ? stunSlotsCount : Math.min(stunAmount, stunSlotsCount);
 
     const exhaustedFocusCount = focus.exhausted;
     const actualFocusHealed = healAllExhaustedFocus ? exhaustedFocusCount : Math.min(exhaustedFocusAmount, exhaustedFocusCount);
@@ -633,13 +629,15 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
     dispatch({ type: 'PLAY_HEAL_EXHAUSTED', payload: options });
 
     const details: RestDetailItem[] = [
-      {
-        label: 'Betäubungsschaden geheilt',
-        value: actualStunHealed > 0
-          ? `+${actualStunHealed} LP (${healAllStun ? 'komplett' : `max. ${stunAmount}`})`
-          : (stunSlotsCount === 0 ? '0 LP (kein Betäubungsschaden)' : '+0 LP'),
-        type: 'hp',
-      },
+      sperrt.length > 0
+        ? { label: 'Keine natürliche Heilung', value: `${sperrt.join(', ')}: Lebenspunkte heilen nicht`, type: 'hp' }
+        : {
+          label: 'Betäubungsschaden geheilt',
+          value: actualStunHealed > 0
+            ? `+${actualStunHealed} LP (${healAllStun ? 'komplett' : `max. ${stunAmount}`})`
+            : (stunSlotsCount === 0 ? '0 LP (kein Betäubungsschaden)' : '+0 LP'),
+          type: 'hp',
+        },
       {
         label: 'Erschöpfter Fokus',
         value: actualFocusHealed > 0
@@ -684,9 +682,11 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   const handleRuhephase = (konAmount: number, wilAmount: number) => {
     pushPlayHistory();
-    const stunSlotsCount = healthSlots.filter((s) => s.type === 'exhausted').length;
+    // keine_natuerliche_heilung (Paket): solange so ein Zustand besteht, heilt die Ruhephase keine Lebenspunkte
+    const sperrt = ohneNatuerlicheHeilung(conditions);
+    const stunSlotsCount = sperrt.length > 0 ? 0 : healthSlots.filter((s) => s.type === 'exhausted').length;
     const consumedSlotsCount = healthSlots.filter((s) => s.type === 'consumed').length;
-    const actualConsumedHealed = Math.min(konAmount, consumedSlotsCount);
+    const actualConsumedHealed = sperrt.length > 0 ? 0 : Math.min(konAmount, consumedSlotsCount);
 
     const exhaustedChanneledFocus = focus.exhausted + focus.channeled;
     const actualConsumedFocusHealed = Math.min(wilAmount, focus.consumed);
@@ -695,10 +695,12 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
 
     dispatch({
       type: 'PLAY_REST_HEAL',
-      payload: { konAmount, wilAmount },
+      // die Rast-Ansicht übergibt die fertig berechneten Mengen (Faktor und Mindestwert aus dem Paket schon angewandt)
+      payload: { konAmount, wilAmount, lpHealAmount: konAmount, foHealAmount: wilAmount },
     });
 
     const details: RestDetailItem[] = [
+      ...(sperrt.length > 0 ? [{ label: 'Keine natürliche Heilung', value: `${sperrt.join(', ')}: Lebenspunkte und Sterbe-Stufe bleiben`, type: 'hp' as const }] : []),
       {
         label: 'Betäubungsschaden geheilt',
         value: stunSlotsCount > 0 ? `+${stunSlotsCount} LP (komplett)` : '0 LP (kein Schaden)',

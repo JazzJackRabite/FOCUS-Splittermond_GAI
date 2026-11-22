@@ -15,10 +15,11 @@ import {
   getWeaknessDetails,
   getLanguageDetails,
 } from '../../utils/gameResourceManager';
+import { ohneNatuerlicheHeilung } from '../../regelwerk/zustaende';
 import { grwAttribute, grwFertigkeitsKategorien } from '../../regelwerk/grwListen';
 
 export const PlayTab: React.FC = () => {
-  const { state, calc } = useCharacter();
+  const { state, calc, dispatch } = useCharacter();
   const session = usePlaySession();
 
   const {
@@ -276,6 +277,9 @@ export const PlayTab: React.FC = () => {
             moonSign={state.moonSign}
             onVerschnaufpause={session.handleVerschnaufpause}
             onRuhephase={session.handleRuhephase}
+            ruhephasenHeute={state.playState.ruhephasenTag ?? 0}
+            onNeuerTag={() => dispatch({ type: 'PLAY_NEUER_TAG' })}
+            ohneHeilung={ohneNatuerlicheHeilung(state.playState.conditions ?? [])}
           />
 
           {/* ── Wirkungen aus Stärken und Meisterschaften (nur mit Regelpaketen) ── */}

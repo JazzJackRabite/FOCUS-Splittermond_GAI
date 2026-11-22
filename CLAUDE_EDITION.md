@@ -995,6 +995,27 @@ Ab hier ist das Repository **FOCUS-Splittermond_GAI** maßgeblich (aus Google AI
   `components/begleiter/rast.tsx` und `BegleiterSpiel.tsx`. Test in `begleiterRast.test.ts`.
 - Tests: 475 grün ohne Bücher; 531 mit Grimoires und Falldatei (Volltest übersprungen); Build.
 
+## Stand 42 (22.11.2026): Grenzen der Rast, Wiederherstellung
+
+- Keine natürliche Heilung: Zustände mit dem neuen Paketfeld `keine_natuerliche_heilung` (Datenseite `zustaende.py`,
+  Abschnitt 4; im GRW nur Sterbend, Beleg aus der Zustandsbeschreibung) verhindern, dass Verschnaufpause und Ruhephase
+  Lebenspunkte heilen. Die Ruhephase setzt die Sterbe-Stufe dann nicht mehr zurück; Fokus und Zustände regenerieren
+  weiter. Gilt auch für Begleiter. Die Rast-Ansicht zeigt einen Hinweis, das Protokoll eine Zeile.
+- Ruhephasen pro Tag: Höchstzahl aus `ruheregeln.ruhephase.je_tag` (`ruheregeln().ruhephasenJeTag`, GRW: 2). Die Karte
+  „Ruhephase“ zeigt „Ruhephasen heute: n von 2“ und den Knopf „Neuer Tag“; eine weitere Ruhephase sperrt
+  `regelverstoss` (mit Hausregeln nur Warnung). Zähler `playState.ruhephasenTag`, Aktionen `PLAY_REST_HEAL` (zählt) und
+  `PLAY_NEUER_TAG`.
+- Wiederherstellung (Heilzauber mit „alle LP“): Die fest verdrahtete Liste aufzuhebender Zustände (mit dem
+  Nicht-GRW-Zustand „Vergiftet“) ist weg. Nach dem gelungenen Wurf wählt der Spieler im Zauberdialog, welche aktiven
+  Zustände der Zauber laut Beschreibung aufhebt (vorbelegt: alle).
+- Fehler behoben: Die Ruhephase heilte das Doppelte der angezeigten Menge (die Ansicht übergab schon KON×2, der Reducer
+  verdoppelte noch einmal). Bei der Wiederherstellung überschrieb das Entfernen der Zustände die eben geheilten
+  Lebenspunkte mit dem alten Spielstand.
+- Code: `regelwerk/zustaende.ts` (`ohneNatuerlicheHeilung`), `spielwirkungen.ts`, `begleiterRast.ts`,
+  `hooks/useCharacterState.ts`, `context/PlaySessionContext.tsx`, `components/play/{RestSection,PlayTab,CastSpellModal}.tsx`.
+  Test `regelwerk/__tests__/rastGrenzen.test.tsx`.
+- Tests: 484 grün ohne Bücher; 545 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

@@ -69472,7 +69472,10 @@
      "Ergänzt am 02.11.2026 (Zustände als Verweisziel; „Liste der Zustände“)."
     ],
     "parameter": "[Stufe]",
-    "hat_stufe": true
+    "hat_stufe": true,
+    "keine_natuerliche_heilung": {
+     "beleg": "Er kann nicht von natürlicher Heilung profitieren (sehr wohl aber durch Heilkunde und Heilungsmagie am Leben erhalten werden) und verliert in gewissen Intervallen eine volle Gesundheitsstufe an Lebenspunkten"
+    }
    },
    "hinweise": [
     "Ergänzt am 02.11.2026 (Zustände als Verweisziel; „Liste der Zustände“)."

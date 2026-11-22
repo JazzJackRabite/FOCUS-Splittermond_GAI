@@ -16,6 +16,8 @@ const HEILUNG_ID = 'grw:regel:kampf-regeln:heilung';
 
 export interface Ruheregeln {
   lpFaktor: number; lpMindestens: number; foFaktor: number; foMindestens: number; ruheStunden: number; verschnaufMinuten: number;
+  /** höchstens so viele Ruhephasen pro Tag (GRW: „bis zu zweimal pro Tag“); 0 = keine Angabe im Paket */
+  ruhephasenJeTag: number;
   /** Fundstelle für die Anzeige, z. B. „GRW S. 173–174“ */
   quelle: string;
 }
@@ -28,6 +30,7 @@ export function ruheregeln(k: Katalog | null = aktiverKatalog()): Ruheregeln {
     lpFaktor: r?.ruhephase?.lp?.faktor ?? 0, lpMindestens: r?.ruhephase?.lp?.mindestens ?? 0,
     foFaktor: r?.ruhephase?.fo_verzehrt?.faktor ?? 0, foMindestens: r?.ruhephase?.fo_verzehrt?.mindestens ?? 0,
     ruheStunden: r?.ruhephase?.dauer_stunden ?? 0, verschnaufMinuten: r?.verschnaufpause?.dauer_minuten ?? 0,
+    ruhephasenJeTag: r?.ruhephase?.je_tag ?? 0,
   };
 }
 

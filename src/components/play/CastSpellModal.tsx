@@ -71,6 +71,8 @@ export interface CastSpellSuccessResult {
     hp?: number;
     restoreAll?: boolean;
     curesPoisonDisease?: boolean;
+    /** bei „alle LP“: die vom Spieler gewählten Zustände (IDs), die der Zauber aufhebt */
+    conditionIdsToRemove?: string[];
     removeCondition?: string;
     label: string;
   };
@@ -253,6 +255,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
 
   // Manual failure adjustment (if player/GM wants to tweak negative EG focus cost)
   const [customFailureFocus, setCustomFailureFocus] = useState<number | null>(null);
+  // Heilzauber mit „alle LP“: welche Zustände er aufhebt, wählt der Spieler laut Zauberbeschreibung (vorbelegt: alle)
+  const [aufzuheben, setAufzuheben] = useState<string[]>(() => conditions.map((c) => c.id));
 
   // Step 4: Permissible modifications according to Splittermond GRW database
   const permissibleMods = useMemo<PermissibleSpellModifications>(
@@ -494,6 +498,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
     hp?: number;
     restoreAll?: boolean;
     curesPoisonDisease?: boolean;
+    /** bei „alle LP“: die vom Spieler gewählten Zustände (IDs), die der Zauber aufhebt */
+    conditionIdsToRemove?: string[];
     removeCondition?: string;
     label: string;
   }) => {
@@ -1950,6 +1956,28 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
           )}
         </div>
 
+        {hasRolled && egCalculation?.isSuccess && currentHealingInfo?.isRestoreAll && conditions.length > 0 && (
+          <fieldset id="wiederherstellung-zustaende" className="border-t border-rahmen px-4 sm:px-5 py-3 space-y-1.5">
+            <legend className="text-xs font-bold text-gold-hell">Zustände, die der Zauber aufhebt</legend>
+            <p className="text-[11px] text-leise">
+              Laut Zauberbeschreibung wählen{currentHealingInfo.curesPoisonDisease ? ' (mit Verstärkung auch Gifte und Krankheiten)' : ''}; nicht gewählte Zustände bleiben.
+            </p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              {conditions.map((c) => (
+                <label key={c.id} className="flex items-center gap-2 min-h-11 sm:min-h-0 text-sm text-schrift cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={aufzuheben.includes(c.id)}
+                    onChange={(e) => setAufzuheben((v) => (e.target.checked ? [...v, c.id] : v.filter((x) => x !== c.id)))}
+                    className="w-4 h-4 rounded-knopf border-rahmen"
+                  />
+                  <span>{c.key}{c.level ? ` ${c.level}` : ''}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+
         {/* Modal Footer */}
         <div className="bg-erhoeht border-t border-rahmen px-4 sm:px-5 py-3 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5">
           <Knopf
@@ -1976,6 +2004,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       hp: currentHealingInfo.totalLP,
                       restoreAll: currentHealingInfo.isRestoreAll,
                       curesPoisonDisease: currentHealingInfo.curesPoisonDisease,
+                      ...(currentHealingInfo.isRestoreAll ? { conditionIdsToRemove: aufzuheben.filter((id) => conditions.some((c) => c.id === id)) } : {}),
                       label: currentHealingInfo.label,
                     });
                   }}
@@ -1985,9 +2014,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                   <Heart className="w-4 h-4 fill-schrift shrink-0" />
                   <span>
                     {currentHealingInfo.isRestoreAll
-                      ? (currentHealingInfo.curesPoisonDisease
-                          ? 'Selbst heilen (Alle LP, Zustände & Gifte/Krankheiten)'
-                          : 'Selbst heilen (Alle LP & Zustände)')
+                      ? `Selbst heilen (Alle LP${aufzuheben.some((id) => conditions.some((c) => c.id === id)) ? ' & gewählte Zustände' : ''})`
                       : `Selbst heilen (+${currentHealingInfo.totalLP} LP)`}
                   </span>
                   {currentHealingInfo.hasEnhancementSelected && !currentHealingInfo.isRestoreAll && (

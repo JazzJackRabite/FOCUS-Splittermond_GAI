@@ -125,6 +125,8 @@ export interface PlayState {
   tempHP: number;      // Total temporary HP granted
   tempHPUsed: number;  // How many temp HP have been consumed by damage
   lpModifier: number;  // Manual LP modifier (added to maxLP alongside Robust bonus)
+  /** Ruhephasen seit dem letzten „Neuer Tag“ (Höchstzahl aus dem Paket: ruheregeln.ruhephase.je_tag) */
+  ruhephasenTag?: number;
 }
 
 // ============================================================
@@ -387,6 +389,7 @@ export type CharacterAction =
       };
     }
   | { type: 'PLAY_REST_HEAL'; payload: { konAmount: number; wilAmount: number; lpHealAmount?: number; foHealAmount?: number } }
+  | { type: 'PLAY_NEUER_TAG' }
   | { type: 'PLAY_SPEND_FOCUS'; payload: { kind: 'exhausted' | 'channeled' | 'consumed'; amount: number } }
   | { type: 'PLAY_CANCEL_CHANNELED_SPELL'; payload: { id: string } }
   | { type: 'PLAY_ADD_CHANNELED_SPELL'; payload: ChanneledSpell }

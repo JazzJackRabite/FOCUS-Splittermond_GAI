@@ -8,12 +8,13 @@
  * - Ausnahmen aus `strukturiert.ruhephase_begleiter` an den Regeltexten (Datenseite: begleiter_werte.py): Begleiterarten,
  *   die laut Paket in der Ruhephase keine Lebenspunkte regenerieren; Fundstelle aus dem Eintrag.
  * - Zustände enden oder verlieren Stufen wie beim Abenteurer nach `pause_ende` der Zustände (`nachPause` in `zustaende.ts`).
+ * - Ein Zustand mit `keine_natuerliche_heilung` (`ohneNatuerlicheHeilung`) verhindert in beiden Pausen jede Heilung von Lebenspunkten.
  */
 import type { Katalog } from './katalog';
 import type { BegleiterZustand } from './vitals';
 import { ruhephasenRegeneration, ruheregeln } from './spielwirkungen';
 import { quelleText } from './relikte';
-import { nachPause } from './zustaende';
+import { nachPause, ohneNatuerlicheHeilung } from './zustaende';
 import { aktiverKatalog } from './bruecke';
 
 export interface RuheAusnahme { art: string; lp: boolean; hinweis?: string; quelle: string }
@@ -45,8 +46,9 @@ export function ruhephaseBegleiter(k: Katalog | null, art: string, z: BegleiterZ
   const aus = ruheAusnahme(k, art);
   const regen = ruhephasenRegeneration(zahl(attribute?.KON), zahl(attribute?.WIL), [], r);
   const f = z.fokus ?? {};
-  const betaeubung = z.betaeubung ?? 0;
-  const lp = aus && !aus.lp ? 0 : Math.min(z.schaden ?? 0, regen.lp);
+  const sperrt = ohneNatuerlicheHeilung(z.zustaende ?? [], k);
+  const betaeubung = sperrt.length ? 0 : z.betaeubung ?? 0;
+  const lp = sperrt.length || (aus && !aus.lp) ? 0 : Math.min(z.schaden ?? 0, regen.lp);
   const foFrei = (f.erschoepft ?? 0) + (f.kanalisiert ?? 0);
   const foVerzehrt = Math.min(f.verzehrt ?? 0, regen.fo);
   const teile = [
@@ -57,19 +59,23 @@ export function ruhephaseBegleiter(k: Katalog | null, art: string, z: BegleiterZ
     zustandsAenderung(z.zustaende, 'ruhephase', k),
   ].filter(Boolean);
   return {
-    zustand: { ...z, betaeubung: 0, schaden: (z.schaden ?? 0) - lp, fokus: { ...f, erschoepft: 0, kanalisiert: 0, verzehrt: (f.verzehrt ?? 0) - foVerzehrt },
+    zustand: { ...z, betaeubung: (z.betaeubung ?? 0) - betaeubung, schaden: (z.schaden ?? 0) - lp, fokus: { ...f, erschoepft: 0, kanalisiert: 0, verzehrt: (f.verzehrt ?? 0) - foVerzehrt },
       ...(z.zustaende ? { zustaende: nachPause(z.zustaende, 'ruhephase', k) } : {}) },
     teile,
-    hinweis: aus && !aus.lp && (z.schaden ?? 0) > 0 ? `keine LP-Regeneration (${aus.quelle})` : undefined,
+    hinweis: sperrt.length ? `keine natürliche Heilung (${sperrt.join(', ')})`
+      : aus && !aus.lp && (z.schaden ?? 0) > 0 ? `keine LP-Regeneration (${aus.quelle})` : undefined,
   };
 }
 
 /** Verschnaufpause eines Begleiters: Betäubungsschaden, erschöpfter Fokus, Zustände nach `pause_ende` */
 export function verschnaufpauseBegleiter(z: BegleiterZustand, k: Katalog | null = aktiverKatalog()): RastErgebnis {
   const f = z.fokus ?? {};
-  const teile = [z.betaeubung ? `${z.betaeubung} Betäubung` : '', f.erschoepft ? `${f.erschoepft} FO erschöpft` : '',
+  const sperrt = ohneNatuerlicheHeilung(z.zustaende ?? [], k);
+  const betaeubung = sperrt.length ? 0 : z.betaeubung ?? 0;
+  const teile = [betaeubung ? `${betaeubung} Betäubung` : '', f.erschoepft ? `${f.erschoepft} FO erschöpft` : '',
     zustandsAenderung(z.zustaende, 'verschnaufpause', k)].filter(Boolean);
-  return { zustand: { ...z, betaeubung: 0, fokus: { ...f, erschoepft: 0 }, ...(z.zustaende ? { zustaende: nachPause(z.zustaende, 'verschnaufpause', k) } : {}) }, teile };
+  return { zustand: { ...z, betaeubung: (z.betaeubung ?? 0) - betaeubung, fokus: { ...f, erschoepft: 0 }, ...(z.zustaende ? { zustaende: nachPause(z.zustaende, 'verschnaufpause', k) } : {}) }, teile,
+    ...(sperrt.length ? { hinweis: `keine natürliche Heilung (${sperrt.join(', ')})` } : {}) };
 }
 
 /** Kurztext für Protokoll und Hinweis: welche Zustände die Pause beendet oder gesenkt hat, z. B. „Lahm beendet, Erschöpft 3 → 2“ */

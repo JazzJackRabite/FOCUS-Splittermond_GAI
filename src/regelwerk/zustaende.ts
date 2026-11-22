@@ -16,15 +16,18 @@ export const KAMPFPOSITION_LIEGEND = 'Liegend';
 
 /** Wann ein Zustand durch eine Pause endet (Datenseite: pause_ende) */
 export interface PauseEnde { verschnaufpause?: 'aufheben' | 'stufe'; ruhephase?: 'aufheben' | 'stufe' }
-export interface Zustandsangabe { name: string; mitStufe: boolean; quelle: string; id?: string; wirkung?: Zustandswirkung; beschreibung?: string; pauseEnde?: PauseEnde }
+export interface Zustandsangabe { name: string; mitStufe: boolean; quelle: string; id?: string; wirkung?: Zustandswirkung; beschreibung?: string; pauseEnde?: PauseEnde;
+  /** Beleg, wenn der Zustand natürliche Heilung verhindert (Datenseite: keine_natuerliche_heilung) */
+  ohneNatuerlicheHeilung?: string }
 
 let cache: { k: Katalog | null; liste: Zustandsangabe[] } | null = null;
 
 function ausEintrag(k: Katalog, e: Eintrag): Zustandsangabe {
-  const d = (e.daten ?? {}) as { hat_stufe?: boolean; parameter?: unknown; zustandswirkung?: Zustandswirkung; beschreibung?: string; pause_ende?: PauseEnde };
+  const d = (e.daten ?? {}) as { hat_stufe?: boolean; parameter?: unknown; zustandswirkung?: Zustandswirkung; beschreibung?: string; pause_ende?: PauseEnde; keine_natuerliche_heilung?: { beleg: string } };
   const p = Array.isArray(d.parameter) ? d.parameter.join(',') : String(d.parameter ?? '');
   return { name: e.name, mitStufe: d.hat_stufe ?? /\bStufe\b/.test(p), quelle: quelleText(k, e), id: e.id, wirkung: d.zustandswirkung, beschreibung: d.beschreibung,
-    ...(d.pause_ende ? { pauseEnde: { verschnaufpause: d.pause_ende.verschnaufpause, ruhephase: d.pause_ende.ruhephase } } : {}) };
+    ...(d.pause_ende ? { pauseEnde: { verschnaufpause: d.pause_ende.verschnaufpause, ruhephase: d.pause_ende.ruhephase } } : {}),
+    ...(d.keine_natuerliche_heilung ? { ohneNatuerlicheHeilung: d.keine_natuerliche_heilung.beleg } : {}) };
 }
 
 /** Alle wählbaren Zustände, alphabetisch: aus den geladenen Paketen */
@@ -81,4 +84,13 @@ export function nachPause<Z extends { key: string; level?: number }>(zustaende: 
     out.push(z);
   }
   return out;
+}
+
+/**
+ * Zustände, die natürliche Heilung verhindern (Paketfeld keine_natuerliche_heilung, z. B. GRW Sterbend: „kann nicht von
+ * natürlicher Heilung profitieren“). Solange einer besteht, heilen Verschnaufpause und Ruhephase keine Lebenspunkte;
+ * Heilkunde und Heilungsmagie bleiben möglich. Rückgabe: die Namen der aktiven Zustände dieser Art.
+ */
+export function ohneNatuerlicheHeilung(zustaende: { key: string }[], k: Katalog | null = aktiverKatalog()): string[] {
+  return [...new Set(zustaende.filter((z) => zustand(z.key, k)?.ohneNatuerlicheHeilung).map((z) => z.key))];
 }

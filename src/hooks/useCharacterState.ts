@@ -1,4 +1,4 @@
-import { istZustand, zustandHatStufe, nachPause } from '../regelwerk/zustaende';
+import { istZustand, zustandHatStufe, nachPause, ohneNatuerlicheHeilung } from '../regelwerk/zustaende';
 import { useReducer, useEffect } from 'react';
 import type {
   CharacterState,
@@ -875,9 +875,13 @@ export function baseCharacterReducer(
       const exhaustReduction = payload?.exhaustReduction !== undefined ? payload.exhaustReduction : 1;
       const removeConditions = payload?.removeConditions ?? true;
 
-      // 1. Betäubungsschaden (GRW S. 173–174); kanalisierter Schaden bleibt, bis sein Zustand aufgehoben ist (S. 173)
+      // 1. Betäubungsschaden (GRW S. 173–174); kanalisierter Schaden bleibt, bis sein Zustand aufgehoben ist (S. 173).
+      //    Ein Zustand mit keine_natuerliche_heilung (Paket) verhindert jede Heilung von Lebenspunkten durch die Pause.
+      const heilungGesperrt = ohneNatuerlicheHeilung(state.playState.conditions ?? []).length > 0;
       let healedSlots = [...state.playState.healthSlots];
-      if (healAllStun) {
+      if (heilungGesperrt) {
+        // keine Lebenspunkte
+      } else if (healAllStun) {
         healedSlots = normalizeHealthSlots(healedSlots.map((s) =>
           s.type === 'exhausted' ? { type: 'empty' as const } : s,
         ));
@@ -925,9 +929,12 @@ export function baseCharacterReducer(
 
     case 'PLAY_REST_HEAL': {
       const { konAmount, wilAmount, lpHealAmount, foHealAmount } = action.payload;
+      // Ein Zustand mit keine_natuerliche_heilung (Paket, z. B. Sterbend) verhindert die Heilung von Lebenspunkten;
+      // dann bleiben Schaden und Sterbe-Stufe, Fokus und Zustände werden trotzdem behandelt.
+      const heilungGesperrt = ohneNatuerlicheHeilung(state.playState.conditions ?? []).length > 0;
       // Step 1: Betäubungsschaden komplett heilen; kanalisierter Schaden bleibt (GRW S. 173)
       const slots = state.playState.healthSlots.map((s) =>
-        s.type === 'exhausted' ? { type: 'empty' as const } : s,
+        s.type === 'exhausted' && !heilungGesperrt ? { type: 'empty' as const } : s,
       );
       // Step 2: Collect indices of remaining consumed slots (they are at the front after step 1)
       const consumedIndices: number[] = [];
@@ -936,7 +943,7 @@ export function baseCharacterReducer(
       }
       // Heal the last lpHealAmount (or konAmount*2) consumed slots (from the right / back)
       const healAmount = lpHealAmount !== undefined ? lpHealAmount : Math.max(1, konAmount * 2);
-      const toHeal = Math.min(healAmount, consumedIndices.length);
+      const toHeal = heilungGesperrt ? 0 : Math.min(healAmount, consumedIndices.length);
       for (let j = consumedIndices.length - 1; j >= consumedIndices.length - toHeal; j--) {
         slots[consumedIndices[j]] = { type: 'empty' };
       }
@@ -955,10 +962,14 @@ export function baseCharacterReducer(
           focus: { exhausted: 0, channeled: 0, consumed: newConsumedFocus },
           channeledSpells: [],
           conditions: newConditions,
-          dyingLevel: 0,
+          dyingLevel: heilungGesperrt ? state.playState.dyingLevel : 0,
+          ruhephasenTag: (state.playState.ruhephasenTag ?? 0) + 1,
         },
       };
     }
+
+    case 'PLAY_NEUER_TAG':
+      return { ...state, playState: { ...state.playState, ruhephasenTag: 0 } };
 
     case 'PLAY_SET_DYING_LEVEL': {
       const newLevel = action.payload;
