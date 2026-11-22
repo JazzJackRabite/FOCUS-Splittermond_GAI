@@ -1259,6 +1259,7 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
                   gearVtdBonus > 0 || activeSpellMods.vtdBonus > 0
                           ? `VTD: Basis ${derived.VTD - gearVtdBonus} + Ausrüstung +${gearVtdBonus}${activeSpellMods.vtdBonus > 0 ? ` + Zauber +${activeSpellMods.vtdBonus} (${activeSpellMods.breakdown.filter((b) => b.vtd).map((b) => b.spellName).join(', ')})` : ''}`
                           : 'Verteidigung',
+                  calc.waffenVtd?.wert ? `Waffe: ${calc.waffenVtd.wert} durch ${calc.waffenVtd.quelle}` : '',
                   zustandsErklaerung('VTD', zw),
                   ...zw.hinweise,
                 ].filter(Boolean).join('\n')}

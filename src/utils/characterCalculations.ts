@@ -6,6 +6,7 @@ import type {
   Mastery,
   Spell,
 } from '../types';
+import { verteidigungDurchWaffen } from '../regelwerk/merkmale';
 import type { Heldengrad } from '../regelwerk/steigerungsregeln';
 import { getSkillXpCost, getAttrXpCost, calculateItemCost } from './costCalculations';
 import { heldengrade } from '../regelwerk/steigerungsregeln';
@@ -56,6 +57,8 @@ export interface CharacterCalculationResult {
   wirkungen: CharakterWirkungen | null;
   /** dauerhafter Bonus aus Wirkungen auf eine Fertigkeit (0 ohne Regelpakete) */
   getSkillBonus: (skill: string) => number;
+  /** Verteidigung durch geführte Waffen (Merkmal Unhandlich), mit Quelle */
+  waffenVtd: { wert: number; quelle: string };
 }
 
 /**
@@ -230,6 +233,10 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
   for (const [wert, b] of Object.entries(reliktBoni)) {
     if (wert in derived) (derived as unknown as Record<string, number>)[wert] += b.summe;
   }
+
+  // 5d. Geführte Waffen mit Merkmal Unhandlich: Verteidigung −2 (GRW S. 186), aus dem Paket, nur mit Regelpaketen
+  const waffenVtd = regelwerk ? verteidigungDurchWaffen(equippedItems) : { wert: 0, quelle: '' };
+  derived.VTD += waffenVtd.wert;
 
   const lpMod = Number(state.playState?.lpModifier) || 0;
   const rawMaxLP = derived.LP + robustBonus + lpMod;
@@ -468,5 +475,6 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     regelwerk,
     wirkungen,
     getSkillBonus,
+    waffenVtd,
   };
 }

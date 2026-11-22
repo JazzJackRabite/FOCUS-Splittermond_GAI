@@ -128,6 +128,7 @@ import { SituativeBoni, useSituativeBoni } from './SituativeBoni';
 import { wurfgrenzen } from '../../regelwerk/proben';
 import { ignoriertSituation, kampfsituationen, positionsModifikator, positionsNamen, vorbereitungsBonus } from '../../regelwerk/kampflage';
 import { liegtLautZustaenden } from '../../regelwerk/zustandswerte';
+import { meisterschaftsIdsVon, merkmalSchaden, waffenMerkmale } from '../../regelwerk/merkmale';
 import { KAMPFPOSITION_LIEGEND } from '../../regelwerk/zustaende';
 
 
@@ -178,6 +179,13 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const regeln = useMemo(() => manoeverRegeln(), []);
   const nahkampf = isMeleeWeapon(skillName, weapon.category);
   const wuchtJeEg = useMemo(() => wuchtangriffJeEg(weapon.attributes), [weapon.attributes]);
+  // Merkmale der Waffe aus den Paketen (GRW S. 186, Grimoires)
+  const merkmalListe = useMemo(() => waffenMerkmale(weapon.attributes), [weapon.attributes]);
+  const meisterschaftIds = useMemo(() => meisterschaftsIdsVon(characterMasteries), [characterMasteries]);
+  const [merkmalLage, setMerkmalLage] = useState<{ zweihaendig: boolean; beritten: boolean; ziel_ruestung_ohne_primitiv: boolean }>({ zweihaendig: false, beritten: false, ziel_ruestung_ohne_primitiv: false });
+  const mkSchaden = useMemo(() => merkmalSchaden(merkmalListe, {
+    zweihaendig: merkmalLage.zweihaendig, beritten: merkmalLage.beritten, zielRuestungOhnePrimitiv: merkmalLage.ziel_ruestung_ohne_primitiv, meisterschaftIds,
+  }), [merkmalListe, merkmalLage, meisterschaftIds]);
   const stoerend = regeln.freie.find((f) => f.je_eg?.entschlossenheit_erschwert);
   const betaeubung = regeln.freie.find((f) => f.betaeubungsschaden && (!f.nur_nahkampf || nahkampf));
 
@@ -447,6 +455,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
       maneuverConditions: streiftreffer ? [] : kombi.zustaende,
       stunDamage: betaeubungsschlag && !streiftreffer,
       streiftrefferAbzug: streiftreffer ? kombi.angesagt * regeln.streiftrefferSchaden : 0,
+      merkmale: merkmalListe.length ? mkSchaden : undefined,
     });
 
     setDamageRollResult(res);
@@ -686,6 +695,28 @@ export const AttackModal: React.FC<AttackModalProps> = ({
                     </span>
                   )}
                 </div>
+              </div>
+            )}
+
+            {merkmalListe.length > 0 && (
+              <div className="pt-2 border-t border-rahmen space-y-2 text-xs" data-testid="waffenmerkmale">
+                <div className="text-leise">Merkmale der Waffe</div>
+                {mkSchaden.schalter.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {mkSchaden.schalter.map((sch) => (
+                      <Wahlknopf key={sch} gewaehlt={merkmalLage[sch]} mittig className="text-xs" data-testid={`merkmal-schalter-${sch}`}
+                        onClick={() => setMerkmalLage((l) => ({ ...l, [sch]: !l[sch] }))}>
+                        {sch === 'zweihaendig' ? 'zweihändig geführt' : sch === 'beritten' ? 'vom Reittier' : 'Ziel trägt Rüstung ohne Primitiv'}
+                      </Wahlknopf>
+                    ))}
+                  </div>
+                )}
+                {mkSchaden.posten.length > 0 && (
+                  <ul className="space-y-0.5 text-schrift" data-testid="merkmal-posten">
+                    {mkSchaden.posten.map((t) => <li key={t}>{t}</li>)}
+                  </ul>
+                )}
+                {mkSchaden.hinweise.map((t) => <div key={t} className="text-leise">{t}</div>)}
               </div>
             )}
 
@@ -1194,6 +1225,10 @@ export const AttackModal: React.FC<AttackModalProps> = ({
                       </span>
                     </div>
                   </div>
+
+                  {merkmalListe.length > 0 && (
+                    <div className="text-xs tabular-nums text-leise" data-testid="schaden-rechnung">{damageRollResult.breakdownText}</div>
+                  )}
 
                   <div className="pt-2 border-t border-rahmen text-xs tabular-nums text-leise flex justify-between items-center flex-wrap gap-2">
                     <span>

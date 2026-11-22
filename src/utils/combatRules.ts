@@ -1,4 +1,5 @@
 import type { Katalog } from '../regelwerk/katalog';
+import type { MerkmalSchaden, MerkmalWirkung } from '../regelwerk/merkmale';
 import type { Eintrag } from '../regelwerk/typen';
 import type { Wirkung } from '../regelwerk/wirkungen';
 import { aktiverKatalog, meisterschaftId, norm } from '../regelwerk/bruecke';
@@ -158,6 +159,11 @@ export function manoeverRegeln(k: Katalog | null = aktiverKatalog()): ManoeverRe
     },
     quelle: 'GRW S. 161',
   };
+}
+
+/** Merkmale mit Spielwerten (daten.merkmal_wirkung, GRW S. 186 und Grimoires); ausgewertet in regelwerk/merkmale.ts */
+export function merkmaleMitSpielwerten(k: Katalog): Array<{ eintrag: Eintrag; wirkung: MerkmalWirkung }> {
+  return k.nachTyp('merkmal').filter((e) => e.daten.merkmal_wirkung).map((e) => ({ eintrag: e, wirkung: e.daten.merkmal_wirkung as MerkmalWirkung }));
 }
 
 /** Schaden je EG beim freien Manöver Wuchtangriff; Waffen mit einem Merkmal, das ihn erhöht (Wuchtig, GRW S. 186), geben mehr */
@@ -471,6 +477,10 @@ export interface DamageRollInput {
   damageType?: string;
   maneuverCondition?: string;    // e.g. "Verwundet 1"
   tripCondition?: boolean;       // if Umreißen was used
+  /** Merkmale der Waffe (regelwerk/merkmale.ts): Würfel mindestens, Zusatz je Höchstwurf, Zusatzwürfel, SR ignorieren, Betäubung, fester Zusatzschaden */
+  merkmale?: MerkmalSchaden;
+  /** Zufallszahl 0 ≤ x < 1 (für Tests); sonst Math.random */
+  zufall?: () => number;
 }
 
 export interface DamageRollResult {
@@ -486,6 +496,8 @@ export interface DamageRollResult {
   damageType: string;
   appliedConditions: string[];
   breakdownText: string;
+  /** Zusatzwürfel aus Merkmalen: verworfene Würfel */
+  verworfeneWuerfel?: number[];
 }
 
 /**
@@ -493,12 +505,24 @@ export interface DamageRollResult {
  */
 export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResult {
   const parsed = parseWeaponDamage(input.baseFormula, input.damageType || 'Schnitt');
+  const zufall = input.zufall ?? Math.random;
+  const mk = input.merkmale;
 
-  // Roll base dice
-  const baseDice: number[] = [];
-  for (let i = 0; i < parsed.count; i++) {
-    baseDice.push(Math.floor(Math.random() * parsed.sides) + 1);
+  // Roll base dice – Merkmal mit Zusatzwürfeln: Würfel derselben Art, die höchsten zählen (nur so viele wie die Waffe hat)
+  const geworfen: number[] = [];
+  for (let i = 0; i < parsed.count + (mk?.zusatzwuerfel ?? 0); i++) geworfen.push(Math.floor(zufall() * parsed.sides) + 1);
+  let verworfen: number[] = [];
+  let gewertet = geworfen;
+  if (mk?.zusatzwuerfel) {
+    const sortiert = geworfen.map((w, i) => ({ w, i })).sort((a, b) => b.w - a.w || a.i - b.i);
+    const behalten = new Set(sortiert.slice(0, parsed.count).map((x) => x.i));
+    gewertet = geworfen.filter((_, i) => behalten.has(i));
+    verworfen = geworfen.filter((_, i) => !behalten.has(i));
   }
+  // Scharf: jeder Schadenswürfel der Waffe zählt mindestens die Stufe (nicht für Würfel aus Manövern, GRW S. 186)
+  const baseDice: number[] = gewertet.map((w) => (mk?.wuerfelMindestens ? Math.max(w, Math.min(mk.wuerfelMindestens, parsed.sides)) : w));
+  // Merkmal mit Zusatz je Höchstwurf: je Würfel mit Höchstzahl so viel Schaden mehr
+  const kritischBonus = mk?.jeHoechstwurf ? gewertet.filter((w) => w === parsed.sides).length * mk.jeHoechstwurf : 0;
   const baseDiceSum = baseDice.reduce((a, b) => a + b, 0);
 
   // Roll maneuver extra dice (if applicable, e.g. Hammerschlag +1W6)
@@ -507,7 +531,7 @@ export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResul
   for (const f of [...(input.maneuverExtraFormula ? [input.maneuverExtraFormula] : []), ...(input.maneuverExtraFormulas ?? [])]) {
     const parsedM = parseWeaponDamage(f);
     for (let i = 0; i < parsedM.count; i++) {
-      maneuverDice.push(Math.floor(Math.random() * parsedM.sides) + 1);
+      maneuverDice.push(Math.floor(zufall() * parsedM.sides) + 1);
     }
     maneuverBonus += parsedM.bonus;
   }
@@ -515,7 +539,8 @@ export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResul
 
   // Sum before multiplier
   const fest = input.maneuverFixedDamage ?? 0;
-  const rawSum = baseDiceSum + parsed.bonus + maneuverDiceSum + fest + input.egBonusDamage;
+  const merkmalSchadenFest = mk?.schaden ?? 0;
+  const rawSum = baseDiceSum + parsed.bonus + kritischBonus + merkmalSchadenFest + maneuverDiceSum + fest + input.egBonusDamage;
   const multiplier = input.damageMultiplier ?? 1;
   const abzug = Math.max(0, input.streiftrefferAbzug ?? 0);
   // halber Schaden kaufmännisch gerundet (GRW S. 11); kein Schaden bleibt 0
@@ -523,9 +548,13 @@ export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResul
 
   // Armor calculations
   const rawArmor = Math.max(0, input.targetArmorReduction ?? 0);
-  const armorPen = Math.max(0, input.armorPenetrationEG ?? 0);
+  // Durchdringung aus Manövern und aus dem Merkmal der Waffe zählen zusammen
+  const armorPen = Math.max(0, input.armorPenetrationEG ?? 0) + Math.max(0, mk?.srIgnorieren ?? 0);
   const effectiveArmor = Math.max(0, rawArmor - armorPen);
-  const netDamage = Math.max(0, grossDamage - effectiveArmor);
+  // Primitiv: verursachter Schaden sinkt (nach der Schadensreduktion, nur wenn überhaupt Schaden entsteht)
+  const nachSR = Math.max(0, grossDamage - effectiveArmor);
+  const netDamage = nachSR > 0 ? Math.max(0, nachSR + (mk?.schadenNachSR ?? 0)) : 0;
+  const betaeubt = !!input.stunDamage || !!mk?.betaeubung;
 
   // Applied conditions
   const appliedConditions: string[] = [];
@@ -538,7 +567,7 @@ export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResul
   }
 
   // Construct readable breakdown
-  const dicePart = `[${baseDice.join(', ')}]`;
+  const dicePart = `[${baseDice.join(', ')}]${verworfen.length ? ` (verworfen ${verworfen.join(', ')})` : ''}${kritischBonus ? ` + ${kritischBonus} Höchstwurf` : ''}${merkmalSchadenFest ? ` ${merkmalSchadenFest > 0 ? '+' : '−'} ${Math.abs(merkmalSchadenFest)} Merkmal` : ''}`;
   const bonusPart = parsed.bonus !== 0 ? (parsed.bonus > 0 ? ` + ${parsed.bonus}` : ` - ${Math.abs(parsed.bonus)}`) : '';
   const egPart = input.egBonusDamage > 0 ? ` + ${input.egBonusDamage} EG` : '';
   const manPart = (maneuverDice.length > 0 ? ` + Manöver [${maneuverDice.join(', ')}]${maneuverBonus ? ` + ${maneuverBonus}` : ''}` : '') + (fest ? ` + ${fest} Manöver` : '');
@@ -547,7 +576,8 @@ export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResul
     ? ` - ${effectiveArmor} RS${armorPen > 0 ? ` (${rawArmor} - ${armorPen} durchdrungen)` : ''}`
     : '';
 
-  const breakdownText = `${dicePart}${bonusPart}${egPart}${manPart}${multPart} = ${grossDamage} Brutto${armorPart} → ${netDamage} Netto${input.stunDamage ? ' (Betäubungsschaden)' : ''}`;
+  const primitivPart = nachSR > 0 && mk?.schadenNachSR ? ` ${mk.schadenNachSR > 0 ? '+' : '−'} ${Math.abs(mk.schadenNachSR)} Primitiv` : '';
+  const breakdownText = `${dicePart}${bonusPart}${egPart}${manPart}${multPart} = ${grossDamage} Brutto${armorPart}${primitivPart} → ${netDamage} Netto${betaeubt ? ' (Betäubungsschaden)' : ''}`;
 
   return {
     baseDice,
@@ -559,8 +589,9 @@ export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResul
     grossDamage,
     effectiveArmor,
     netDamage,
-    damageType: input.stunDamage ? 'Betäubung' : (input.damageType || parsed.damageType),
+    damageType: betaeubt ? 'Betäubung' : (input.damageType || parsed.damageType),
     appliedConditions,
     breakdownText,
+    verworfeneWuerfel: verworfen.length ? verworfen : undefined,
   };
 }

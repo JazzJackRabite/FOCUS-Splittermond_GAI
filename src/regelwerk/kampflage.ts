@@ -95,7 +95,7 @@ export function vorbereitungsBonus(ticks: number, art: Angriffsart, k: Katalog |
   return Math.min(r.hoechstens, Math.floor(ticks / r.ticks) * r.bonus);
 }
 
-type GelernteMeisterschaft = { name: string; skill?: string; regelId?: string };
+export type GelernteMeisterschaft = { name: string; skill?: string; regelId?: string };
 /**
  * Hat der Charakter in der Waffenfertigkeit eine Meisterschaft, die den Modifikator einer Situation entfallen lässt
  * (z. B. Scharfschütze: Kampfgetümmel)? Meisterschaften als Liste (mit `skill`) oder nach Fertigkeit gruppiert.

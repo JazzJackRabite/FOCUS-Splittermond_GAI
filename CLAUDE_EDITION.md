@@ -1092,6 +1092,29 @@ Relikt-Werkstatt, Handy-Breite). Behoben:
 - Tests: neu `kampfpositionen.test.tsx` (Tabelle, Armbrust, Beschreibung, Angriffsdialog mit und ohne Zustand, Zauberdialog);
   drei ältere Tests auf die neue Regel umgestellt. 470 grün ohne Bücher; Build.
 
+## Stand 42 (22.11.2026): Waffenmerkmale wirken (Idee #14)
+
+- **Datenseite:** `merkmal_werte.json` + `merkmal_werte.py` schreiben `daten.merkmal_wirkung` an die Merkmale des GRW
+  (S. 186) und die gleichnamigen der Grimoires (12 Merkmale, 41 Einträge). Jede Zahl wird gegen den Text des Eintrags
+  geprüft. Prüfsuite ohne neue Befunde; Pakete und Grimoires auf D: geliefert.
+- **Schadenswurf** (`executeAttackDamageRoll`): Würfel mindestens Stufe (nur Waffenwürfel, nicht aus Manövern), Zusatz je
+  Höchstwurf, Zusatzwürfel mit Wertung der besten, ignorierte Schadensreduktion (zählt zu der aus Manövern), ganzer Schaden
+  als Betäubungsschaden (auch aus Manövern), fester Zusatzschaden. Abzug gegen Rüstung ohne das Merkmal nach der
+  Schadensreduktion, nie unter 0. Rechnung steht im Ergebnis und im Würfelprotokoll.
+- **Angriffsdialog:** Abschnitt „Merkmale der Waffe“ mit den wirkenden Merkmalen und Schaltern für die Bedingungen
+  („zweihändig geführt“, „vom Reittier“, „Ziel trägt Rüstung ohne Primitiv“). Meisterschaften als Bedingung
+  (Improvisation, Reiterkampf) werden über ihre IDs geprüft. Merkmale zur Aktiven Abwehr als Hinweis.
+- **Verteidigung:** geführte Waffen mit „Unhandlich“ senken die VTD um 2 (einmal), im Überfahren der VTD erklärt.
+- **Code:** neu `regelwerk/merkmale.ts` (Auswertung); gelesen wird `merkmal_wirkung` in `utils/combatRules.ts`
+  (`merkmaleMitSpielwerten`), das in FUNDAMENT.md für die Merkmale eingetragen ist. Vorschlag für die Tabelle
+  „Regelquellen“ (Entscheidung des Projektinhabers): Zeile „Kampfmanöver …, Merkmal Wuchtig“ um „Spielwerte der Merkmale:
+  `merkmal_wirkung`“ und die Datei `regelwerk/merkmale.ts` ergänzen.
+- Das GRW-Paket im Editor war hinter dem auf D: (Verstärkungen mit Zuständen vom 22.11.); jetzt gleich.
+- Tests: neu `merkmale.test.tsx` (Werte, Bedingungen, Schadenswurf mit festen Würfeln inkl. Beispiel S. 186, Dialog;
+  Grimoire-Merkmale nur über ihre Werte). 485 grün ohne Bücher, 542 mit allen Grimoires und Buchfällen; Build.
+- Offen: Merkmale der Rüstung des Ziels (z. B. halbierter Wuchtangriff, ignorierte Durchdringung) – der Editor kennt die
+  Rüstung des Gegners nicht; Defensiv wirkt nur als Hinweis, weil es keinen eigenen Dialog für die Aktive Abwehr gibt.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
