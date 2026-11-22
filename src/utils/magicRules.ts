@@ -7,7 +7,7 @@ import { aktiverKatalog, idNachName } from '../regelwerk/bruecke';
 import { istVerstaerkt, istWaffenlos, kampfwerte, lpWirkung, probenboni, spielwerteDesZaubers, waffenschaden, zielTrifft, geltenderWert } from '../regelwerk/zauberwerte';
 import { grwFertigkeitsattribute, grwZauber } from '../regelwerk/grwListen';
 import { erfolgsgrade } from '../regelwerk/proben';
-import { zauberEgRegeln } from '../regelwerk/zauberEg';
+import { verstaerkungsZustandText, zauberEgRegeln, zauberErfolgsgrade, type VerstaerkungsZustand, type ZauberErfolgsgrade } from '../regelwerk/zauberEg';
 
 export interface ParsedFocusCost {
   isChanneled: boolean;
@@ -174,6 +174,8 @@ export interface SpecificSpellEnhancement {
   focusDelta: ParsedFocusCost;
   description: string;
   raw: string;
+  /** verursachte Zustände aus dem Paket (nur bei Zaubern aus einem geladenen Paket) */
+  zustaende?: VerstaerkungsZustand[];
 }
 
 export interface PermissibleSpellModifications {
@@ -213,10 +215,45 @@ export function parseEnhancementFocusDelta(rawInput?: string | null): ParsedFocu
  * Parses the permissible modifications ("Zulässige Modifikationen") and specific enhancements
  * from a spell's description or Erfolgsgrade section as stored in the Splittermond GRW database.
  */
+function erlaubteOptionen(namen: string[], rawList: string, specificEnhancements: SpecificSpellEnhancement[]): PermissibleSpellModifications {
+  const allowedSet = new Set(namen.map((x) => x.toLowerCase()));
+  return {
+    rawList,
+    allowsCastTime: allowedSet.has('auslösezeit'),
+    allowsExhaustedFocus: allowedSet.has('erschöpfter fokus'),
+    allowsChanneledFocus: allowedSet.has('kanalisierter fokus'),
+    allowsConsumedFocus: allowedSet.has('verzehrter fokus'),
+    allowsRange: allowedSet.has('reichweite'),
+    allowsDamage: allowedSet.has('schaden'),
+    allowsDuration: allowedSet.has('wirkungsdauer'),
+    allowsArea: allowedSet.has('wirkungsbereich'),
+    allowsEnhance: allowedSet.has('verstärken'),
+    allowedNames: namen,
+    specificEnhancements,
+  };
+}
+
+/** Optionen und Verstärkungen aus dem Paketfeld erfolgsgrade_strukturiert (IDs wie beim Text: enh-1, enh-2, …) */
+export function modifikationenAusPaket(d: ZauberErfolgsgrade): PermissibleSpellModifications {
+  const specificEnhancements: SpecificSpellEnhancement[] = d.verstaerkungen.map((v, i) => ({
+    id: `enh-${i + 1}`,
+    egCost: v.eg || 1,
+    focusCostRaw: v.kosten,
+    focusDelta: parseEnhancementFocusDelta(v.kosten || '0'),
+    description: v.wirkung,
+    raw: `${v.eg} EG${v.kosten ? ` (Kosten ${v.kosten})` : ''}: ${v.wirkung}`,
+    ...(v.zustaende ? { zustaende: v.zustaende } : {}),
+  }));
+  return erlaubteOptionen(d.optionen, d.optionen.join(', '), specificEnhancements);
+}
+
 export function parseSpellPermissibleModifications(
   description?: string,
   spellName?: string
 ): PermissibleSpellModifications {
+  // Zauber aus einem geladenen Paket: strukturierte Felder; nur eigene Zauber werden aus ihrem Text gelesen
+  const ausPaket = spellName ? zauberErfolgsgrade(spellName) : null;
+  if (ausPaket) return modifikationenAusPaket(ausPaket);
   const desc = description || '';
   const egIdx = desc.indexOf('Erfolgsgrade:');
 
@@ -259,8 +296,6 @@ export function parseSpellPermissibleModifications(
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const allowedSet = new Set(allowedClean.map((s) => s.toLowerCase()));
-
   const specificEnhancements: SpecificSpellEnhancement[] = [];
   for (let i = 1; i < bullets.length; i++) {
     const bulletText = bullets[i];
@@ -292,20 +327,7 @@ export function parseSpellPermissibleModifications(
     }
   }
 
-  return {
-    rawList: modBullet,
-    allowsCastTime: allowedSet.has('auslösezeit'),
-    allowsExhaustedFocus: allowedSet.has('erschöpfter fokus'),
-    allowsChanneledFocus: allowedSet.has('kanalisierter fokus'),
-    allowsConsumedFocus: allowedSet.has('verzehrter fokus'),
-    allowsRange: allowedSet.has('reichweite'),
-    allowsDamage: allowedSet.has('schaden'),
-    allowsDuration: allowedSet.has('wirkungsdauer'),
-    allowsArea: allowedSet.has('wirkungsbereich'),
-    allowsEnhance: allowedSet.has('verstärken'),
-    allowedNames: allowedClean,
-    specificEnhancements,
-  };
+  return erlaubteOptionen(allowedClean, modBullet, specificEnhancements);
 }
 
 /** Anzahl gewählter Optionen je Art; EG je Option stehen im Paket (regelwerk/zauberEg.ts, GRW S. 221–222) */
@@ -900,8 +922,7 @@ export interface ActiveEnhancementEffect {
 }
 
 /**
- * Liefert aktive Effekte (z. B. verliehene Zustände wie Benommen 1 bei Blitzschlag/Einfrieren/Wasserschwall)
- * aus den ausgewählten spezifischen Zauber-Verstärkungen.
+ * Liefert aktive Effekte der ausgewählten Verstärkungen, mit den Zuständen, die sie laut Paket verursachen.
  */
 export function getSelectedSpecificEnhancementEffects(
   _spellName?: string,
@@ -915,13 +936,8 @@ export function getSelectedSpecificEnhancementEffects(
   for (const id of selectedEnhIds) {
     const enh = specificEnhancements.find((e) => e.id === id);
     if (enh) {
-      let addedCondition: string | undefined = undefined;
-      const lower = enh.description.toLowerCase();
-      if (lower.includes('benommen 2')) addedCondition = 'Benommen 2';
-      else if (lower.includes('benommen 1') || lower.includes('benommen')) addedCondition = 'Benommen 1';
-      else if (lower.includes('verwundet 1') || lower.includes('verwundet')) addedCondition = 'Verwundet 1';
-      else if (lower.includes('sterbend 2')) addedCondition = 'Sterbend 2 (Fluch)';
-      else if (lower.includes('liegend')) addedCondition = 'Liegend';
+      // verursachte Zustände stehen im Paket (erfolgsgrade_strukturiert.verstaerkungen[].zustaende), keine Textsuche
+      const addedCondition = enh.zustaende?.length ? enh.zustaende.map(verstaerkungsZustandText).join(', ') : undefined;
 
       results.push({
         id: enh.id,

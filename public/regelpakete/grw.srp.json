@@ -33729,7 +33729,14 @@
       {
        "eg": 1,
        "kosten": "+1V1",
-       "wirkung": "Das Ziel erhält den Zustand Geblendet 2."
+       "wirkung": "Das Ziel erhält den Zustand Geblendet 2.",
+       "zustaende": [
+        {
+         "name": "Geblendet",
+         "stufe": 2,
+         "beleg": "Das Ziel erhält den Zustand Geblendet 2."
+        }
+       ]
       }
      ]
     },
@@ -33902,7 +33909,15 @@
       {
        "eg": 1,
        "kosten": "+K4V4",
-       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Benommen 1."
+       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Benommen 1.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Benommen 1."
+        }
+       ]
       }
      ]
     },
@@ -33987,7 +34002,15 @@
       {
        "eg": 1,
        "kosten": "+2V2",
-       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1."
+       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1."
+        }
+       ]
       }
      ]
     },
@@ -34308,7 +34331,15 @@
       {
        "eg": 2,
        "kosten": "+3V3",
-       "wirkung": "Das Ziel erhält statt dem normalen Zustand für 45 Ticks den Zustand Brennend 4."
+       "wirkung": "Das Ziel erhält statt dem normalen Zustand für 45 Ticks den Zustand Brennend 4.",
+       "zustaende": [
+        {
+         "name": "Brennend",
+         "stufe": 4,
+         "ticks": 45,
+         "beleg": "Das Ziel erhält statt dem normalen Zustand für 45 Ticks den Zustand Brennend 4."
+        }
+       ]
       }
      ]
     },
@@ -34407,7 +34438,15 @@
       {
        "eg": 1,
        "kosten": "+1V1",
-       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1."
+       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1."
+        }
+       ]
       }
      ]
     },
@@ -36594,7 +36633,15 @@
       {
        "eg": 1,
        "kosten": "+6V6",
-       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Brennend 2."
+       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Brennend 2.",
+       "zustaende": [
+        {
+         "name": "Brennend",
+         "stufe": 2,
+         "ticks": 30,
+         "beleg": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Brennend 2."
+        }
+       ]
       }
      ]
     },
@@ -36678,7 +36725,15 @@
       {
        "eg": 1,
        "kosten": "+1V1",
-       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Brennend 1."
+       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Brennend 1.",
+       "zustaende": [
+        {
+         "name": "Brennend",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Brennend 1."
+        }
+       ]
       }
      ]
     },
@@ -37092,7 +37147,15 @@
       {
        "eg": 1,
        "kosten": "+3V3",
-       "wirkung": "Getroffene Wesen und Objekte erhalten zusätzlich für 15 Ticks den Zustand Brennend 2."
+       "wirkung": "Getroffene Wesen und Objekte erhalten zusätzlich für 15 Ticks den Zustand Brennend 2.",
+       "zustaende": [
+        {
+         "name": "Brennend",
+         "stufe": 2,
+         "ticks": 15,
+         "beleg": "Getroffene Wesen und Objekte erhalten zusätzlich für 15 Ticks den Zustand Brennend 2."
+        }
+       ]
       }
      ]
     },
@@ -37493,7 +37556,14 @@
       {
        "eg": 1,
        "kosten": "+2V2",
-       "wirkung": "Das Ziel erhält den Zustand Verwundet 2."
+       "wirkung": "Das Ziel erhält den Zustand Verwundet 2.",
+       "zustaende": [
+        {
+         "name": "Verwundet",
+         "stufe": 2,
+         "beleg": "Das Ziel erhält den Zustand Verwundet 2."
+        }
+       ]
       }
      ]
     },
@@ -38922,7 +38992,14 @@
       {
        "eg": 2,
        "kosten": "+K1V1",
-       "wirkung": "Wesen im Wirkungsbereich erhalten den Zustand Benommen 1."
+       "wirkung": "Wesen im Wirkungsbereich erhalten den Zustand Benommen 1.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 1,
+         "beleg": "Wesen im Wirkungsbereich erhalten den Zustand Benommen 1."
+        }
+       ]
       }
      ]
     },
@@ -39332,7 +39409,14 @@
       {
        "eg": 1,
        "kosten": "+K1V1",
-       "wirkung": "Wird die Wand im Nahkampf attackiert, erhalten die Angreifer den Zustand Geblendet 1. Außerdem verbessert sie die Lichtverhältnisse im Umkreis von 5 Metern um insgesamt 3 Stufen."
+       "wirkung": "Wird die Wand im Nahkampf attackiert, erhalten die Angreifer den Zustand Geblendet 1. Außerdem verbessert sie die Lichtverhältnisse im Umkreis von 5 Metern um insgesamt 3 Stufen.",
+       "zustaende": [
+        {
+         "name": "Geblendet",
+         "stufe": 1,
+         "beleg": "Wird die Wand im Nahkampf attackiert, erhalten die Angreifer den Zustand Geblendet 1."
+        }
+       ]
       }
      ]
     },
@@ -39416,7 +39500,14 @@
       {
        "eg": 2,
        "kosten": "+K2V2",
-       "wirkung": "Angreifer im Nahkampf erhalten den Zustand Geblendet 2, die Lichtverhältnisse verbessern sich um insgesamt 2 Stufen."
+       "wirkung": "Angreifer im Nahkampf erhalten den Zustand Geblendet 2, die Lichtverhältnisse verbessern sich um insgesamt 2 Stufen.",
+       "zustaende": [
+        {
+         "name": "Geblendet",
+         "stufe": 2,
+         "beleg": "Angreifer im Nahkampf erhalten den Zustand Geblendet 2, die Lichtverhältnisse verbessern sich um insgesamt 2 Stufen."
+        }
+       ]
       }
      ]
     },
@@ -40393,7 +40484,14 @@
       {
        "eg": 1,
        "kosten": "+K2V2",
-       "wirkung": "Betroffene Wesen erhalten zusätzlich den Zustand Benommen 1."
+       "wirkung": "Betroffene Wesen erhalten zusätzlich den Zustand Benommen 1.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 1,
+         "beleg": "Betroffene Wesen erhalten zusätzlich den Zustand Benommen 1."
+        }
+       ]
       }
      ]
     },
@@ -40722,7 +40820,15 @@
       {
        "eg": 1,
        "kosten": "+2V2",
-       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Benommen 2."
+       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Benommen 2.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 2,
+         "ticks": 30,
+         "beleg": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Benommen 2."
+        }
+       ]
       }
      ]
     },
@@ -40959,7 +41065,15 @@
       {
        "eg": 2,
        "kosten": "+3V3",
-       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Brennend 1."
+       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Brennend 1.",
+       "zustaende": [
+        {
+         "name": "Brennend",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Brennend 1."
+        }
+       ]
       }
      ]
     },
@@ -41181,7 +41295,14 @@
       {
        "eg": 2,
        "kosten": "+2V2",
-       "wirkung": "Die Betroffenen erhalten zusätzlich für 30 Ticks den Zustand Lahm."
+       "wirkung": "Die Betroffenen erhalten zusätzlich für 30 Ticks den Zustand Lahm.",
+       "zustaende": [
+        {
+         "name": "Lahm",
+         "ticks": 30,
+         "beleg": "Die Betroffenen erhalten zusätzlich für 30 Ticks den Zustand Lahm."
+        }
+       ]
       }
      ]
     },
@@ -42823,7 +42944,15 @@
       {
        "eg": 1,
        "kosten": "+1V1",
-       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1."
+       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1."
+        }
+       ]
       }
      ]
     },
@@ -43627,7 +43756,15 @@
       {
        "eg": 1,
        "kosten": "+1V1",
-       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Erschöpft 1."
+       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Erschöpft 1.",
+       "zustaende": [
+        {
+         "name": "Erschöpft",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Erschöpft 1."
+        }
+       ]
       }
      ]
     },
@@ -45487,7 +45624,15 @@
       {
        "eg": 1,
        "kosten": "+2V2",
-       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Verwundet 1."
+       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Verwundet 1.",
+       "zustaende": [
+        {
+         "name": "Verwundet",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Verwundet 1."
+        }
+       ]
       }
      ]
     },
@@ -45637,7 +45782,15 @@
       {
        "eg": 1,
        "kosten": "+2V2",
-       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Erschöpft 2."
+       "wirkung": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Erschöpft 2.",
+       "zustaende": [
+        {
+         "name": "Erschöpft",
+         "stufe": 2,
+         "ticks": 30,
+         "beleg": "Die Ziele erhalten zusätzlich für 30 Ticks den Zustand Erschöpft 2."
+        }
+       ]
       }
      ]
     },
@@ -45716,7 +45869,20 @@
       {
        "eg": 1,
        "kosten": "+3V3",
-       "wirkung": "Den Zielen muss zusätzlich eine Akrobatik-Probe gegen 35 gelingen, um nicht umgeworfen zu werden und als liegend zu gelten. Außerdem erhalten sie für 60 Ticks den Zustand Erschöpft 2, statt des oben genannten Zustands."
+       "wirkung": "Den Zielen muss zusätzlich eine Akrobatik-Probe gegen 35 gelingen, um nicht umgeworfen zu werden und als liegend zu gelten. Außerdem erhalten sie für 60 Ticks den Zustand Erschöpft 2, statt des oben genannten Zustands.",
+       "zustaende": [
+        {
+         "name": "Erschöpft",
+         "stufe": 2,
+         "ticks": 60,
+         "beleg": "Außerdem erhalten sie für 60 Ticks den Zustand Erschöpft 2, statt des oben genannten Zustands."
+        },
+        {
+         "name": "Liegend",
+         "bedingt": "probe",
+         "beleg": "Den Zielen muss zusätzlich eine Akrobatik-Probe gegen 35 gelingen, um nicht umgeworfen zu werden und als liegend zu gelten."
+        }
+       ]
       }
      ]
     },
@@ -46183,7 +46349,15 @@
       {
        "eg": 2,
        "kosten": "+2V1",
-       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Blutend 1."
+       "wirkung": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Blutend 1.",
+       "zustaende": [
+        {
+         "name": "Blutend",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Das Ziel erhält zusätzlich für 30 Ticks den Zustand Blutend 1."
+        }
+       ]
       }
      ]
     },
@@ -46815,7 +46989,13 @@
       {
        "eg": 1,
        "kosten": "+2V2",
-       "wirkung": "Das Ziel erhält stattdessen den Zustand Schlafend."
+       "wirkung": "Das Ziel erhält stattdessen den Zustand Schlafend.",
+       "zustaende": [
+        {
+         "name": "Schlafend",
+         "beleg": "Das Ziel erhält stattdessen den Zustand Schlafend."
+        }
+       ]
       }
      ]
     },
@@ -47239,7 +47419,13 @@
       {
        "eg": 2,
        "kosten": "+K3V3",
-       "wirkung": "Betroffene Wesen erhalten den Zustand Panisch, wenn ihr Geistiger Widerstand nicht mind. 19 Punkte beträgt."
+       "wirkung": "Betroffene Wesen erhalten den Zustand Panisch, wenn ihr Geistiger Widerstand nicht mind. 19 Punkte beträgt.",
+       "zustaende": [
+        {
+         "name": "Panisch",
+         "beleg": "Betroffene Wesen erhalten den Zustand Panisch, wenn ihr Geistiger Widerstand nicht mind."
+        }
+       ]
       }
      ]
     },
@@ -50094,7 +50280,14 @@
       {
        "eg": 1,
        "kosten": "+1V1",
-       "wirkung": "Dem Ziel muss zusätzlich eine Akrobatik-Probe gegen 15 gelingen, um nicht zu stürzen und den Zustand liegend zu erhalten."
+       "wirkung": "Dem Ziel muss zusätzlich eine Akrobatik-Probe gegen 15 gelingen, um nicht zu stürzen und den Zustand liegend zu erhalten.",
+       "zustaende": [
+        {
+         "name": "Liegend",
+         "bedingt": "probe",
+         "beleg": "Dem Ziel muss zusätzlich eine Akrobatik-Probe gegen 15 gelingen, um nicht zu stürzen und den Zustand liegend zu erhalten."
+        }
+       ]
       }
      ]
     },
@@ -50827,7 +51020,14 @@
       {
        "eg": 3,
        "kosten": "+4V4",
-       "wirkung": "Das Opfer erhält den Zustand Sterbend 2 (Fluch)."
+       "wirkung": "Das Opfer erhält den Zustand Sterbend 2 (Fluch).",
+       "zustaende": [
+        {
+         "name": "Sterbend",
+         "stufe": 2,
+         "beleg": "Das Opfer erhält den Zustand Sterbend 2 (Fluch)."
+        }
+       ]
       }
      ]
     },
@@ -53425,7 +53625,15 @@
       {
        "eg": 1,
        "kosten": "+3V3",
-       "wirkung": "Getroffene Wesen erhalten zusätzlich für 30 Ticks den Zustand Benommen 1."
+       "wirkung": "Getroffene Wesen erhalten zusätzlich für 30 Ticks den Zustand Benommen 1.",
+       "zustaende": [
+        {
+         "name": "Benommen",
+         "stufe": 1,
+         "ticks": 30,
+         "beleg": "Getroffene Wesen erhalten zusätzlich für 30 Ticks den Zustand Benommen 1."
+        }
+       ]
       }
      ]
     },

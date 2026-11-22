@@ -49,6 +49,7 @@ import {
 import { generateId } from '../../utils/id';
 import type { RollEntry } from './DiceLog';
 import { getActiveRollModifiers } from '../../utils/conditionModifiers';
+import { verstaerkungsZustandText } from '../../regelwerk/zauberEg';
 import { wuerfeln } from '../../utils/wuerfeln';
 import { SituativeBoni, useSituativeBoni, useZauberAnpassungen, ZauberAnpassungen } from './SituativeBoni';
 import { kostenAnwenden, zauberdauerAnpassen } from '../../regelwerk/wirkungen';
@@ -1578,6 +1579,11 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                                     Kosten {enh.focusCostRaw}
                                   </span>
                                 )}
+                                {enh.zustaende?.map((z) => (
+                                  <span key={z.name} data-testid="verstaerkung-zustand" title={z.beleg} className="text-xs bg-erhoeht text-schrift border border-schaden px-1.5 py-0.5 rounded-knopf">
+                                    Ziel: {verstaerkungsZustandText(z)}
+                                  </span>
+                                ))}
                                 {isSelected && (
                                   <span className="text-[11px] bg-unverletzt-grund text-unverletzt font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                     ✓ Aktiviert

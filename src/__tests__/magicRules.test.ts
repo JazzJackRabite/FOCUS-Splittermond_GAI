@@ -671,7 +671,7 @@ describe('useCharacterState - spell actions', () => {
       expect(enhanced?.diceCount).toBe(4);
     });
 
-    it('detects added conditions from specific enhancements (e.g. Benommen 1 on Blitzschlag)', () => {
+    it('verursachte Zustände kommen aus dem Paketfeld, nicht aus dem Text (Blitzschlag: Benommen 1)', () => {
       const specificEnhancements = [
         {
           id: 'enh-1',
@@ -680,6 +680,7 @@ describe('useCharacterState - spell actions', () => {
           focusDelta: { raw: '+2V2', isChanneled: false, exhausted: 0, channeled: 0, consumed: 2, total: 2 },
           description: 'Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1.',
           raw: '1 EG (Kosten +2V2): Das Ziel erhält zusätzlich für 30 Ticks den Zustand Benommen 1.',
+          zustaende: [{ name: 'Benommen', stufe: 1, ticks: 30 }],
         },
       ];
       const effects = getSelectedSpecificEnhancementEffects(
@@ -688,7 +689,9 @@ describe('useCharacterState - spell actions', () => {
         specificEnhancements
       );
       expect(effects).toHaveLength(1);
-      expect(effects[0].addedCondition).toBe('Benommen 1');
+      expect(effects[0].addedCondition).toBe('Benommen 1 (30 Ticks)');
+      // ohne Paketfeld keine Textsuche
+      expect(getSelectedSpecificEnhancementEffects('x', { ...INITIAL_EG_ALLOCATIONS, selectedEnhancementIds: ['enh-1'] }, [{ ...specificEnhancements[0], zustaende: undefined }])[0].addedCondition).toBeUndefined();
     });
 
     it('applies Krallen & Schockgriff enhanced weapon damage', () => {
