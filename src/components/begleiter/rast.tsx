@@ -30,7 +30,7 @@ export function useBegleiterRast(k: Katalog) {
       const zeilen: string[] = [];
       const payload = alle.map((b, index) => {
         const z = b.zustand ?? {};
-        const e = rast === 'ruhephase' ? ruhephaseBegleiter(k, b.art, z, begleiterAnsicht(k, b, besitzer).w?.attribute) : verschnaufpauseBegleiter(z);
+        const e = rast === 'ruhephase' ? ruhephaseBegleiter(k, b.art, z, begleiterAnsicht(k, b, besitzer).w?.attribute) : verschnaufpauseBegleiter(z, k);
         zeilen.push(`${begleiterTitel(b)}: ${e.teile.length ? e.teile.join(', ') : 'nichts zu heilen'}${e.hinweis ? ` – ${e.hinweis}` : ''}`);
         return { index, zustand: e.zustand };
       });

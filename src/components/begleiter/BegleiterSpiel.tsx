@@ -304,7 +304,7 @@ export const BegleiterVitals: React.FC<{ spiel: ReturnType<typeof useBegleiterSp
       <BegleiterZustaende spiel={spiel} />
       <div className="flex flex-wrap gap-2">
         <Knopf art="erholung" title={`${pause.minuten} Minuten: Betäubungsschaden und erschöpfter Fokus erholen sich`}
-          onClick={() => { const e = verschnaufpauseBegleiter(z); aendern(e.zustand, `Verschnaufpause${e.teile.length ? `: ${e.teile.join(', ')}` : ''}`, 'heal', 'Pause'); }}><Coffee size={14} aria-hidden />Verschnaufpause</Knopf>
+          onClick={() => { const e = verschnaufpauseBegleiter(z, k); aendern(e.zustand, `Verschnaufpause${e.teile.length ? `: ${e.teile.join(', ')}` : ''}`, 'heal', 'Pause'); }}><Coffee size={14} aria-hidden />Verschnaufpause</Knopf>
         <Knopf art="erholung" title={`${regeln.ruheStunden} Stunden: Lebenspunkte aus der doppelten Konstitution, verzehrter Fokus aus der doppelten Willenskraft${ausnahme && !ausnahme.lp ? ` (keine Lebenspunkte: ${ausnahme.quelle})` : ''}`}
           onClick={() => { const e = ruhephaseBegleiter(k, angaben.art ?? 'tier', z, angaben.attribute); aendern(e.zustand, `Ruhephase${e.teile.length ? `: ${e.teile.join(', ')}` : ''}${e.hinweis ? ` – ${e.hinweis}` : ''}`, 'heal', 'Ruhe'); }}><Moon size={14} aria-hidden />Ruhephase</Knopf>
         <Knopf onClick={() => aendern({}, 'Werte zurückgesetzt (voll)', 'heal', 'voll')}><RotateCcw size={14} aria-hidden />Alles zurücksetzen</Knopf>

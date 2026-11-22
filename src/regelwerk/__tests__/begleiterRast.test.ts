@@ -32,6 +32,17 @@ describe('Rast der Begleiter mit dem Grundregelwerk', () => {
     expect(e.teile).toEqual(['3 Betäubung', '2 FO erschöpft']);
   });
 
+  it('Zustände wie beim Abenteurer nach pause_ende: Verschnaufpause senkt Erschöpft, beendet Lahm; Blutend bleibt', () => {
+    const z = { zustaende: [{ id: 'e', key: 'Erschöpft', level: 3 }, { id: 'l', key: 'Lahm' }, { id: 'b', key: 'Blutend', level: 1 }] };
+    const v = verschnaufpauseBegleiter(z, K);
+    expect(v.zustand.zustaende).toEqual([{ id: 'e', key: 'Erschöpft', level: 2 }, { id: 'b', key: 'Blutend', level: 1 }]);
+    expect(v.teile).toContain('Erschöpft 3 → 2, Lahm beendet');
+    // Ruhephase: Auslegung wie beim Abenteurer (nachPause), Erschöpft ganz abgebaut
+    const r = ruhephaseBegleiter(K, 'tier', z, { KON: '2', WIL: '2' });
+    expect(r.zustand.zustaende).toEqual([{ id: 'b', key: 'Blutend', level: 1 }]);
+    expect(verschnaufpauseBegleiter({ schaden: 1 }, K).zustand.zustaende).toBeUndefined();
+  });
+
   it('das Grundregelwerk nennt keine Ausnahme: alle Arten regenerieren wie der Abenteurer', () => {
     for (const art of ['tier', 'wesen', 'gefolge', 'golem', 'untoter']) expect(ruheAusnahme(K, art)).toBeNull();
   });

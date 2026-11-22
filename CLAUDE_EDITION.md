@@ -985,6 +985,16 @@ Ab hier ist das Repository **FOCUS-Splittermond_GAI** maßgeblich (aus Google AI
 - **Offen (gefunden, nicht geändert):** Die Ruhephase setzt den Sterbend-Zähler auf 0; laut GRW heilt ein Sterbender nicht
   natürlich. Ruhephasen je Tag (`je_tag` im Paket) werden nicht gezählt.
 
+## Stand 41 (22.11.2026): Zustände der Begleiter bei Rast
+
+- Verschnaufpause und Ruhephase der Begleiter (gemeinsam mit dem Abenteurer und im Blatt jedes Begleiters) beenden bzw.
+  senken jetzt auch ihre Zustände, nach demselben Paketfeld `pause_ende` und derselben Funktion `nachPause` wie beim
+  Abenteurer (Stand 40). Bisher blieben Zustände der Begleiter bei jeder Rast stehen. Protokoll und Meldung nennen die
+  Änderung, z. B. „Erschöpft 3 → 2, Lahm beendet“. Zustände ohne `pause_ende` (z. B. Blutend) bleiben.
+- Code: `regelwerk/begleiterRast.ts` (`verschnaufpauseBegleiter` nimmt jetzt den Katalog), Aufrufe in
+  `components/begleiter/rast.tsx` und `BegleiterSpiel.tsx`. Test in `begleiterRast.test.ts`.
+- Tests: 475 grün ohne Bücher; 531 mit Grimoires und Falldatei (Volltest übersprungen); Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

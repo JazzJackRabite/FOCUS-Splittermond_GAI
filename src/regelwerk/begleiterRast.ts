@@ -7,12 +7,14 @@
  *   die Verschnaufpause heilt Betäubungsschaden und erschöpften Fokus.
  * - Ausnahmen aus `strukturiert.ruhephase_begleiter` an den Regeltexten (Datenseite: begleiter_werte.py): Begleiterarten,
  *   die laut Paket in der Ruhephase keine Lebenspunkte regenerieren; Fundstelle aus dem Eintrag.
- * Zustände der Begleiter bleiben unverändert; sie werden im Blatt des Begleiters beendet.
+ * - Zustände enden oder verlieren Stufen wie beim Abenteurer nach `pause_ende` der Zustände (`nachPause` in `zustaende.ts`).
  */
 import type { Katalog } from './katalog';
 import type { BegleiterZustand } from './vitals';
 import { ruhephasenRegeneration, ruheregeln } from './spielwirkungen';
 import { quelleText } from './relikte';
+import { nachPause } from './zustaende';
+import { aktiverKatalog } from './bruecke';
 
 export interface RuheAusnahme { art: string; lp: boolean; hinweis?: string; quelle: string }
 
@@ -52,17 +54,31 @@ export function ruhephaseBegleiter(k: Katalog | null, art: string, z: BegleiterZ
     lp ? `${lp} LP` : '',
     foFrei ? `${foFrei} FO erschöpft/kanalisiert` : '',
     foVerzehrt ? `${foVerzehrt} FO verzehrt` : '',
+    zustandsAenderung(z.zustaende, 'ruhephase', k),
   ].filter(Boolean);
   return {
-    zustand: { ...z, betaeubung: 0, schaden: (z.schaden ?? 0) - lp, fokus: { ...f, erschoepft: 0, kanalisiert: 0, verzehrt: (f.verzehrt ?? 0) - foVerzehrt } },
+    zustand: { ...z, betaeubung: 0, schaden: (z.schaden ?? 0) - lp, fokus: { ...f, erschoepft: 0, kanalisiert: 0, verzehrt: (f.verzehrt ?? 0) - foVerzehrt },
+      ...(z.zustaende ? { zustaende: nachPause(z.zustaende, 'ruhephase', k) } : {}) },
     teile,
     hinweis: aus && !aus.lp && (z.schaden ?? 0) > 0 ? `keine LP-Regeneration (${aus.quelle})` : undefined,
   };
 }
 
-/** Verschnaufpause eines Begleiters: Betäubungsschaden und erschöpfter Fokus */
-export function verschnaufpauseBegleiter(z: BegleiterZustand): RastErgebnis {
+/** Verschnaufpause eines Begleiters: Betäubungsschaden, erschöpfter Fokus, Zustände nach `pause_ende` */
+export function verschnaufpauseBegleiter(z: BegleiterZustand, k: Katalog | null = aktiverKatalog()): RastErgebnis {
   const f = z.fokus ?? {};
-  const teile = [z.betaeubung ? `${z.betaeubung} Betäubung` : '', f.erschoepft ? `${f.erschoepft} FO erschöpft` : ''].filter(Boolean);
-  return { zustand: { ...z, betaeubung: 0, fokus: { ...f, erschoepft: 0 } }, teile };
+  const teile = [z.betaeubung ? `${z.betaeubung} Betäubung` : '', f.erschoepft ? `${f.erschoepft} FO erschöpft` : '',
+    zustandsAenderung(z.zustaende, 'verschnaufpause', k)].filter(Boolean);
+  return { zustand: { ...z, betaeubung: 0, fokus: { ...f, erschoepft: 0 }, ...(z.zustaende ? { zustaende: nachPause(z.zustaende, 'verschnaufpause', k) } : {}) }, teile };
+}
+
+/** Kurztext für Protokoll und Hinweis: welche Zustände die Pause beendet oder gesenkt hat, z. B. „Lahm beendet, Erschöpft 3 → 2“ */
+function zustandsAenderung(vorher: BegleiterZustand['zustaende'], art: 'verschnaufpause' | 'ruhephase', k: Katalog | null): string {
+  if (!vorher?.length) return '';
+  const nachher = nachPause(vorher, art, k);
+  return vorher.map((c) => {
+    const n = nachher.find((x) => x.id === c.id);
+    if (!n) return `${c.key} beendet`;
+    return (n.level ?? 1) !== (c.level ?? 1) ? `${c.key} ${c.level ?? 1} → ${n.level ?? 1}` : '';
+  }).filter(Boolean).join(', ');
 }
