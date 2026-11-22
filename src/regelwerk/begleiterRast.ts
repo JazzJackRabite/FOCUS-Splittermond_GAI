@@ -1,8 +1,9 @@
 /**
  * Rast der Begleiter (FUNDAMENT.md, Regelquellen):
  * - Ruhephase und Verschnaufpause wie beim Abenteurer (`ruheregeln` der Kernregel „Heilung“, GRW S. 173–174, 196):
- *   Ruhephase heilt allen Betäubungs- und kanalisierten Schaden, Lebenspunkte in Höhe der doppelten Konstitution
- *   (mindestens 1), allen erschöpften und kanalisierten Fokus und verzehrten Fokus in Höhe der doppelten Willenskraft;
+ *   Ruhephase heilt allen Betäubungsschaden, Lebenspunkte in Höhe der doppelten Konstitution (mindestens 1), allen
+ *   erschöpften und kanalisierten Fokus (kanalisierte Zauber enden) und verzehrten Fokus in Höhe der doppelten Willenskraft;
+ *   kanalisierter Schaden bleibt, bis sein Zustand aufgehoben ist (S. 173);
  *   die Verschnaufpause heilt Betäubungsschaden und erschöpften Fokus.
  * - Ausnahmen aus `strukturiert.ruhephase_begleiter` an den Regeltexten (Datenseite: begleiter_werte.py): Begleiterarten,
  *   die laut Paket in der Ruhephase keine Lebenspunkte regenerieren; Fundstelle aus dem Eintrag.
@@ -42,7 +43,7 @@ export function ruhephaseBegleiter(k: Katalog | null, art: string, z: BegleiterZ
   const aus = ruheAusnahme(k, art);
   const regen = ruhephasenRegeneration(zahl(attribute?.KON), zahl(attribute?.WIL), [], r);
   const f = z.fokus ?? {};
-  const betaeubung = (z.betaeubung ?? 0) + (z.kanalisiert ?? 0);
+  const betaeubung = z.betaeubung ?? 0;
   const lp = aus && !aus.lp ? 0 : Math.min(z.schaden ?? 0, regen.lp);
   const foFrei = (f.erschoepft ?? 0) + (f.kanalisiert ?? 0);
   const foVerzehrt = Math.min(f.verzehrt ?? 0, regen.fo);
@@ -53,7 +54,7 @@ export function ruhephaseBegleiter(k: Katalog | null, art: string, z: BegleiterZ
     foVerzehrt ? `${foVerzehrt} FO verzehrt` : '',
   ].filter(Boolean);
   return {
-    zustand: { ...z, betaeubung: 0, kanalisiert: 0, schaden: (z.schaden ?? 0) - lp, fokus: { ...f, erschoepft: 0, kanalisiert: 0, verzehrt: (f.verzehrt ?? 0) - foVerzehrt } },
+    zustand: { ...z, betaeubung: 0, schaden: (z.schaden ?? 0) - lp, fokus: { ...f, erschoepft: 0, kanalisiert: 0, verzehrt: (f.verzehrt ?? 0) - foVerzehrt } },
     teile,
     hinweis: aus && !aus.lp && (z.schaden ?? 0) > 0 ? `keine LP-Regeneration (${aus.quelle})` : undefined,
   };

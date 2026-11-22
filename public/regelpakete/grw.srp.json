@@ -69136,6 +69136,12 @@
        "pro_stufe": 1
       }
      }
+    },
+    "pause_ende": {
+     "verschnaufpause": "stufe",
+     "belege": [
+      "Eine Stufe des Zustands wird im Normalfall durch eine Verschnaufpause (30 Minuten) abgebaut."
+     ]
     }
    },
    "hinweise": [
@@ -69212,6 +69218,12 @@
       ],
       "pro_stufe": -1
      }
+    },
+    "pause_ende": {
+     "verschnaufpause": "aufheben",
+     "belege": [
+      "Der Zustand wird im Normalfall nach einer Verschnaufpause aufgehoben."
+     ]
     }
    },
    "hinweise": [
@@ -69273,6 +69285,12 @@
        "faktor": 0.5
       }
      }
+    },
+    "pause_ende": {
+     "verschnaufpause": "aufheben",
+     "belege": [
+      "Der Zustand wird im Normalfall nach einer Verschnaufpause aufgehoben."
+     ]
     }
    },
    "hinweise": [

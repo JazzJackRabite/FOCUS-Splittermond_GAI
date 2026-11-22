@@ -1,4 +1,4 @@
-import { istZustand, zustandHatStufe } from '../regelwerk/zustaende';
+import { istZustand, zustandHatStufe, nachPause } from '../regelwerk/zustaende';
 import { useReducer, useEffect } from 'react';
 import type {
   CharacterState,
@@ -868,17 +868,16 @@ export function baseCharacterReducer(
       const exhaustReduction = payload?.exhaustReduction !== undefined ? payload.exhaustReduction : 1;
       const removeConditions = payload?.removeConditions ?? true;
 
-      // 1. Health slots (Betäubungsschaden)
+      // 1. Betäubungsschaden (GRW S. 173–174); kanalisierter Schaden bleibt, bis sein Zustand aufgehoben ist (S. 173)
       let healedSlots = [...state.playState.healthSlots];
       if (healAllStun) {
         healedSlots = normalizeHealthSlots(healedSlots.map((s) =>
-          s.type === 'exhausted' || s.type === 'channeled' ? { type: 'empty' as const } : s,
+          s.type === 'exhausted' ? { type: 'empty' as const } : s,
         ));
       } else if (stunAmount > 0) {
-        // Heal up to stunAmount exhausted or channeled slots from the back
         let remaining = stunAmount;
         for (let i = healedSlots.length - 1; i >= 0 && remaining > 0; i--) {
-          if (healedSlots[i].type === 'exhausted' || healedSlots[i].type === 'channeled') {
+          if (healedSlots[i].type === 'exhausted') {
             healedSlots[i] = { type: 'empty' };
             remaining--;
           }
@@ -892,31 +891,18 @@ export function baseCharacterReducer(
       let newChanneled = currentFocus.channeled;
       let newChanneledSpells = state.playState.channeledSpells;
 
+      // erschöpfter Fokus; kanalisierte Zauber laufen weiter (sie enden erst in der Ruhephase, GRW S. 196)
       if (healAllExhaustedFocus) {
         newExhausted = 0;
-        newChanneled = 0;
-        newChanneledSpells = [];
       } else if (exhaustedFocusAmount > 0) {
         newExhausted = Math.max(0, currentFocus.exhausted - exhaustedFocusAmount);
       } else {
         newExhausted = currentFocus.exhausted;
       }
 
-      // 3. Conditions (Splittermond rules for Verschnaufpause)
+      // 3. Zustände, die laut Paket mit einer Verschnaufpause enden oder abgebaut werden (pause_ende)
       const currentConditions = state.playState.conditions ?? [];
-      const newConditions = currentConditions
-        .map((c) => {
-          if (c.key === 'Erschöpft' && exhaustReduction > 0) {
-            const lvl = c.level ?? 1;
-            const newLvl = lvl - exhaustReduction;
-            return newLvl > 0 ? { ...c, level: newLvl } : null;
-          }
-          if (removeConditions && (c.key === 'Glaubenskrise' || c.key === 'Lahm')) {
-            return null;
-          }
-          return c;
-        })
-        .filter(Boolean) as StatusCondition[];
+      const newConditions = nachPause(currentConditions, 'verschnaufpause', undefined, exhaustReduction, removeConditions);
 
       return {
         ...state,
@@ -932,9 +918,9 @@ export function baseCharacterReducer(
 
     case 'PLAY_REST_HEAL': {
       const { konAmount, wilAmount, lpHealAmount, foHealAmount } = action.payload;
-      // Step 1: Heal all exhausted and channeled slots (Betäubungsschaden komplett heilen)
+      // Step 1: Betäubungsschaden komplett heilen; kanalisierter Schaden bleibt (GRW S. 173)
       const slots = state.playState.healthSlots.map((s) =>
-        s.type === 'exhausted' || s.type === 'channeled' ? { type: 'empty' as const } : s,
+        s.type === 'exhausted' ? { type: 'empty' as const } : s,
       );
       // Step 2: Collect indices of remaining consumed slots (they are at the front after step 1)
       const consumedIndices: number[] = [];
@@ -952,13 +938,8 @@ export function baseCharacterReducer(
       // Step 4: Focus: erschöpften und kanalisierten Fokus regenerieren, consumed um foHealAmount (or WIL×2) heilen
       const focusHeal = foHealAmount !== undefined ? foHealAmount : Math.max(1, wilAmount * 2);
       const newConsumedFocus = Math.max(0, state.playState.focus.consumed - focusHeal);
-      // Step 5: Splittermond rules for Ruhephase:
-      // - Erschöpft komplett abbauen
-      // - Glaubenskrise & Lahm aufheben
-      const currentConditions = state.playState.conditions ?? [];
-      const newConditions = currentConditions.filter(
-        (c) => c.key !== 'Erschöpft' && c.key !== 'Glaubenskrise' && c.key !== 'Lahm'
-      );
+      // Step 5: Zustände nach der Ruhephase laut Paket (pause_ende)
+      const newConditions = nachPause(state.playState.conditions ?? [], 'ruhephase');
       return {
         ...state,
         playState: {

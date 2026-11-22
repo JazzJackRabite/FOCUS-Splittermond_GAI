@@ -1,5 +1,5 @@
 import { fokusDurchZustaende, zustandswerte } from '../regelwerk/zustandswerte';
-import { alleZustaende } from '../regelwerk/zustaende';
+import { alleZustaende, nachPause } from '../regelwerk/zustaende';
 import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
 import type {
@@ -145,6 +145,17 @@ export interface PlaySessionContextType {
 }
 
 const PlaySessionContext = createContext<PlaySessionContextType | null>(null);
+
+/** welche Zustände eine Pause aufhebt bzw. um wie viele Stufen senkt (Vergleich vorher/nachher) */
+function zustandsAenderung(vorher: StatusCondition[], nachher: StatusCondition[]): { aufgehoben: string[]; gesenkt: { name: string; stufen: number }[] } {
+  const aufgehoben: string[] = []; const gesenkt: { name: string; stufen: number }[] = [];
+  for (const z of vorher) {
+    const n = nachher.find((x) => x.id === z.id);
+    if (!n) aufgehoben.push(z.key);
+    else if ((n.level ?? 1) < (z.level ?? 1)) gesenkt.push({ name: z.key, stufen: (z.level ?? 1) - (n.level ?? 1) });
+  }
+  return { aufgehoben, gesenkt };
+}
 
 export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { state, dispatch, calc } = useCharacter();
@@ -611,21 +622,13 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
     const exhaustReduction = options?.exhaustReduction !== undefined ? options.exhaustReduction : 1;
     const removeConditions = options?.removeConditions ?? true;
 
-    const stunSlotsCount = healthSlots.filter((s) => s.type === 'exhausted' || s.type === 'channeled').length;
+    const stunSlotsCount = healthSlots.filter((s) => s.type === 'exhausted').length;
     const actualStunHealed = healAllStun ? stunSlotsCount : Math.min(stunAmount, stunSlotsCount);
 
     const exhaustedFocusCount = focus.exhausted;
-    const channeledFocusCount = focus.channeled;
-    const actualFocusHealed = healAllExhaustedFocus
-      ? exhaustedFocusCount + channeledFocusCount
-      : Math.min(exhaustedFocusAmount, exhaustedFocusCount);
+    const actualFocusHealed = healAllExhaustedFocus ? exhaustedFocusCount : Math.min(exhaustedFocusAmount, exhaustedFocusCount);
 
-    const currentExhaustLvl = conditions.find((c) => c.key === 'Erschöpft')?.level ?? (conditions.some((c) => c.key === 'Erschöpft') ? 1 : 0);
-    const actualExhaustReduced = Math.min(exhaustReduction, currentExhaustLvl);
-
-    const removedConds = removeConditions
-      ? conditions.filter((c) => c.key === 'Glaubenskrise' || c.key === 'Lahm').map((c) => c.key)
-      : [];
+    const { aufgehoben: removedConds, gesenkt } = zustandsAenderung(conditions, nachPause(conditions, 'verschnaufpause', undefined, exhaustReduction, removeConditions));
 
     dispatch({ type: 'PLAY_HEAL_EXHAUSTED', payload: options });
 
@@ -638,19 +641,15 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
         type: 'hp',
       },
       {
-        label: 'Erschöpfter/Kanalisierter Fokus',
+        label: 'Erschöpfter Fokus',
         value: actualFocusHealed > 0
           ? `+${actualFocusHealed} FO (${healAllExhaustedFocus ? 'komplett' : `max. ${exhaustedFocusAmount}`})`
-          : (exhaustedFocusCount + channeledFocusCount === 0 ? '0 FO (kein Fokus erschöpft)' : '+0 FO'),
+          : (exhaustedFocusCount === 0 ? '0 FO (kein Fokus erschöpft)' : '+0 FO'),
         type: 'fo',
       },
-      {
-        label: 'Zustand Erschöpft',
-        value: currentExhaustLvl > 0
-          ? (actualExhaustReduced > 0 ? `-${actualExhaustReduced} Stufe(n)` : 'Nicht reduziert')
-          : 'Nicht aktiv',
-        type: 'exhaust',
-      },
+      ...gesenkt.map((g) => ({ label: `Zustand ${g.name}`, value: `-${g.stufen} Stufe(n)`, type: 'exhaust' as const })),
+      ...(healthSlots.some((s) => s.type === 'channeled') || focus.channeled > 0
+        ? [{ label: 'Kanalisiert', value: 'bleibt (Schaden bis zum Ende seines Zustands, Fokus bis zum Ende des Zaubers)', type: 'fo' as const }] : []),
     ];
 
     if (removedConds.length > 0) {
@@ -664,7 +663,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
     const summaryParts: string[] = [];
     if (actualStunHealed > 0) summaryParts.push(`${actualStunHealed} Betäubung geheilt`);
     if (actualFocusHealed > 0) summaryParts.push(`${actualFocusHealed} Fokus regeneriert`);
-    if (actualExhaustReduced > 0) summaryParts.push(`Erschöpfung -${actualExhaustReduced}`);
+    for (const g of gesenkt) summaryParts.push(`${g.name} -${g.stufen}`);
     if (removedConds.length > 0) summaryParts.push(`Zustände entfernt (${removedConds.join(', ')})`);
 
     const summary = summaryParts.length > 0 ? summaryParts.join(' · ') : 'Keine Erholung nötig (alles voll).';
@@ -685,15 +684,14 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   const handleRuhephase = (konAmount: number, wilAmount: number) => {
     pushPlayHistory();
-    const stunSlotsCount = healthSlots.filter((s) => s.type === 'exhausted' || s.type === 'channeled').length;
+    const stunSlotsCount = healthSlots.filter((s) => s.type === 'exhausted').length;
     const consumedSlotsCount = healthSlots.filter((s) => s.type === 'consumed').length;
     const actualConsumedHealed = Math.min(konAmount, consumedSlotsCount);
 
     const exhaustedChanneledFocus = focus.exhausted + focus.channeled;
     const actualConsumedFocusHealed = Math.min(wilAmount, focus.consumed);
 
-    const currentExhaustLvl = conditions.find((c) => c.key === 'Erschöpft')?.level ?? (conditions.some((c) => c.key === 'Erschöpft') ? 1 : 0);
-    const removedConds = conditions.filter((c) => c.key === 'Glaubenskrise' || c.key === 'Lahm' || c.key === 'Erschöpft').map((c) => c.key);
+    const { aufgehoben: removedConds } = zustandsAenderung(conditions, nachPause(conditions, 'ruhephase'));
 
     dispatch({
       type: 'PLAY_REST_HEAL',
@@ -714,7 +712,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
         type: 'hp',
       },
       {
-        label: 'Erschöpfter/Kanalisierter Fokus',
+        label: 'Erschöpfter Fokus, kanalisierte Zauber beendet',
         value: exhaustedChanneledFocus > 0 ? `+${exhaustedChanneledFocus} FO (komplett)` : '0 FO',
         type: 'fo',
       },
@@ -725,11 +723,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
           : (focus.consumed === 0 ? '0 FO (kein verzehrter Fokus)' : '+0 FO'),
         type: 'fo',
       },
-      {
-        label: 'Zustand Erschöpft',
-        value: currentExhaustLvl > 0 ? 'Komplett entfernt' : 'Nicht aktiv',
-        type: 'exhaust',
-      },
+      ...(healthSlots.some((s) => s.type === 'channeled') ? [{ label: 'Kanalisierter Schaden', value: 'bleibt bis zum Ende seines Zustands', type: 'hp' as const }] : []),
     ];
 
     if (removedConds.length > 0) {
@@ -745,7 +739,6 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
     if (actualConsumedHealed > 0) summaryParts.push(`${actualConsumedHealed} echte LP geheilt`);
     if (exhaustedChanneledFocus > 0) summaryParts.push(`${exhaustedChanneledFocus} erschöpfter FO geheilt`);
     if (actualConsumedFocusHealed > 0) summaryParts.push(`${actualConsumedFocusHealed} verzehrter FO geheilt`);
-    if (currentExhaustLvl > 0) summaryParts.push('Erschöpfung komplett geheilt');
     if (removedConds.length > 0) summaryParts.push(`Zustände entfernt (${removedConds.join(', ')})`);
 
     const summary = summaryParts.length > 0 ? summaryParts.join(' · ') : 'Volle Erholung. Keine Wunden oder verzehrter Fokus vorhanden.';

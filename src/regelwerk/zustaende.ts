@@ -14,14 +14,17 @@ import { quelleText } from './relikte';
 
 export const KAMPFPOSITION_LIEGEND = 'Liegend';
 
-export interface Zustandsangabe { name: string; mitStufe: boolean; quelle: string; id?: string; wirkung?: Zustandswirkung; beschreibung?: string }
+/** Wann ein Zustand durch eine Pause endet (Datenseite: pause_ende) */
+export interface PauseEnde { verschnaufpause?: 'aufheben' | 'stufe'; ruhephase?: 'aufheben' | 'stufe' }
+export interface Zustandsangabe { name: string; mitStufe: boolean; quelle: string; id?: string; wirkung?: Zustandswirkung; beschreibung?: string; pauseEnde?: PauseEnde }
 
 let cache: { k: Katalog | null; liste: Zustandsangabe[] } | null = null;
 
 function ausEintrag(k: Katalog, e: Eintrag): Zustandsangabe {
-  const d = (e.daten ?? {}) as { hat_stufe?: boolean; parameter?: unknown; zustandswirkung?: Zustandswirkung; beschreibung?: string };
+  const d = (e.daten ?? {}) as { hat_stufe?: boolean; parameter?: unknown; zustandswirkung?: Zustandswirkung; beschreibung?: string; pause_ende?: PauseEnde };
   const p = Array.isArray(d.parameter) ? d.parameter.join(',') : String(d.parameter ?? '');
-  return { name: e.name, mitStufe: d.hat_stufe ?? /\bStufe\b/.test(p), quelle: quelleText(k, e), id: e.id, wirkung: d.zustandswirkung, beschreibung: d.beschreibung };
+  return { name: e.name, mitStufe: d.hat_stufe ?? /\bStufe\b/.test(p), quelle: quelleText(k, e), id: e.id, wirkung: d.zustandswirkung, beschreibung: d.beschreibung,
+    ...(d.pause_ende ? { pauseEnde: { verschnaufpause: d.pause_ende.verschnaufpause, ruhephase: d.pause_ende.ruhephase } } : {}) };
 }
 
 /** Alle wählbaren Zustände, alphabetisch: aus den geladenen Paketen */
@@ -54,4 +57,28 @@ export function istZustand(name: string, k: Katalog | null = aktiverKatalog()): 
 /** Quellenangabe für die Anzeige beim Überfahren mit der Maus, z. B. „GRW S. 168“ */
 export function zustandQuelle(name: string, k: Katalog | null = aktiverKatalog()): string {
   return zustand(name, k)?.quelle ?? '';
+}
+
+/**
+ * Zustände nach einer Pause (Paketfeld pause_ende, z. B. GRW S. 168–169: Erschöpft verliert je Verschnaufpause eine Stufe,
+ * Glaubenskrise und Lahm enden nach einer Verschnaufpause).
+ * Ruhephase: eigene Angabe des Zustands, sonst die der Verschnaufpause; „eine Stufe je Verschnaufpause“ baut die Ruhephase
+ * ganz ab (Auslegung: sie dauert sechs Stunden, also ein Vielfaches einer Verschnaufpause).
+ * `stufen`: wie viele Stufen eine Verschnaufpause abbaut (Standard 1, im Rast-Dialog einstellbar); `aufheben`: Zustände,
+ * die laut Paket enden, wirklich aufheben (im Rast-Dialog abwählbar).
+ */
+export function nachPause<Z extends { key: string; level?: number }>(zustaende: Z[], art: 'verschnaufpause' | 'ruhephase', k: Katalog | null = aktiverKatalog(), stufen = 1, aufheben = true): Z[] {
+  const out: Z[] = [];
+  for (const z of zustaende) {
+    const pe = zustand(z.key, k)?.pauseEnde;
+    const regel = art === 'ruhephase' ? (pe?.ruhephase ?? (pe?.verschnaufpause ? (pe.verschnaufpause === 'stufe' ? 'aufheben' : pe.verschnaufpause) : undefined)) : pe?.verschnaufpause;
+    if (regel === 'aufheben' && aufheben) continue;
+    if (regel === 'stufe' && stufen > 0) {
+      const rest = (z.level ?? 1) - stufen;
+      if (rest > 0) out.push({ ...z, level: rest });
+      continue;
+    }
+    out.push(z);
+  }
+  return out;
 }

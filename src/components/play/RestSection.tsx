@@ -525,7 +525,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
                             onChange={(e) => setVpRemoveConditions(e.target.checked)}
                             className="rounded-knopf border-rahmen text-unverletzt focus:ring-unverletzt"
                           />
-                          <span>Zustände <em>Glaubenskrise</em> &amp; <em>Lahm</em> aufheben</span>
+                          <span>Zustände aufheben, die laut Regelwerk nach einer Verschnaufpause enden</span>
                         </label>
                       </div>
                     </div>
