@@ -1,0 +1,5 @@
+node_modules
+dist
+# Arbeitsdateien und Bildschirmfotos aus Google AI Studio gehören nicht ins Repository (und nicht in die gehostete App)
+.aistudio/
+public/assets/aistudio/

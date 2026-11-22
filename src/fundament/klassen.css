@@ -1,0 +1,101 @@
+/*
+ * Gemeinsame Klassen des Editors, die keine Bausteine sind: Grundstil der Seite, Protokollkarten, Würfelbanner, Druck.
+ * Farben ausschließlich über die benannten Werte aus fundament.css (siehe FUNDAMENT.md, Abschnitt Gestaltung).
+ * Hier nichts für einzelne Ansichten eintragen – dafür gibt es die Bausteine in bausteine.tsx.
+ */
+@layer base {
+  body { font-family: var(--font-text); background-color: var(--color-seite); color: var(--color-schrift); }
+  h1, h2, h3, h4, .fantasy-font { font-family: var(--font-titel); letter-spacing: 0.04em; }
+  h2, h3 { color: var(--color-gold-hell); }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea {
+    background-color: var(--color-erhoeht); color: var(--color-schrift); border-color: var(--color-rahmen); border-radius: var(--radius-knopf);
+  }
+  input::placeholder, textarea::placeholder { color: var(--color-leise); }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 1px; }
+  button:not(:disabled), select, summary, label[for] { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.55; }
+  input[type="checkbox"], input[type="radio"] { accent-color: var(--color-gold); }
+  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+}
+
+@layer components {
+  .paper-bg { background-color: var(--color-seite); position: relative; }
+  .stat-box { border: 1px solid var(--color-rahmen); background: var(--color-flaeche); border-radius: var(--radius-karte); color: var(--color-schrift); }
+  .dark-theme-panel { background-color: var(--color-flaeche); border-color: var(--color-rahmen); color: var(--color-schrift); }
+  .dark-theme-slot-inactive { background-color: var(--color-seite); border-color: var(--color-rahmen); color: var(--color-leise); }
+  .dark-theme-slot-active { background-color: var(--color-erhoeht); border-color: var(--color-gold); color: var(--color-schrift); }
+  .modal-body-scroll { overflow-y: auto; overscroll-behavior: contain; }
+
+  /* Marken und Banner beim Würfeln */
+  .damage-roll-btn { background: var(--color-schaden-grund); color: var(--color-schrift); border: 1px solid var(--color-schaden); }
+  .damage-roll-btn:hover { background: var(--color-erhoeht); }
+  [id*="wound-penalty"] { background-color: var(--color-schaden-grund); color: var(--color-schrift); border-color: var(--color-schaden); }
+  .roll-patzer-banner { background: var(--color-schaden-grund); color: var(--color-schrift); border: 1px solid var(--color-schaden); }
+  .roll-triumph-banner { background: var(--color-gold); color: var(--color-seite); border: 1px solid var(--color-gold-hell); }
+  .roll-triumph-banner * { color: var(--color-seite); }
+  .badge-free-mastery { background-color: var(--color-erhoeht); border-color: var(--color-gold); color: var(--color-gold-hell); }
+  .badge-free-spell { background-color: var(--color-magie-grund); border-color: var(--color-magie); color: var(--color-schrift); }
+  #verschnaufpause-card { background: var(--color-erschoepft-grund); border-color: var(--color-erschoepft); }
+  #ruhephase-card { background: var(--color-kanalisiert-grund); border-color: var(--color-kanalisiert); }
+
+  /* Würfelprotokoll: linke Kante in der Bedeutungsfarbe, Fläche im gedämpften Grundton */
+  .protocol-card { border-left-width: 4px; background-color: var(--color-flaeche); border-color: var(--color-rahmen); border-left-color: var(--color-leise); }
+  .protocol-card .protocol-title { color: var(--color-schrift); }
+  .protocol-card .protocol-desc { color: var(--color-schrift); }
+  .protocol-card .protocol-time { color: var(--color-leise); }
+  .protocol-card-combat { background-color: var(--color-schaden-grund); border-color: var(--color-rahmen); border-left-color: var(--color-schaden); }
+  .protocol-card-combat .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-schaden); color: var(--color-schrift); }
+  .protocol-card-spell { background-color: var(--color-magie-grund); border-color: var(--color-rahmen); border-left-color: var(--color-magie); }
+  .protocol-card-spell .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-magie); color: var(--color-schrift); }
+  .protocol-card-damage { background-color: var(--color-schaden-grund); border-color: var(--color-rahmen); border-left-color: var(--color-schaden); }
+  .protocol-card-damage .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-schaden); color: var(--color-schrift); }
+  .protocol-card-heal { background-color: var(--color-unverletzt-grund); border-color: var(--color-rahmen); border-left-color: var(--color-unverletzt); }
+  .protocol-card-heal .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-unverletzt); color: var(--color-schrift); }
+  .protocol-card-focus { background-color: var(--color-kanalisiert-grund); border-color: var(--color-rahmen); border-left-color: var(--color-kanalisiert); }
+  .protocol-card-focus .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-kanalisiert); color: var(--color-schrift); }
+  .protocol-card-condition { background-color: var(--color-erschoepft-grund); border-color: var(--color-rahmen); border-left-color: var(--color-erschoepft); }
+  .protocol-card-condition .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-erschoepft); color: var(--color-schrift); }
+  .protocol-card-splitter { background-color: var(--color-erhoeht); border-color: var(--color-rahmen); border-left-color: var(--color-gold); }
+  .protocol-card-splitter .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-gold); color: var(--color-schrift); }
+  .protocol-card-rest-vp { background-color: var(--color-erschoepft-grund); border-color: var(--color-rahmen); border-left-color: var(--color-erschoepft); }
+  .protocol-card-rest-vp .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-erschoepft); color: var(--color-schrift); }
+  .protocol-card-rest-rp { background-color: var(--color-kanalisiert-grund); border-color: var(--color-rahmen); border-left-color: var(--color-kanalisiert); }
+  .protocol-card-rest-rp .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-kanalisiert); color: var(--color-schrift); }
+  .protocol-card-roll-triumph { background-color: var(--color-erhoeht); border-color: var(--color-rahmen); border-left-color: var(--color-gold); }
+  .protocol-card-roll-triumph .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-gold); color: var(--color-schrift); }
+  .protocol-card-roll-patzer { background-color: var(--color-schaden-grund); border-color: var(--color-rahmen); border-left-color: var(--color-schaden); }
+  .protocol-card-roll-patzer .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-schaden); color: var(--color-schrift); }
+  .protocol-card-roll-win { background-color: var(--color-unverletzt-grund); border-color: var(--color-rahmen); border-left-color: var(--color-unverletzt); }
+  .protocol-card-roll-win .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-unverletzt); color: var(--color-schrift); }
+  .protocol-card-roll-fail { background-color: var(--color-erschoepft-grund); border-color: var(--color-rahmen); border-left-color: var(--color-erschoepft); }
+  .protocol-card-roll-fail .protocol-icon-box { background-color: var(--color-flaeche); border-color: var(--color-erschoepft); color: var(--color-schrift); }
+  [class*="protocol-badge-"] { font-weight: 700; border: 1px solid var(--color-rahmen); background-color: var(--color-erhoeht); color: var(--color-schrift); }
+  .protocol-badge-danger { background-color: var(--color-schaden-grund); border-color: var(--color-schaden); }
+  .protocol-badge-success { background-color: var(--color-unverletzt-grund); border-color: var(--color-unverletzt); }
+  .protocol-badge-gold { border-color: var(--color-gold); color: var(--color-gold-hell); }
+  .protocol-badge-info { background-color: var(--color-kanalisiert-grund); border-color: var(--color-kanalisiert); }
+  .protocol-badge-warning { background-color: var(--color-erschoepft-grund); border-color: var(--color-erschoepft); }
+
+  .derived-stats-card { container-type: inline-size; }
+  .dice-roll { animation: diceRoll 0.12s ease-in-out infinite; display: inline-block; }
+}
+
+@container (min-width: 480px) {
+  .derived-stats-grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+}
+
+@keyframes diceRoll {
+  0%   { transform: rotate(-15deg) scale(0.9); }
+  25%  { transform: rotate(100deg) scale(1.05); }
+  50%  { transform: rotate(172deg) scale(0.95); }
+  75%  { transform: rotate(275deg) scale(1.02); }
+  100% { transform: rotate(345deg) scale(0.9); }
+}
+
+@media print {
+  body { background: white; color: black; }
+  .paper-bg { border: none; background: white; }
+  .no-print, button { display: none !important; }
+  .print-only, .skill-details { display: block !important; }
+}

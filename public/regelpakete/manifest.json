@@ -1,0 +1,577 @@
+{
+ "format": "splittermond-regelpaket-manifest",
+ "format_version": "1.0",
+ "erzeugt": "2026-11-02",
+ "beschreibung": "Editor-Manifest: enthält nur das Grundregelwerk. Die Erweiterungsbände lädt der Editor als eigenständige Grimoires (<id>.grim mit \"ladeinfo\").",
+ "basis_paket": "grw",
+ "id_schema": {
+  "muster": "<paket>:<typ>:<slug>[:<slug>...]",
+  "regex": "^[a-z0-9]+:[a-z_]+(:[a-z0-9-]+)+$",
+  "beispiele": [
+   "grw:zauber:flammenstrahl",
+   "grw:schwerpunkt:feuermagie:1"
+  ],
+  "hinweise": [
+   "IDs sind stabil über Neuerzeugungen hinweg, solange Name, Typ und Paket gleich bleiben.",
+   "Meisterschaften enthalten die Fertigkeit im Pfad, Waffen den Modus (nahkampf/fernkampf), Regeltexte ihren Regelbereich.",
+   "quelle.alt_id ist die ID aus der SQLite-Datenbank (sm:…), nur für Rückverfolgung."
+  ]
+ },
+ "aktionen": {
+  "neu": "Neuer Eintrag. Wird der Auswahl hinzugefügt.",
+  "ergaenzt": "Der Eintrag existiert bereits (Feld \"ziel\", meist im Grundregelwerk) und wird durch das Buch erneut abgedruckt oder um Text/Hinweise ergänzt. Das Tool zeigt EINEN Eintrag (den Zieleintrag) und hängt die Quelle sowie zusätzliche Felder an. Regelwerte des Ziels bleiben gültig.",
+  "ersetzt": "Wie \"ergaenzt\", aber das Buch nennt abweichende Regelwerte. \"aenderungen\" listet je Feld {alt, neu}. Ist das Paket geladen, gelten die neuen Werte. \"ersetzung.grund\" nennt, warum die neue Fassung gilt (Errata, neueres Erscheinungsjahr oder Entscheidung). Weicht ein ergänzender Eintrag ab, ohne dass er gilt, steht die Abweichung in daten.abweichungen_zum_ziel. Bei mehreren ersetzenden Paketen entscheidet die Reihenfolge in \"regelgruppen\".",
+  "verweis": "Das Buch nennt einen Eintrag eines anderen Werks nur namentlich (z. B. Meisterschaften, die für eine Magieschule zusätzlich wählbar werden). \"ziel\" zeigt auf den Eintrag, wenn er in einem bekannten Paket liegt; sonst ist \"ziel\" null und \"daten.ziel_quelle_text\" nennt das fremde Werk. Das Tool sollte solche Verweise erst anbieten, wenn das Ziel geladen ist."
+ },
+ "referenzen": {
+  "beschreibung": "Alle Querverweise sind IDs, nie Namen. Felder mit Verweisen: ziel, hat, mindestwert.ziel, fertigkeit_vorhanden, daten.fertigkeit (bei Meisterschaften/Schwerpunkten/Waffen), daten.schulen[].id, daten.merkmale[].id, daten.regelgruppe, daten.beschreibung_id sowie jedes Feld, dessen Name auf _refs oder _ref endet (Liste bzw. Objekt {id, text, …}) und daten.inhalt[].ref bei Ausrüstungssätzen. Der Buchtext steht unverändert daneben (Felder ohne _refs, z. B. daten.felder.merkmale).",
+  "refs_felder": {
+   "fertigkeiten_refs": "Wertekästen (Kreaturen, Tiere, Baukasten): [{id (Fertigkeit), wert, text, zusatz?}]",
+   "merkmale_refs": "Wertekästen: [{id (Monstermerkmal), stufe?, wert? (Zahl in Klammern), parameter? (z. B. „Feuerschaden“ bei Resistenz gegen), zusatz?, text}]; bei Waffen der Wertekästen: Waffenmerkmale [{id, stufe, text}]",
+   "meisterschaften_refs": "Wertekästen: [{id, fertigkeit, schwelle, zusatz?, auswahl?, zusaetzlich?, text}]",
+   "zauber_refs": "Wertekästen: [{id, schule (Fertigkeits-ID), grad, text}]; {auswahl} bei „beliebiger Zauber“",
+   "staerken_refs": "Rassen: Rassenstärken [{id, rassenstaerke: true}]; daten.zusaetzliche_staerkepunkte bei Menschen",
+   "uebliche_rassen_refs / uebliche_abstammungen_refs / kulturkunde_ref": "Kulturen: übliche Rassen; Abstammungen als {alle, ausser[]} bzw. {alle: false, nur[]}; Kulturkunde als Stärke mit bereich",
+   "domaene_ref / kraefte_refs": "Reliktkraft ↔ Domäne (Die Götter)",
+   "fertigkeit_refs": "Handwerkszeug und Verweise: zugehörige Fertigkeit(en)",
+   "parameter_refs": "Dienste „Nutze/Assistiere bei [Fertigkeit]“: die eingesetzte Fertigkeit",
+   "benoetigt_fuer_refs": "Attribute (Grundregeln): Fertigkeiten, die das Attribut nutzen"
+  },
+  "buchfehler": "Ein Verweis mit \"buchfehler\" nennt im Buch einen falsch geschriebenen Namen; \"id\" zeigt auf den gemeinten Eintrag, \"text\" behält den Buchwortlaut.",
+  "kanonisierung": "Verweise zeigen immer auf den Basiseintrag: Erweitert ein Buch einen GRW-Eintrag (ergaenzt/ersetzt), verweisen andere Einträge auf die GRW-ID.",
+  "nicht_aufgeloest": "Ist ein Verweis nicht auflösbar, ist id null und der Originaltext steht in \"text\".",
+  "nachdruck_von": "daten.nachdruck_von: Das Buch druckt einen Eintrag aus einem anderen Band vollständig nach (z. B. Hinter dem Schleier aus Zhoujiang). Der Eintrag ist \"neu\" und ohne den Originalband nutzbar; sind beide Pakete geladen, kann das Tool beide als denselben Eintrag behandeln.",
+  "gleich_wie": "daten.gleich_wie: Ein anderes Paket enthält einen gleichnamigen Eintrag gleichen Typs mit denselben Regelwerten bzw. demselben Regeltext (Beispiel: Merkmal „Ablenkend“ in Mondstahlklingen und Bestienmeister). Das Ziel ist der Eintrag aus dem Paket mit der kleinsten Ladereihenfolge. Sind beide Pakete geladen, sollte das Tool nur einen Eintrag anzeigen und die Quellen zusammenführen. Fehlt das Zielpaket, ist der Eintrag ganz normal nutzbar.",
+  "gleichnamig_mit": "daten.gleichnamig_mit: {id, abweichende_felder} – gleichnamiger Eintrag gleichen Typs in einem anderen Paket, aber mit abweichendem Wortlaut oder abweichenden Werten (z. B. andere Verfügbarkeit). Beide bleiben eigene Einträge; das Tool sollte sie nebeneinander mit ihrer Quelle anzeigen.",
+  "optionale_pakete": "abhaengigkeiten mit \"pflicht\": false (im Manifest \"optionale_pakete\"): Pakete, auf deren Einträge einzelne Verweise zeigen. Sie müssen nicht geladen sein; fehlt eines, bleiben diese Verweise unaufgelöst (wie bei Verweisen auf Bücher ohne Paket)."
+ },
+ "voraussetzungen": {
+  "form": "{ \"text\": <Originaltext>, \"bedingung\": <Bedingung> }",
+  "bedingungen": {
+   "hat": "{\"hat\": <ID>} – Charakter besitzt Meisterschaft/Stärke/Zauber/Rasse/Kultur mit dieser ID. Optional \"bezug\": \"der gleichen Magieschule\" | \"derselben Fertigkeit\" | \"jeweiligen Schwerpunkt\" | \"einer beliebigen Magieschule\" | \"einem beliebigen Schwerpunkt\" – dann gilt dieselbe Meisterschaft (Name in \"meisterschaft_name\") in der so beschriebenen Fertigkeit. Optional \"traeger\": \"tier\" – nicht der Charakter, sondern sein Tiergefährte muss die Meisterschaft besitzen (Bestienmeister).",
+   "mindestwert": "{\"mindestwert\": {\"ziel\": <ID der Fertigkeit/Ressource/Meisterschaft mit Stufe>, \"wert\": <int>}} – Fertigkeitspunkte bzw. Ressourcen-/Stufenwert mindestens \"wert\". Optional \"bereich\": bei der Ressource Rang die Organisation (z. B. \"Zirkel der Zinne\", \"ein entsprechender Kult\"); das Tool muss die Organisation selbst abgleichen.",
+   "schwerpunkt": "{\"schwerpunkt\": {\"fertigkeit\": <ID>, \"name\": <Text>}} – Charakter hat diesen Schwerpunkt. Mit \"auspraegung\" (z. B. \"beliebige Stadt\" bei „Bestimmte Stadt“) genügt jeder Schwerpunkt dieser Art.",
+   "hat_name": "{\"hat_name\": {\"typ\", \"name\", \"bezug\"?, \"fertigkeit\"?}, \"grund\"} – Charakter besitzt einen Eintrag dieses Namens. Für Meisterschaften, die das Buch voraussetzt, die aber in keinem Paket stehen (z. B. „Zauber bereithalten“). Ist der Name im geladenen Katalog nicht vorhanden, entscheidet die Spielleitung.",
+   "meisterschaften_anzahl": "{\"meisterschaften_anzahl\": {\"anzahl\": <int>, \"manoever\": true?, \"fertigkeit\": <ID>?}} – Charakter besitzt mindestens so viele Meisterschaften (mit \"manoever\": true nur solche mit daten.manoever = true).",
+   "fertigkeiten_anzahl": "{\"fertigkeiten_anzahl\": {\"gruppe\": \"magieschule\", \"mindestwert\": <int>, \"anzahl\": <int>}} – in mindestens \"anzahl\" verschiedenen Fertigkeiten der Gruppe je mindestens \"mindestwert\" Punkte (Magieschulen = Fertigkeiten mit daten.kategorie „Magieschule“).",
+   "situativ": "{\"situativ\": true, \"text\"} – Bedingung für den Einsatz, nicht für den Erwerb; beim Charakterbau immer erfüllt, im Spiel anzeigen.",
+   "nicht": "{\"nicht\": <Bedingung>} – die Bedingung darf NICHT erfüllt sein (z. B. Baukasten „kein Fragil“, Abrichtung „keine Abrichtung Kämpfer“).",
+   "gestaffelt": "{\"gestaffelt\": [{\"fuer\": <Text>, \"bedingung\": <Bedingung>}, …]} – unterschiedliche Voraussetzungen je Stufe oder Wahl (z. B. Abrichtung Kämpfer: erste bis vierte Wahl). Die erste Stufe ist die Mindestvoraussetzung.",
+   "typus": "{\"typus\": <Text>, \"traeger\"} – das Tier bzw. Wesen hat diesen Typus (z. B. „Reittier“, „Feenwesen“).",
+   "groessenklasse": "{\"groessenklasse\": {\"min\"?, \"max\"?}, \"traeger\"} – Größenklasse des Tieres bzw. Wesens im Bereich.",
+   "fertigkeit_vorhanden": "{\"fertigkeit_vorhanden\": <ID>, \"traeger\"?} – besitzt die Fertigkeit (mindestens 1 Punkt).",
+   "traeger": "Optional an jeder Bedingung: \"tier\" = der Tiergefährte des Charakters muss sie erfüllen (Bestienmeister), \"wesen\" = das Wesen, das im Baukasten gebaut wird. Ohne \"traeger\" gilt die Bedingung für den Charakter.",
+   "auswahl_einschraenkung": "{\"auswahl_einschraenkung\": {\"gegenstand\", \"aus\"}} – schränkt eine Wahl beim Erwerb ein (z. B. die Magieschule auf die bevorzugten Schulen der Gottheit). \"feld\" nennt, woher die erlaubten Werte kommen: \"gottheit.bevorzugte_magieschulen\" = daten.bevorzugte_magieschulen[].id der Gottheit (Typ gottheit, Paket goetter), die der Charakter verehrt. Die Listen sind laut Buch nicht abschließend (Die Götter S. 171: weitere Schulen in Absprache mit der Spielleitung); eine Schule außerhalb der Liste ist deshalb ein Spielleiterentscheid, kein Ausschluss.",
+   "zauber_typus": "{\"zauber_typus\": {\"typus\": <Text>, \"anzahl\": <int>}} – Charakter beherrscht mindestens so viele Zauber dieses Typus.",
+   "alle": "{\"alle\": [<Bedingung>, …]} – UND",
+   "einer_von": "{\"einer_von\": [<Bedingung>, …]} – ODER",
+   "offen": "{\"offen\": true, \"text\": …, \"grund\": …} – nicht automatisch prüfbar; das Tool soll den Text anzeigen und die Auswahl erlauben (Spielleiterentscheid)."
+  },
+  "hinweis": "Jede Teilbedingung trägt zusätzlich \"text\" mit dem Originalwortlaut."
+ },
+ "abgeleitete_werte": {
+  "regel": "grw:regel:abgeleitete-werte-regeln:berechnung-der-abgeleiteten-werte",
+  "beschreibung": "daten.strukturiert dieses Eintrags enthält die Formeln für GK, GSW, INI, LP, FO, VTD, GW, KW und den Splitterpunkte-Startwert als Summen ({konstante}, {attribut, faktor}, {wert}, {groessenklasse_tabelle}), die Größenklassen-Tabelle, die Gesundheitsstufen mit Wundabzügen, die Modifikatoren durch Heldengrad und Ausrüstung sowie den Höchstbonus je Heldengrad. Jede Angabe trägt in \"belege\" den Satz aus dem Buch mit Seite.",
+  "staerken": "daten.abgeleitete_werte_modifikatoren an Stärken (alle Pakete): [{abgeleiteter_wert, bonus, bedingt?, je_gesundheitsstufe?, mehrfach?, hoechstbonus?, beleg}]. Mit \"bedingt\" gilt der Bonus nur in der genannten Lage und gehört nicht in den Grundwert; \"beleg\" ist der Satz aus der Beschreibung.",
+  "kreaturen": "daten.abgeleitete_werte bei Kreaturen, Tieren und Baukästen sind die im Buch abgedruckten Werte, keine Formeln."
+ },
+ "charaktererschaffung": {
+  "regel": "grw:regel:erschaffung-regeln:uebersicht-ueber-die-charaktererschaffung",
+  "beschreibung": "daten.strukturiert dieses Eintrags enthält die zehn Schritte und alle Punktebudgets und Grenzen der freien Erschaffung (Kultur 15/Abstammung 5/Ausbildung 30 Fertigkeitspunkte mit Höchstwerten je Fertigkeit und Magieschule, Ressourcen 4/2/2, Stärken 1/2/3, Meisterschaften 1/2), die Attributverteilung (18 Punkte, 1–3) mit den Regeln für freie Rassenmodifikatoren, negative Kernressourcen, Start-Erfahrung (15 EP) mit den Steigerungskosten zu Spielbeginn, freie Meisterschaften und Zauber im Feinschliff, Start-Splitterpunkte, Sprachen, Ausrüstung und Startgeld nach Vermögen. Jede Angabe mit Satz und Seite in \"belege\".",
+  "module": "daten.modulwerte an Kulturen und Abstammungen: fertigkeiten/ressourcen als Gruppen [{optionen: [{id}|{auswahl: \"kampffertigkeit\"|\"nahkampffertigkeit\"|\"magieschule\"}], punkte}] bzw. {rest_von: <Gruppenindex>, punkte} für „das andere“, dazu staerke_optionen, meisterschaft_optionen ({id, auswahl?} oder {schwerpunkt}), kulturkunde, muttersprache und die Summen. Alle 39 Module ergeben genau die Budgets der freien Erschaffung.",
+  "rassen": "daten.attributsmodifikatoren an Rassen: {fest: {Attribut: n}, frei: [{bonus, anzahl, unterschiedlich?, nicht?}]}.",
+  "referenz": "Pruefsuite/lader.py: pruefe_erschaffung() prüft einen kompletten Bau und liefert Fehler und Spielleiter-Hinweise."
+ },
+ "typen": {
+  "rasse": {
+   "bezeichnung": "Rassen",
+   "charakterbau_auswahl": true
+  },
+  "kultur": {
+   "bezeichnung": "Kulturen",
+   "charakterbau_auswahl": true
+  },
+  "abstammung": {
+   "bezeichnung": "Abstammungen",
+   "charakterbau_auswahl": true
+  },
+  "staerke": {
+   "bezeichnung": "Stärken",
+   "charakterbau_auswahl": true
+  },
+  "schwaeche": {
+   "bezeichnung": "Schwächen",
+   "charakterbau_auswahl": true
+  },
+  "ressource": {
+   "bezeichnung": "Ressourcen",
+   "charakterbau_auswahl": true
+  },
+  "fertigkeit": {
+   "bezeichnung": "Fertigkeiten",
+   "charakterbau_auswahl": true
+  },
+  "meisterschaftsgruppe": {
+   "bezeichnung": "Meisterschaftsgruppen (allgemeine Meisterschaften)",
+   "charakterbau_auswahl": true
+  },
+  "schwerpunkt": {
+   "bezeichnung": "Schwerpunkte",
+   "charakterbau_auswahl": true
+  },
+  "meisterschaft": {
+   "bezeichnung": "Meisterschaften",
+   "charakterbau_auswahl": true
+  },
+  "zauber": {
+   "bezeichnung": "Zauber",
+   "charakterbau_auswahl": true
+  },
+  "mondzeichen": {
+   "bezeichnung": "Mondzeichen",
+   "charakterbau_auswahl": true
+  },
+  "waffe": {
+   "bezeichnung": "Waffen",
+   "charakterbau_auswahl": true
+  },
+  "projektil": {
+   "bezeichnung": "Projektile",
+   "charakterbau_auswahl": true
+  },
+  "ruestung": {
+   "bezeichnung": "Rüstungen",
+   "charakterbau_auswahl": true
+  },
+  "schild": {
+   "bezeichnung": "Schilde",
+   "charakterbau_auswahl": true
+  },
+  "gegenstand": {
+   "bezeichnung": "Ausrüstung",
+   "charakterbau_auswahl": true
+  },
+  "kleidung": {
+   "bezeichnung": "Kleidung",
+   "charakterbau_auswahl": true
+  },
+  "ausruestungssatz": {
+   "bezeichnung": "Ausrüstungssätze",
+   "charakterbau_auswahl": true
+  },
+  "alchemikum": {
+   "bezeichnung": "Alchemika",
+   "charakterbau_auswahl": true
+  },
+  "gift": {
+   "bezeichnung": "Gifte",
+   "charakterbau_auswahl": true
+  },
+  "kraut": {
+   "bezeichnung": "Kräuter",
+   "charakterbau_auswahl": true
+  },
+  "kraeuterwirkung": {
+   "bezeichnung": "Kräuterwirkungen",
+   "charakterbau_auswahl": false
+  },
+  "tier": {
+   "bezeichnung": "Tiere",
+   "charakterbau_auswahl": true
+  },
+  "dienstleistung": {
+   "bezeichnung": "Dienstleistungen",
+   "charakterbau_auswahl": false
+  },
+  "material": {
+   "bezeichnung": "Materialien",
+   "charakterbau_auswahl": true
+  },
+  "merkmal": {
+   "bezeichnung": "Merkmale von Waffen, Rüstungen, Schilden",
+   "charakterbau_auswahl": true
+  },
+  "monstermerkmal": {
+   "bezeichnung": "Merkmale von Wesen",
+   "charakterbau_auswahl": false
+  },
+  "verbesserung": {
+   "bezeichnung": "Verbesserungen für Gegenstände",
+   "charakterbau_auswahl": true
+  },
+  "objekt": {
+   "bezeichnung": "Unbelebte Objekte",
+   "charakterbau_auswahl": false
+  },
+  "objektzustand": {
+   "bezeichnung": "Objektzustände",
+   "charakterbau_auswahl": false
+  },
+  "qualitaetspreis": {
+   "bezeichnung": "Preise nach Qualität",
+   "charakterbau_auswahl": false
+  },
+  "artefakttyp": {
+   "bezeichnung": "Artefakttypen",
+   "charakterbau_auswahl": true
+  },
+  "artefaktkraft": {
+   "bezeichnung": "Höhere Artefaktkräfte",
+   "charakterbau_auswahl": true
+  },
+  "talisman_verbesserung": {
+   "bezeichnung": "Talisman-Verbesserungen",
+   "charakterbau_auswahl": true
+  },
+  "golem_baustein": {
+   "bezeichnung": "Golem-Bausteine",
+   "charakterbau_auswahl": true
+  },
+  "reliktkraft": {
+   "bezeichnung": "Reliktkräfte (beseelte Gegenstände)",
+   "charakterbau_auswahl": true
+  },
+  "reliktdomaene": {
+   "bezeichnung": "Domänen für Reliktkräfte",
+   "charakterbau_auswahl": true
+  },
+  "gottheit": {
+   "bezeichnung": "Gottheiten (Götterliste mit Aspekten und Magieschulen)",
+   "charakterbau_auswahl": true
+  },
+  "dienst": {
+   "bezeichnung": "Dienste beschworener Wesen",
+   "charakterbau_auswahl": false
+  },
+  "sprache": {
+   "bezeichnung": "Sprachen (Muttersprache, Startsprachen, weitere Sprachen)",
+   "charakterbau_auswahl": true
+  },
+  "abnormitaet": {
+   "bezeichnung": "Abnormitäten für erhobene Untote",
+   "charakterbau_auswahl": false
+  },
+  "beschwoerbares_wesen": {
+   "bezeichnung": "Beschwörbare Wesen aus anderen Publikationen (mit Diensten)",
+   "charakterbau_auswahl": false
+  },
+  "goettliche_kraft": {
+   "bezeichnung": "Göttliche Kräfte (Heiliges Handwerk)",
+   "charakterbau_auswahl": true
+  },
+  "beseeltes_artefakt": {
+   "bezeichnung": "Beispiele beseelter Artefakte",
+   "charakterbau_auswahl": false
+  },
+  "legendaere_kraft": {
+   "bezeichnung": "Legendäre Kräfte für Relikte",
+   "charakterbau_auswahl": true
+  },
+  "legende": {
+   "bezeichnung": "Sagen und legendäre Gegenstände",
+   "charakterbau_auswahl": false
+  },
+  "wesen_aufsatz": {
+   "bezeichnung": "Aufsätze für Wesen",
+   "charakterbau_auswahl": false
+  },
+  "feenwelt": {
+   "bezeichnung": "Feenwelten",
+   "charakterbau_auswahl": false
+  },
+  "artefaktwirkung": {
+   "bezeichnung": "Wirkungen von Strukturgebern (Artefaktqualität)",
+   "charakterbau_auswahl": true
+  },
+  "abrichtung": {
+   "bezeichnung": "Abrichtungen für Tiergefährten",
+   "charakterbau_auswahl": true
+  },
+  "magischer_gegenstand": {
+   "bezeichnung": "Magische Gegenstände",
+   "charakterbau_auswahl": true
+  },
+  "kreatur": {
+   "bezeichnung": "Kreaturen und Tiergefährten mit Werten",
+   "charakterbau_auswahl": true
+  },
+  "wesen_baukasten_basis": {
+   "bezeichnung": "Baukasten für Wesen: Grundwerte",
+   "charakterbau_auswahl": false
+  },
+  "wesen_baukasten_modul": {
+   "bezeichnung": "Baukasten für Wesen: Module",
+   "charakterbau_auswahl": false
+  },
+  "wesen_baukasten_rolle": {
+   "bezeichnung": "Baukasten für Wesen: Rollen",
+   "charakterbau_auswahl": false
+  },
+  "ritual": {
+   "bezeichnung": "Rituale",
+   "charakterbau_auswahl": true
+  },
+  "zustand": {
+   "bezeichnung": "Zustände",
+   "charakterbau_auswahl": false
+  },
+  "imago_verbesserung": {
+   "bezeichnung": "Imago-Verbesserungen (Meisterschaft Imago-Meister)",
+   "charakterbau_auswahl": true
+  },
+  "regel": {
+   "bezeichnung": "Regeltexte",
+   "charakterbau_auswahl": false
+  },
+  "verweis": {
+   "bezeichnung": "Verweise auf Einträge anderer Pakete",
+   "charakterbau_auswahl": false
+  }
+ },
+ "pakete": [
+  {
+   "id": "grw",
+   "titel": "Splittermond: Die Regeln (3. erratierte Neuauflage)",
+   "kuerzel": "GRW",
+   "erscheinungsjahr": 2017,
+   "regionalband": false,
+   "datei": "grw.srp.json",
+   "sha256": "9248633be0f3cfc05ef0c34c0d417de2c1b0414bb24a45f21914c19a8c140d5c",
+   "bytes": 2771011,
+   "basis": true,
+   "pflicht": true,
+   "abhaengigkeiten": [],
+   "optionale_pakete": [],
+   "referenziert_pakete": [],
+   "ladereihenfolge": 0,
+   "eintraege": 1542,
+   "nach_typ": {
+    "abstammung": 17,
+    "alchemikum": 14,
+    "artefaktwirkung": 3,
+    "dienstleistung": 19,
+    "fertigkeit": 53,
+    "gegenstand": 46,
+    "gift": 7,
+    "kleidung": 3,
+    "kraeuterwirkung": 10,
+    "kreatur": 20,
+    "kultur": 12,
+    "material": 14,
+    "meisterschaft": 437,
+    "meisterschaftsgruppe": 3,
+    "merkmal": 23,
+    "mondzeichen": 10,
+    "monstermerkmal": 26,
+    "objekt": 16,
+    "objektzustand": 3,
+    "qualitaetspreis": 9,
+    "rasse": 5,
+    "regel": 239,
+    "ressource": 10,
+    "ruestung": 10,
+    "schild": 5,
+    "schwaeche": 20,
+    "schwerpunkt": 53,
+    "sprache": 36,
+    "staerke": 43,
+    "tier": 3,
+    "verbesserung": 9,
+    "waffe": 69,
+    "zauber": 278,
+    "zustand": 17
+   },
+   "nach_aktion": {
+    "neu": 1542
+   }
+  }
+ ],
+ "bekannte_pakete": [
+  {
+   "id": "grw",
+   "titel": "Splittermond: Die Regeln (3. erratierte Neuauflage)",
+   "kuerzel": "GRW",
+   "erscheinungsjahr": 2017,
+   "regionalband": false,
+   "ladereihenfolge": 0,
+   "abhaengigkeiten": [],
+   "optionale_pakete": []
+  },
+  {
+   "id": "magie",
+   "titel": "Splittermond: Die Magie",
+   "kuerzel": "Magie",
+   "erscheinungsjahr": 2018,
+   "regionalband": false,
+   "ladereihenfolge": 1,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": []
+  },
+  {
+   "id": "goetter",
+   "titel": "Splittermond: Die Götter",
+   "kuerzel": "Götter",
+   "erscheinungsjahr": 2019,
+   "regionalband": false,
+   "ladereihenfolge": 2,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": []
+  },
+  {
+   "id": "jenseits",
+   "titel": "Splittermond: Jenseits der Grenzen",
+   "kuerzel": "Jenseits",
+   "erscheinungsjahr": 2016,
+   "regionalband": false,
+   "ladereihenfolge": 3,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": []
+  },
+  {
+   "id": "mondstahl",
+   "titel": "Splittermond: Mondstahlklingen",
+   "kuerzel": "Mondstahlklingen",
+   "erscheinungsjahr": 2017,
+   "regionalband": false,
+   "ladereihenfolge": 4,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": []
+  },
+  {
+   "id": "bestien",
+   "titel": "Splittermond: Bestienmeister – Tiergefährten in Lorakis",
+   "kuerzel": "Bestienmeister",
+   "erscheinungsjahr": 2016,
+   "regionalband": false,
+   "ladereihenfolge": 5,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "magie",
+    "mondstahl"
+   ]
+  },
+  {
+   "id": "zhou",
+   "titel": "Splittermond: Zhoujiang (Regionalband)",
+   "kuerzel": "Zhoujiang",
+   "erscheinungsjahr": 2017,
+   "regionalband": true,
+   "ladereihenfolge": 6,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "magie",
+    "mondstahl"
+   ]
+  },
+  {
+   "id": "schleier",
+   "titel": "Splittermond: Hinter dem Schleier",
+   "kuerzel": "Schleier",
+   "erscheinungsjahr": 2026,
+   "regionalband": false,
+   "ladereihenfolge": 7,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "magie",
+    "goetter",
+    "jenseits",
+    "mondstahl",
+    "zhou"
+   ]
+  },
+  {
+   "id": "sadu",
+   "titel": "Splittermond: Sadu (Regionalband)",
+   "kuerzel": "Sadu",
+   "erscheinungsjahr": 2018,
+   "regionalband": true,
+   "ladereihenfolge": 8,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "mondstahl",
+    "zhou"
+   ]
+  },
+  {
+   "id": "selenia",
+   "titel": "Splittermond: Selenia (Regionalband)",
+   "kuerzel": "Selenia",
+   "erscheinungsjahr": 2016,
+   "regionalband": true,
+   "ladereihenfolge": 9,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "magie",
+    "mondstahl"
+   ]
+  },
+  {
+   "id": "esmoda",
+   "titel": "Splittermond: Esmoda (Regionalband)",
+   "kuerzel": "Esmoda",
+   "erscheinungsjahr": 2017,
+   "regionalband": true,
+   "ladereihenfolge": 10,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "mondstahl"
+   ]
+  },
+  {
+   "id": "unreich",
+   "titel": "Splittermond: Das Unreich (Regionalband)",
+   "kuerzel": "Unreich",
+   "erscheinungsjahr": 2017,
+   "regionalband": true,
+   "ladereihenfolge": 11,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "mondstahl"
+   ]
+  },
+  {
+   "id": "waelder",
+   "titel": "Splittermond: Die Wandernden Wälder (Regionalband)",
+   "kuerzel": "Wandernde Wälder",
+   "erscheinungsjahr": 2020,
+   "regionalband": true,
+   "ladereihenfolge": 12,
+   "abhaengigkeiten": [
+    "grw"
+   ],
+   "optionale_pakete": [
+    "mondstahl"
+   ]
+  }
+ ],
+ "lade_algorithmus": [
+  "1. manifest.json und das Basispaket (grw.srp.json, sha256 prüfen) laden.",
+  "2. Hochgeladene Grimoires nach ladeinfo.ladereihenfolge laden; ladeinfo.abhaengigkeiten müssen geladen sein.",
+  "3. Einträge mit aktion \"neu\" aufnehmen; \"ergaenzt\"/\"ersetzt\" auf den Zieleintrag anwenden (bei \"ersetzt\" aenderungen[feld].neu übernehmen).",
+  "4. Regelgruppen aus ladeinfo.regelgruppen aller geladenen Grimoires vereinigen; je Gruppe gilt die erste Fassung, deren Paket geladen ist.",
+  "5. \"verweis\" nur anbieten, wenn das Ziel geladen ist.",
+  "6. ladeinfo.umbenannt: alte IDs auf neue umlenken (gespeicherte Charaktere bleiben gültig)."
+ ]
+}

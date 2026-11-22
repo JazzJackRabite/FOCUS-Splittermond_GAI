@@ -1,0 +1,8 @@
+{
+  "_hinweis": "Bekannte Verstöße gegen FUNDAMENT.md. Wird nur kleiner: nach einer Umstellung mit FUNDAMENT_ALTLASTEN=schreiben npx vitest run src/fundament neu schreiben. Nie von Hand erweitern.",
+  "farbwerte": {},
+  "regelnamen": [],
+  "paketzugriffe": [],
+  "suchmuster": [],
+  "knoepfe": {}
+}

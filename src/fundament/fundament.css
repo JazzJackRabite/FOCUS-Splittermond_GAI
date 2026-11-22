@@ -1,0 +1,53 @@
+/*
+ * FUNDAMENT – Gestaltung. Die einzige Stelle im Editor, an der Farbwerte, Schriften und Maße stehen.
+ * Beschreibung und Regeln: FUNDAMENT.md im Wurzelordner, Abschnitt „Gestaltung“.
+ *
+ * Die Werte im @theme-Block werden zu Tailwind-Klassen: --color-flaeche → bg-flaeche, text-flaeche, border-flaeche;
+ * --font-titel → font-titel; --radius-karte → rounded-karte. Ansichten verwenden nur diese Namen, keine Farbwerte.
+ */
+@theme {
+  /* Grundtöne */
+  --color-seite: #1C2130;          /* Hintergrund der App */
+  --color-flaeche: #242A3B;        /* Karten und Dialoge */
+  --color-erhoeht: #2C3347;        /* Eingaben, neutrale Knöpfe, Hover */
+  --color-rahmen: #3A4258;         /* Rahmen und Trennlinien */
+  --color-schrift: #E6E1D3;        /* Überschriften, Werte, Fließtext */
+  --color-leise: #A3A096;          /* Beschriftungen und Nebentext */
+
+  /* Akzent: nur Marke, Abschnittstitel, aktiver Reiter, Hauptaktion */
+  --color-gold: #C9A24C;
+  --color-gold-hell: #D9B563;
+
+  /* Bedeutungsfarben: als Rahmen oder Fläche auf ihrem gedämpften Grundton, Text bleibt --color-schrift */
+  --color-unverletzt: #7A9D76;
+  --color-unverletzt-grund: #26301F;
+  --color-erschoepft: #C99A4E;
+  --color-erschoepft-grund: #332A19;
+  --color-schaden: #B06258;
+  --color-schaden-grund: #33211D;
+  --color-kanalisiert: #6C8CAA;
+  --color-kanalisiert-grund: #1F2836;
+  --color-magie: #9683AB;
+  --color-magie-grund: #292233;
+  --color-temporaer: #6BA99C;
+  --color-temporaer-grund: #1E2D29;
+
+  /* Schrift */
+  --font-titel: 'Cinzel', serif;        /* Marke, Überschriften, große Zahlen */
+  --font-text: 'Merriweather', serif;   /* alles andere */
+
+  /* Rundungen */
+  --radius-karte: 12px;
+  --radius-knopf: 8px;
+}
+
+/* Scrollbalken: Spur im Seitenton, Griff im leisen Textton, unter dem Zeiger Gold */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-leise) var(--color-seite);
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: var(--color-seite); border-radius: 5px; }
+*::-webkit-scrollbar-thumb { background: var(--color-leise); border-radius: 5px; border: 2px solid var(--color-seite); }
+*::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
+*::-webkit-scrollbar-corner { background: transparent; }

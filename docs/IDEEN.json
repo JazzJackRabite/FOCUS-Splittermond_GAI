@@ -1,0 +1,190 @@
+{
+  "format": "fokus-ideen-v1",
+  "exportiert": "2026-11-12T15:34:11+01:00",
+  "quelle": "Ideen-Seite https://claude.ai/artifact/TSG9wGyzXasCUaGmNeTV2s (Sammlung ideen)",
+  "anzahl": 15,
+  "ideen": [
+    {
+      "id": "idee-1",
+      "n": 1,
+      "titel": "Thema Schaden/Fokus umbauen (Splitterpunkte usw. berücksichtigen)",
+      "bereich": "Charakterwerte & Regeln",
+      "datum": "2026-11-06",
+      "umsetzung": "teilweise",
+      "prio": "",
+      "stand": "Es gibt eigene Dialoge für „Schaden erleiden“ und „Heilen“; dort senkt 1 Splitterpunkt den Schaden um 5. Ein grundlegender Umbau von Schaden/Fokus steht noch aus.",
+      "notiz": false
+    },
+    {
+      "id": "idee-2",
+      "n": 2,
+      "titel": "Mondzeichen-Gabe des Helden und Splitterpunkte erweitern",
+      "bereich": "Charakterwerte & Regeln",
+      "datum": "2026-11-06",
+      "umsetzung": "teilweise",
+      "prio": "",
+      "stand": "Splitterpunkte steigen mit dem Heldengrad und werden als Rauten angezeigt. Von den Mondzeichen wirkt bisher nur „Segen der Mondkraft“ (beim Rasten).",
+      "notiz": false
+    },
+    {
+      "id": "idee-4",
+      "n": 4,
+      "titel": "Mehr Regeltexte bei Erschaffung/Steigerung anzeigen",
+      "bereich": "Erschaffung & Steigerung",
+      "datum": "2026-11-06",
+      "umsetzung": "teilweise",
+      "prio": "",
+      "stand": "Neuer Regelkasten (ErschaffungRegelwerk) im Charakter-Tab. Ob der Umfang reicht, musst du selbst beurteilen.",
+      "notiz": false
+    },
+    {
+      "id": "idee-5",
+      "n": 5,
+      "titel": "Regel-Browser implementieren",
+      "bereich": "Regelwissen",
+      "datum": "2026-11-06",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Noch nicht vorhanden.",
+      "notiz": false
+    },
+    {
+      "id": "idee-6",
+      "n": 6,
+      "titel": "Schnellleiste für Alchemika & Verbrauchsgegenstände",
+      "bereich": "Ausrüstung & Handel",
+      "datum": "2026-11-06",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Im Inventar gibt es nur einen Filter für Alchemika. Einen Zauber-Schnellzugriff gibt es im Kampf-Tab, für Gegenstände nicht.",
+      "notiz": false
+    },
+    {
+      "id": "idee-7",
+      "n": 7,
+      "titel": "Automatischer Geldwechsler & Händler-Kaufmodus",
+      "bereich": "Ausrüstung & Handel",
+      "datum": "2026-11-06",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Geldbeutel (Solare, Lunare, Telare) ist da, rechnet aber nicht automatisch um; kein Kaufmodus.",
+      "notiz": false
+    },
+    {
+      "id": "idee-8",
+      "n": 8,
+      "titel": "Kampagnen-Tagebuch, Questlog & NSC-Verzeichnis",
+      "bereich": "Kampagne & Verwaltung",
+      "datum": "2026-11-06",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Noch nicht vorhanden.",
+      "notiz": false
+    },
+    {
+      "id": "idee-9",
+      "n": 9,
+      "titel": "Cloud-Verwaltung von Charakteren",
+      "bereich": "Kampagne & Verwaltung",
+      "datum": "2026-11-06",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Charaktere liegen weiterhin nur im Browser-Speicher.",
+      "notiz": false
+    },
+    {
+      "id": "idee-10",
+      "n": 10,
+      "titel": "Splittermond-Ticksystem (evtl. als ganz eigenes Tool)",
+      "bereich": "Kampf & Spielleitung",
+      "datum": "2026-11-06",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Waffengeschwindigkeit und Tick-Zuschlag werden angezeigt, eine Tickleiste gibt es nicht.",
+      "notiz": false
+    },
+    {
+      "id": "idee-11",
+      "n": 11,
+      "titel": "Meister-Tool",
+      "bereich": "Kampf & Spielleitung",
+      "datum": "2026-11-06",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Noch nicht vorhanden.",
+      "notiz": false
+    },
+    {
+      "id": "idee-12",
+      "n": 12,
+      "titel": "Zauberschwierigkeiten und -auswirkungen überprüfen (Heilung funktioniert nicht)",
+      "bereich": "Fehler & Regelprüfung",
+      "datum": "2026-11-06",
+      "umsetzung": "testen",
+      "prio": "",
+      "stand": "Seit 10.11. kommen Heilwerte aus den Regelpaketen (Selbstheilung, Leichte Heilung, Heilung, Wiederherstellung), dazu Erfrischung und Giftbann. Bitte im Spiel ausprobieren.",
+      "notiz": false
+    },
+    {
+      "id": "idee-13",
+      "n": 13,
+      "titel": "Patzerauswirkungen umsetzen!!!",
+      "bereich": "Fehler & Regelprüfung",
+      "datum": "2026-11-07",
+      "umsetzung": "teilweise",
+      "prio": "hoch",
+      "stand": "Patzer werden jetzt einheitlich korrekt erkannt (Augensumme ≤ 3) und angezeigt – Folgen hat ein Patzer aber noch keine.",
+      "notiz": false
+    },
+    {
+      "id": "idee-14",
+      "n": 14,
+      "titel": "Waffenmerkmale wie „Scharf 2“ werden nicht berücksichtigt",
+      "bereich": "Fehler & Regelprüfung",
+      "datum": "2026-11-07",
+      "umsetzung": "offen",
+      "prio": "",
+      "stand": "Merkmale werden nur angezeigt; der Schadenswurf ignoriert sie weiterhin.",
+      "notiz": false
+    },
+    {
+      "id": "idee-15",
+      "n": 15,
+      "titel": "Splittergaben regelkonform umsetzen",
+      "bereich": "Fehler & Regelprüfung",
+      "datum": "2026-11-10",
+      "umsetzung": "teilweise",
+      "prio": "",
+      "stand": "Bei normalen Proben geht +3 nur einmal pro Wurf, „Schaden −5“ gibt es. Beim Angriff und Zaubern lässt sich +3 noch mehrfach drücken. Verteidigung +3 und Resonanz fehlen.",
+      "notiz": true
+    },
+    {
+      "id": "imwddgrx5n8hj",
+      "n": 16,
+      "titel": "Kampfpositionen umsetzen",
+      "bereich": "Kampf & Spielleitung",
+      "datum": "2026-11-12",
+      "umsetzung": "offen",
+      "prio": "hoch",
+      "stand": "https://splitterwiki.de/wiki/Kampfposition#Boni_und_Mali_von_Kampfpositionen",
+      "notiz": false,
+      "erstellt": "2026-11-12T09:55:22.841Z",
+      "geaendert": "2026-11-12T09:55:22.842Z"
+    }
+  ],
+  "papierkorb": [
+    {
+      "id": "idee-3",
+      "n": 3,
+      "titel": "Ggf. Erschaffung und Steigerung zu einem Tab zusammenführen",
+      "bereich": "Erschaffung & Steigerung",
+      "datum": "2026-11-06",
+      "umsetzung": "erledigt",
+      "prio": "",
+      "stand": "Beides läuft im gemeinsamen Tab „Charakter“.",
+      "notiz": false,
+      "geaendert": "2026-11-12T14:25:36.205Z",
+      "geloescht": "2026-11-12T14:25:36.205Z"
+    }
+  ]
+}
