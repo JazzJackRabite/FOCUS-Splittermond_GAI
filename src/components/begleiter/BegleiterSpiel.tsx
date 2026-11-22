@@ -160,11 +160,13 @@ export function useBegleiterSpiel(b: Begleiter, index: number, angaben: Begleite
       {lpModal === 'heilen' && (
         <HealModal begleiter={angaben.name} stufen={stufen} maxLP={angaben.lp} currentHealthSlots={gesundheitsfelder(lage.gesamt, z)} activeConditions={z.zustaende ?? []}
           onClose={() => setLpModal(null)}
-          onApplyHeal={({ consumedHealed, exhaustedHealed, channeledHealed, note, healMethod }) => {
+          onApplyHeal={({ consumedHealed, exhaustedHealed, channeledHealed, kanalisiertFreigegeben = 0, note, healMethod }) => {
             const summe = consumedHealed + exhaustedHealed + channeledHealed;
-            if (summe <= 0) return;
-            setze({ ...z, schaden: Math.max(0, (z.schaden ?? 0) - consumedHealed), betaeubung: Math.max(0, (z.betaeubung ?? 0) - exhaustedHealed), kanalisiert: Math.max(0, (z.kanalisiert ?? 0) - channeledHealed) });
-            log('heal', `${summe} LP geheilt${healMethod && healMethod !== 'manual' ? ` (${healMethod.replace('_', ' ')})` : ''}`, note, { text: `+${summe} LP`, variant: 'success' });
+            const frei = Math.min(kanalisiertFreigegeben, z.kanalisiert ?? 0);
+            if (summe <= 0 && frei <= 0) return;
+            setze({ ...z, schaden: Math.max(0, (z.schaden ?? 0) - consumedHealed), betaeubung: Math.max(0, (z.betaeubung ?? 0) - exhaustedHealed + frei), kanalisiert: Math.max(0, (z.kanalisiert ?? 0) - channeledHealed - frei) });
+            if (frei > 0) log('heal', `${frei} kanalisierte Punkte werden zu Betäubungsschaden`, 'Zustand aufgehoben (GRW S. 173)', { text: `${frei} → Betäubung`, variant: 'info' });
+            if (summe > 0) log('heal', `${summe} LP geheilt${healMethod && healMethod !== 'manual' ? ` (${healMethod.replace('_', ' ')})` : ''}`, note, { text: `+${summe} LP`, variant: 'success' });
           }} />
       )}
     </OhneCharakterBoni>

@@ -2,7 +2,8 @@ import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf,
 import React, { useId, useMemo, useState } from 'react';
 import { Heart, X, Plus, Minus, Check, Sparkles, Activity } from 'lucide-react';
 import type { HealthSlot, StatusCondition } from '../../types';
-import { heilkundeAuswirkungen, standardGesundheitsstufen, verschnaufpause } from '../../regelwerk/schadenUndHeilung';
+import { heilkundeAuswirkungen, standardGesundheitsstufen } from '../../regelwerk/schadenUndHeilung';
+import { useHausregeln } from '../../fundament/hausregeln';
 
 export interface HealModalProps {
   onClose: () => void;
@@ -17,6 +18,8 @@ export interface HealModalProps {
     consumedHealed: number;
     exhaustedHealed: number;
     channeledHealed: number;
+    /** kanalisierter Schaden, dessen Zustand aufgehoben ist: wird zu Betäubungsschaden (GRW S. 15, 173) */
+    kanalisiertFreigegeben?: number;
     conditionsToRemove: string[];
     conditionsToReduceLevel: Array<{ id: string; newLevel: number }>;
     note?: string;
@@ -24,8 +27,17 @@ export interface HealModalProps {
   }) => void;
 }
 
-type HealMethodType = 'manual' | 'heilkunde' | 'heilmagie' | 'heiltrank' | 'verschnaufpause';
-type HealPriorityType = 'consumed_first' | 'exhausted_first' | 'only_consumed' | 'only_exhausted' | 'only_channeled';
+/*
+ * Heilung nach dem Grundregelwerk (S. 119–120, 173–174):
+ * - Heilkunde, Heilzauber und Heiltränke heilen echten Schaden. Ob sie auch Betäubungsschaden heilen, regelt das GRW
+ *   nicht; die Verteilung auf Betäubung gibt es deshalb nur mit „Hausregeln erlauben“.
+ * - Betäubungsschaden heilt die Verschnaufpause, echten Schaden auch die Ruhephase: beides im Abschnitt „Rast“.
+ * - Kanalisierter Schaden heilt nicht, solange sein Zustand besteht (S. 173); ist der Zustand aufgehoben, wird er zu
+ *   Betäubungsschaden (Beispiel S. 15).
+ * - „Freie Heilung“ (beliebige Punkte und Schadensarten) ist ein Werkzeug für Sonderfälle und nur mit Hausregeln wählbar.
+ */
+type HealMethodType = 'manual' | 'heilkunde' | 'heilmagie' | 'heiltrank';
+type HealPriorityType = 'consumed_first' | 'exhausted_first' | 'only_consumed' | 'only_exhausted';
 
 export const HealModal: React.FC<HealModalProps> = ({
   stufen: stufenProp,
@@ -37,7 +49,7 @@ export const HealModal: React.FC<HealModalProps> = ({
   onApplyHeal,
 }) => {
   const stufen = useMemo(() => stufenProp ?? standardGesundheitsstufen(), [stufenProp]);
-  const pause = useMemo(() => verschnaufpause(), []);
+  const hausregeln = useHausregeln();
   const heilkunde = useMemo(() => heilkundeAuswirkungen(), []);
   // Current slot damage counts
   const consumedCount = useMemo(
@@ -55,13 +67,16 @@ export const HealModal: React.FC<HealModalProps> = ({
   const totalDamageCount = consumedCount + exhaustedCount + channeledCount;
 
   // Selected healing method (GRW S. 119–120, 173–174)
-  const [method, setMethod] = useState<HealMethodType>('manual');
+  const [method, setMethod] = useState<HealMethodType>('heilkunde');
 
   // Amount to heal
-  const [healAmount, setHealAmount] = useState<number>(() => (totalDamageCount > 0 ? Math.min(3, totalDamageCount) : 1));
+  const [healAmount, setHealAmount] = useState<number>(() => (consumedCount > 0 ? Math.min(3, consumedCount) : 1));
 
   // Priority / target damage type
-  const [priority, setPriority] = useState<HealPriorityType>('consumed_first');
+  const [priorityWahl, setPriority] = useState<HealPriorityType>('only_consumed');
+  // ohne Hausregeln heilt jede Methode nur echten Schaden
+  const priority: HealPriorityType = hausregeln ? priorityWahl : 'only_consumed';
+  const [freigeben, setFreigeben] = useState(0);
 
   // Condition treatments: set of condition IDs to remove
   const [conditionsToRemove, setConditionsToRemove] = useState<Set<string>>(new Set());
@@ -72,16 +87,9 @@ export const HealModal: React.FC<HealModalProps> = ({
   // Handle method presets
   const handleSelectMethod = (selected: HealMethodType) => {
     setMethod(selected);
-    // Welche Zustände eine Behandlung aufhebt, entscheidet der Spieltisch; der Dialog wählt nichts vor.
-    if (selected === 'verschnaufpause') {
-      setPriority('only_exhausted');
-      setHealAmount(exhaustedCount > 0 ? exhaustedCount : 1);
-    } else if (selected === 'heilmagie') {
-      setPriority('consumed_first');
-    } else if (selected === 'heilkunde') {
-      setPriority('consumed_first');
-    }
+    setPriority(selected === 'manual' ? 'consumed_first' : 'only_consumed');
   };
+
 
   // Toggle condition removal
   const toggleConditionRemoval = (id: string) => {
@@ -101,26 +109,20 @@ export const HealModal: React.FC<HealModalProps> = ({
     let budget = Math.max(0, healAmount);
     let c = 0;
     let e = 0;
-    let ch = 0;
+    const ch = 0;
 
     if (priority === 'consumed_first') {
       c = Math.min(budget, consumedCount);
       budget -= c;
       e = Math.min(budget, exhaustedCount);
-      budget -= e;
-      ch = Math.min(budget, channeledCount);
     } else if (priority === 'exhausted_first') {
       e = Math.min(budget, exhaustedCount);
       budget -= e;
       c = Math.min(budget, consumedCount);
-      budget -= c;
-      ch = Math.min(budget, channeledCount);
     } else if (priority === 'only_consumed') {
       c = Math.min(budget, consumedCount);
     } else if (priority === 'only_exhausted') {
       e = Math.min(budget, exhaustedCount);
-    } else if (priority === 'only_channeled') {
-      ch = Math.min(budget, channeledCount);
     }
 
     return {
@@ -129,7 +131,7 @@ export const HealModal: React.FC<HealModalProps> = ({
       actualChanneled: ch,
       totalActualHealed: c + e + ch,
     };
-  }, [healAmount, priority, consumedCount, exhaustedCount, channeledCount]);
+  }, [healAmount, priority, consumedCount, exhaustedCount]);
 
   // Wound preview simulation (GRW S. 172)
   const woundPreview = useMemo(() => {
@@ -173,13 +175,13 @@ export const HealModal: React.FC<HealModalProps> = ({
       heilkunde: 'Heilkunde',
       heilmagie: 'Heilmagie',
       heiltrank: 'Heiltrank / Elixier',
-      verschnaufpause: `Verschnaufpause (${pause.minuten} Minuten)`,
     };
 
     onApplyHeal({
       consumedHealed: actualConsumed,
       exhaustedHealed: actualExhausted,
       channeledHealed: actualChanneled,
+      kanalisiertFreigegeben: Math.min(freigeben, channeledCount),
       conditionsToRemove: Array.from(conditionsToRemove),
       conditionsToReduceLevel: [],
       note: healNote.trim() || undefined,
@@ -233,10 +235,6 @@ export const HealModal: React.FC<HealModalProps> = ({
               1. Heilmethode / Kontext
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-              <Wahlknopf gewaehlt={method === 'manual'} ton="erholung" onClick={() => handleSelectMethod('manual')}>
-                <div className="font-bold text-xs">Freie Heilung</div>
-                <div className="text-[11px] text-leise leading-tight">Beliebige Punkte</div>
-              </Wahlknopf>
 
               <Wahlknopf gewaehlt={method === 'heilkunde'} ton="erholung" onClick={() => handleSelectMethod('heilkunde')} title={[heilkunde['Gelungen'], heilkunde['Herausragend']].filter(Boolean).join(' ')}>
                 <div className="font-bold text-xs flex items-center justify-between">
@@ -259,11 +257,16 @@ export const HealModal: React.FC<HealModalProps> = ({
                 <div className="text-[11px] text-leise leading-tight">Alchemie</div>
               </Wahlknopf>
 
-              <Wahlknopf gewaehlt={method === 'verschnaufpause'} ton="erholung" onClick={() => handleSelectMethod('verschnaufpause')}>
-                <div className="font-bold text-xs">Verschnaufpause</div>
-                <div className="text-[11px] text-leise leading-tight">{pause.minuten} Minuten: {pause.wirkung}</div>
+              <Wahlknopf gewaehlt={method === 'manual'} ton="erholung" onClick={() => handleSelectMethod('manual')} disabled={!hausregeln}
+                title={hausregeln ? undefined : 'Nur mit „Hausregeln erlauben“ (Einstellungen → Allgemein)'}>
+                <div className="font-bold text-xs">Freie Heilung</div>
+                <div className="text-[11px] text-leise leading-tight">{hausregeln ? 'Hausregel: beliebige Punkte' : 'nur mit Hausregeln'}</div>
               </Wahlknopf>
             </div>
+            <p className="text-[11px] text-leise m-0" data-testid="heil-regel">
+              Heilkunde, Heilzauber und Heiltränke heilen echten Schaden. Betäubungsschaden heilt die Verschnaufpause, echten
+              Schaden auch die Ruhephase: beides im Abschnitt „Rast“ (GRW S. 173–174).
+            </p>
           </div>
 
           {/* 2. Heilmenge (Punkte) */}
@@ -273,7 +276,7 @@ export const HealModal: React.FC<HealModalProps> = ({
                 2. Zu heilende Schadenspunkte
               </label>
               <div className="flex items-center gap-1">
-                {exhaustedCount > 0 && (
+                {hausregeln && exhaustedCount > 0 && (
                   <Knopf
                     onClick={() => {
                       setPriority('only_exhausted');
@@ -287,7 +290,7 @@ export const HealModal: React.FC<HealModalProps> = ({
                 {consumedCount > 0 && (
                   <Knopf art="gefahr"
                     onClick={() => {
-                      setPriority('consumed_first');
+                      setPriority('only_consumed');
                       setHealAmount(consumedCount);
                     }}
                     className="text-[11px]"
@@ -295,15 +298,15 @@ export const HealModal: React.FC<HealModalProps> = ({
                     Echter ({consumedCount})
                   </Knopf>
                 )}
-                {totalDamageCount > 0 && (
+                {hausregeln && consumedCount + exhaustedCount > 0 && (
                   <Knopf art="erholung"
                     onClick={() => {
                       setPriority('consumed_first');
-                      setHealAmount(totalDamageCount);
+                      setHealAmount(consumedCount + exhaustedCount);
                     }}
                     className="text-[11px]"
                   >
-                    Alles ({totalDamageCount})
+                    Alles ({consumedCount + exhaustedCount})
                   </Knopf>
                 )}
               </div>
@@ -354,12 +357,15 @@ export const HealModal: React.FC<HealModalProps> = ({
             </div>
           </div>
 
-          {/* 3. Ziel-Schadensart / Priorität */}
+          {/* 3. Ziel-Schadensart / Priorität: nur mit Hausregeln (das GRW regelt nicht, ob diese Heilungen Betäubung heilen) */}
           <div className="bg-seite border border-rahmen rounded-knopf p-3 sm:p-3.5 space-y-2">
             <label className="block text-xs font-bold text-unverletzt uppercase tracking-wider">
-              3. Zu heilende Schadensart / Priorität
+              3. Zu heilende Schadensart
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-xs">
+            {!hausregeln && (
+              <p className="text-[11px] text-leise m-0">Echter Schaden. Eine andere Verteilung (etwa Betäubung zuerst) ist im GRW nicht geregelt und nur mit „Hausregeln erlauben“ wählbar.</p>
+            )}
+            {hausregeln && <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-xs">
               <Wahlknopf gewaehlt={priority === 'consumed_first'} ton="erholung" onClick={() => setPriority('consumed_first')}>
                 <div className="font-bold text-xs text-schrift">Echter Schaden zuerst</div>
                 <div className="text-[11px] text-leise">Rest auf Betäubung</div>
@@ -380,11 +386,7 @@ export const HealModal: React.FC<HealModalProps> = ({
                 <div className="text-[11px] text-leise">Kästen leeren</div>
               </Wahlknopf>
 
-              <Wahlknopf gewaehlt={priority === 'only_channeled'} ton="erholung" onClick={() => setPriority('only_channeled')}>
-                <div className="font-bold text-xs text-kanalisiert">Nur Kanalisiert</div>
-                <div className="text-[11px] text-leise">Kästen leeren</div>
-              </Wahlknopf>
-            </div>
+            </div>}
 
             {/* Effective healing summary pill */}
             <div className="text-[11px] bg-seite p-2 rounded-knopf border border-rahmen flex items-center justify-between text-schrift">
@@ -399,6 +401,23 @@ export const HealModal: React.FC<HealModalProps> = ({
           </div>
 
           {!begleiter && (<>
+          {/* Kanalisierter Schaden: wird zu Betäubung, wenn sein Zustand aufgehoben ist (GRW S. 15, 173) */}
+          {channeledCount > 0 && (
+            <div className="bg-seite border border-kanalisiert rounded-knopf p-3 sm:p-3.5 space-y-2" data-testid="kanalisiert-freigeben">
+              <label className="block text-xs font-bold text-schrift uppercase tracking-wider">Kanalisierter Schaden ({channeledCount})</label>
+              <p className="text-[11px] text-leise m-0">
+                Heilt nicht, solange sein Zustand (Krankheit, Fluch …) besteht. Ist der Zustand aufgehoben, wird er zu Betäubungsschaden,
+                den die nächste Verschnaufpause heilt (GRW S. 15, 173).
+              </p>
+              <div className="flex items-center gap-2 text-xs">
+                <Knopf nurSymbol aria-label="ein Punkt weniger freigeben" disabled={freigeben <= 0} onClick={() => setFreigeben((n) => Math.max(0, n - 1))}><Minus size={14} aria-hidden /></Knopf>
+                <span className="w-6 text-center tabular-nums font-bold text-schrift" data-testid="kanalisiert-freigeben-wert">{freigeben}</span>
+                <Knopf nurSymbol aria-label="ein Punkt mehr freigeben" disabled={freigeben >= channeledCount} onClick={() => setFreigeben((n) => Math.min(channeledCount, n + 1))}><Plus size={14} aria-hidden /></Knopf>
+                <span className="text-schrift">Punkte werden zu Betäubungsschaden (Zustand aufgehoben)</span>
+              </div>
+            </div>
+          )}
+
           {/* 4. Zustände lindern / entfernen (GRW S. 168–169) */}
           <div className="bg-seite border border-rahmen rounded-knopf p-3 sm:p-3.5 space-y-2">
             <div className="flex items-center justify-between">
@@ -504,7 +523,7 @@ export const HealModal: React.FC<HealModalProps> = ({
 
           <Knopf art="erholung"
             onClick={() => handleSubmit()}
-            disabled={totalActualHealed === 0 && conditionsToRemove.size === 0}
+            disabled={totalActualHealed === 0 && conditionsToRemove.size === 0 && freigeben === 0}
             className="text-xs sm:text-sm gap-1.5 disabled:cursor-not-allowed"
           >
             <Check size={16} />

@@ -1479,8 +1479,19 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
           maxLP={maxLP}
           currentHealthSlots={healthSlots}
           activeConditions={conditions}
-          onApplyHeal={({ consumedHealed, exhaustedHealed, channeledHealed, conditionsToRemove, note, healMethod }) => {
+          onApplyHeal={({ consumedHealed, exhaustedHealed, channeledHealed, kanalisiertFreigegeben = 0, conditionsToRemove, note, healMethod }) => {
             const totalHealed = consumedHealed + exhaustedHealed + channeledHealed;
+            if (kanalisiertFreigegeben > 0) {
+              session.logAndDispatch(
+                { type: 'PLAY_KANALISIERT_FREIGEBEN', payload: { amount: kanalisiertFreigegeben } },
+                {
+                  category: 'heal',
+                  title: 'Kanalisierter Schaden freigegeben',
+                  description: `${kanalisiertFreigegeben} kanalisierte Punkte werden zu Betäubungsschaden (Zustand aufgehoben, GRW S. 173)`,
+                  badge: { text: `${kanalisiertFreigegeben} → Betäubung`, variant: 'info' },
+                }
+              );
+            }
 
             if (consumedHealed > 0) {
               dispatch({

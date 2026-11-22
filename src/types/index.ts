@@ -373,6 +373,8 @@ export type CharacterAction =
   | { type: 'PLAY_TAKE_DAMAGE'; payload: { kind: 'exhausted' | 'consumed' | 'channeled'; maxLP?: number; amount?: number } }
   | { type: 'PLAY_SET_DYING_LEVEL'; payload: 0 | 2 | 3 | 4 }
   | { type: 'PLAY_UNDO_DAMAGE'; payload: { kind: 'exhausted' | 'consumed' | 'channeled'; amount?: number; maxLP?: number } }
+  /** kanalisierter Schaden, dessen Zustand aufgehoben ist, wird zu Betäubungsschaden (GRW S. 15, 173) */
+  | { type: 'PLAY_KANALISIERT_FREIGEBEN'; payload: { amount: number } }
   | {
       type: 'PLAY_HEAL_EXHAUSTED';
       payload?: {

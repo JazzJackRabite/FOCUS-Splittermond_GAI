@@ -3,6 +3,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HealModal } from '../components/play/HealModal';
 import type { HealthSlot, StatusCondition } from '../types';
+import { setzeHausregeln } from '../fundament/hausregeln';
 
 describe('HealModal (GRW S. 165-167)', () => {
   const sampleSlots: HealthSlot[] = [
@@ -87,13 +88,38 @@ describe('HealModal (GRW S. 165-167)', () => {
     expect(onApplyHeal).toHaveBeenCalledWith(expect.objectContaining({ conditionsToRemove: ['cond-1'], healMethod: 'Heilkunde' }));
   });
 
-  it('Verschnaufpause heilt allen Betäubungsschaden (Dauer aus den Kernregeln)', () => {
+  it('ohne Hausregeln: nur echter Schaden, keine Verschnaufpause im Dialog, Freie Heilung gesperrt', () => {
     const onApplyHeal = vi.fn();
-    render(
-      <HealModal onClose={vi.fn()} maxLP={8} currentHealthSlots={sampleSlots} activeConditions={sampleConditions} onApplyHeal={onApplyHeal} />
-    );
-    fireEvent.click(screen.getByRole('button', { name: /Verschnaufpause/i }));
-    fireEvent.click(screen.getByRole('button', { name: /2 LP heilen/i }));
-    expect(onApplyHeal).toHaveBeenCalledWith(expect.objectContaining({ consumedHealed: 0, exhaustedHealed: 2, healMethod: 'Verschnaufpause (30 Minuten)' }));
+    render(<HealModal onClose={vi.fn()} maxLP={8} currentHealthSlots={sampleSlots} activeConditions={[]} onApplyHeal={onApplyHeal} />);
+    expect(screen.queryByRole('button', { name: /Verschnaufpause/i })).toBeNull();
+    expect(screen.getByTestId('heil-regel').textContent).toContain('Rast');
+    expect((screen.getByRole('button', { name: /Freie Heilung/i }) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByRole('button', { name: /Betäubung zuerst/i })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Heilmagie/i }));
+    fireEvent.click(screen.getByRole('button', { name: /3 LP heilen/i }));
+    expect(onApplyHeal).toHaveBeenCalledWith(expect.objectContaining({ consumedHealed: 3, exhaustedHealed: 0, channeledHealed: 0, healMethod: 'Heilmagie' }));
+  });
+
+  it('mit Hausregeln: Verteilung auf Betäubung und Freie Heilung wählbar', () => {
+    setzeHausregeln(true);
+    try {
+      const onApplyHeal = vi.fn();
+      render(<HealModal onClose={vi.fn()} maxLP={8} currentHealthSlots={sampleSlots} activeConditions={[]} onApplyHeal={onApplyHeal} />);
+      expect((screen.getByRole('button', { name: /Freie Heilung/i }) as HTMLButtonElement).disabled).toBe(false);
+      fireEvent.click(screen.getByRole('button', { name: /Betäubung zuerst/i }));
+      fireEvent.click(screen.getByRole('button', { name: /3 LP heilen/i }));
+      expect(onApplyHeal).toHaveBeenCalledWith(expect.objectContaining({ consumedHealed: 1, exhaustedHealed: 2 }));
+    } finally { setzeHausregeln(false); }
+  });
+
+  it('kanalisierter Schaden heilt nicht, wird aber nach Aufheben seines Zustands zu Betäubung (GRW S. 15, 173)', () => {
+    const onApplyHeal = vi.fn();
+    const slots: HealthSlot[] = [{ type: 'consumed' }, { type: 'channeled' }, { type: 'channeled' }, { type: 'empty' }];
+    render(<HealModal onClose={vi.fn()} maxLP={4} currentHealthSlots={slots} activeConditions={[]} onApplyHeal={onApplyHeal} />);
+    fireEvent.click(screen.getByRole('button', { name: 'ein Punkt mehr freigeben' }));
+    fireEvent.click(screen.getByRole('button', { name: 'ein Punkt mehr freigeben' }));
+    expect(screen.getByTestId('kanalisiert-freigeben-wert').textContent).toBe('2');
+    fireEvent.click(screen.getByRole('button', { name: /1 LP heilen/i }));
+    expect(onApplyHeal).toHaveBeenCalledWith(expect.objectContaining({ consumedHealed: 1, channeledHealed: 0, kanalisiertFreigegeben: 2 }));
   });
 });

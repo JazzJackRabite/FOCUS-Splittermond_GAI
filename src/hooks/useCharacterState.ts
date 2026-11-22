@@ -793,6 +793,13 @@ export function baseCharacterReducer(
       };
     }
 
+    case 'PLAY_KANALISIERT_FREIGEBEN': {
+      let n = Math.max(0, action.payload.amount);
+      const slots = [...state.playState.healthSlots];
+      for (let i = slots.length - 1; i >= 0 && n > 0; i--) if (slots[i].type === 'channeled') { slots[i] = { type: 'exhausted' }; n--; }
+      return { ...state, playState: { ...state.playState, healthSlots: normalizeHealthSlots(slots) } };
+    }
+
     case 'PLAY_UNDO_DAMAGE': {
       const { kind, amount = 1, maxLP: mLP } = action.payload;
       let slots = [...state.playState.healthSlots];
