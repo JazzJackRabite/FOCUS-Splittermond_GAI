@@ -1,12 +1,12 @@
-# Ideensammlung FOKUS / SCR4P3
+# Ideensammlung FOCUS
 
-> Automatisch erzeugt aus der Ideen-Seite · Stand 12.11.2026, 15:34 Uhr · Nicht von Hand bearbeiten – Änderungen bitte in der Ideen-Seite vornehmen.
+> Automatisch erzeugt aus der Ideen-Seite · Stand 22.11.2026, 15:56 Uhr · Nicht von Hand bearbeiten – Änderungen bitte in der Ideen-Seite vornehmen.
 
 ## Überblick
 
 | Ideen | 🟢 erledigt | 🔵 zu testen | 🟡 teilweise | ⚪ offen |
 |:-----:|:----------:|:-----------:|:-----------:|:-------:|
-| **15** | 0 | 1 | 5 | 9 |
+| **18** | 0 | 1 | 5 | 12 |
 
 Fortschritt: **0 %** erledigt
 
@@ -16,6 +16,9 @@ Offene Ideen mit Priorität *hoch* oder *mittel*:
 
 - 🟡 **#13 Patzerauswirkungen umsetzen!!!** – Priorität hoch, teilweise
 - ⚪ **#16 Kampfpositionen umsetzen** – Priorität hoch, offen
+- ⚪ **#17 Handy-Durchgang durch Charakter, Kampf & Magie, Inventar und Erschaffung** – Priorität hoch, offen
+- ⚪ **#18 PDF-Export vervollständigen: Relikte und situative Boni** – Priorität hoch, offen
+- ⚪ **#19 Gesamtprüfung mit einem echten Helden** – Priorität hoch, offen
 
 ## Alle Ideen
 
@@ -36,6 +39,9 @@ Offene Ideen mit Priorität *hoch* oder *mittel*:
 | 14 | Waffenmerkmale wie „Scharf 2“ werden nicht berücksichtigt | Fehler & Regelprüfung | ⚪ offen | – | 07.11.2026 |
 | 15 | Splittergaben regelkonform umsetzen | Fehler & Regelprüfung | 🟡 teilweise | – | 10.11.2026 |
 | 16 | Kampfpositionen umsetzen | Kampf & Spielleitung | ⚪ offen | **hoch** | 12.11.2026 |
+| 17 | Handy-Durchgang durch Charakter, Kampf & Magie, Inventar und Erschaffung | Fehler & Regelprüfung | ⚪ offen | **hoch** | 22.11.2026 |
+| 18 | PDF-Export vervollständigen: Relikte und situative Boni | Kampagne & Verwaltung | ⚪ offen | **hoch** | 22.11.2026 |
+| 19 | Gesamtprüfung mit einem echten Helden | Fehler & Regelprüfung | ⚪ offen | **hoch** | 22.11.2026 |
 
 ## Details nach Bereich
 
@@ -89,6 +95,11 @@ Offene Ideen mit Priorität *hoch* oder *mittel*:
 
 > Charaktere liegen weiterhin nur im Browser-Speicher.
 
+**#18 · PDF-Export vervollständigen: Relikte und situative Boni**  
+⚪ offen · Priorität **hoch** · 22.11.2026
+
+> Das PDF enthält seit Stand 37 die Begleiter. Es fehlen die Relikte (Bausteine, geänderte Werte, Chronik, Härte) und die situativen Boni aus Stärken und Meisterschaften (z. B. „+2 gegen Typus …“).
+
 ### Kampf & Spielleitung
 
 **#10 · Splittermond-Ticksystem (evtl. als ganz eigenes Tool)**  
@@ -127,6 +138,16 @@ Offene Ideen mit Priorität *hoch* oder *mittel*:
 🟡 teilweise · Priorität – · 10.11.2026 · [Regelnotiz](#regelnotiz-splittergaben)
 
 > Bei normalen Proben geht +3 nur einmal pro Wurf, „Schaden −5“ gibt es. Beim Angriff und Zaubern lässt sich +3 noch mehrfach drücken. Verteidigung +3 und Resonanz fehlen.
+
+**#17 · Handy-Durchgang durch Charakter, Kampf & Magie, Inventar und Erschaffung**  
+⚪ offen · Priorität **hoch** · 22.11.2026
+
+> Begleiter-Tab und Kopfzeile sind bei 320–1280 px geprüft (Stand 37, 38). Die übrigen Tabs noch nicht; beim Begleiter-Tab fanden sich dabei fünf kleine Fehler (Umbrüche, Abstände, Tabellenköpfe).
+
+**#19 · Gesamtprüfung mit einem echten Helden**  
+⚪ offen · Priorität **hoch** · 22.11.2026
+
+> Einmal komplett durchspielen: erschaffen, steigern, Relikt bauen, Begleiter anlegen, kämpfen, rasten, PDF exportieren – um Brüche zwischen den Tabs zu finden. Bisher wurden die Teile meist einzeln getestet.
 
 ---
 

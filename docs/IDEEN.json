@@ -1,8 +1,8 @@
 {
   "format": "fokus-ideen-v1",
-  "exportiert": "2026-11-12T15:34:11+01:00",
+  "exportiert": "2026-11-22T15:56:44+01:00",
   "quelle": "Ideen-Seite https://claude.ai/artifact/TSG9wGyzXasCUaGmNeTV2s (Sammlung ideen)",
-  "anzahl": 15,
+  "anzahl": 18,
   "ideen": [
     {
       "id": "idee-1",
@@ -170,6 +170,45 @@
       "notiz": false,
       "erstellt": "2026-11-12T09:55:22.841Z",
       "geaendert": "2026-11-12T09:55:22.842Z"
+    },
+    {
+      "id": "idee-17",
+      "n": 17,
+      "titel": "Handy-Durchgang durch Charakter, Kampf & Magie, Inventar und Erschaffung",
+      "bereich": "Fehler & Regelprüfung",
+      "datum": "2026-11-22",
+      "umsetzung": "offen",
+      "prio": "hoch",
+      "stand": "Begleiter-Tab und Kopfzeile sind bei 320–1280 px geprüft (Stand 37, 38). Die übrigen Tabs noch nicht; beim Begleiter-Tab fanden sich dabei fünf kleine Fehler (Umbrüche, Abstände, Tabellenköpfe).",
+      "notiz": false,
+      "erstellt": "2026-11-22T14:56:00.000Z",
+      "geaendert": "2026-11-22T14:56:00.000Z"
+    },
+    {
+      "id": "idee-18",
+      "n": 18,
+      "titel": "PDF-Export vervollständigen: Relikte und situative Boni",
+      "bereich": "Kampagne & Verwaltung",
+      "datum": "2026-11-22",
+      "umsetzung": "offen",
+      "prio": "hoch",
+      "stand": "Das PDF enthält seit Stand 37 die Begleiter. Es fehlen die Relikte (Bausteine, geänderte Werte, Chronik, Härte) und die situativen Boni aus Stärken und Meisterschaften (z. B. „+2 gegen Typus …“).",
+      "notiz": false,
+      "erstellt": "2026-11-22T14:56:00.000Z",
+      "geaendert": "2026-11-22T14:56:00.000Z"
+    },
+    {
+      "id": "idee-19",
+      "n": 19,
+      "titel": "Gesamtprüfung mit einem echten Helden",
+      "bereich": "Fehler & Regelprüfung",
+      "datum": "2026-11-22",
+      "umsetzung": "offen",
+      "prio": "hoch",
+      "stand": "Einmal komplett durchspielen: erschaffen, steigern, Relikt bauen, Begleiter anlegen, kämpfen, rasten, PDF exportieren – um Brüche zwischen den Tabs zu finden. Bisher wurden die Teile meist einzeln getestet.",
+      "notiz": false,
+      "erstellt": "2026-11-22T14:56:00.000Z",
+      "geaendert": "2026-11-22T14:56:00.000Z"
     }
   ],
   "papierkorb": [
