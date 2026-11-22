@@ -1,8 +1,8 @@
 {
   "format": "fokus-ideen-v1",
-  "exportiert": "2026-11-22T15:56:44+01:00",
+  "exportiert": "2026-11-22T16:15:33+01:00",
   "quelle": "Ideen-Seite https://claude.ai/artifact/TSG9wGyzXasCUaGmNeTV2s (Sammlung ideen)",
-  "anzahl": 18,
+  "anzahl": 19,
   "ideen": [
     {
       "id": "idee-1",
@@ -209,6 +209,19 @@
       "notiz": false,
       "erstellt": "2026-11-22T14:56:00.000Z",
       "geaendert": "2026-11-22T14:56:00.000Z"
+    },
+    {
+      "id": "idee-20",
+      "n": 20,
+      "titel": "Nachschlage-Inhalte der Grimoires im Editor anzeigen",
+      "bereich": "Regelwissen",
+      "datum": "2026-11-22",
+      "umsetzung": "offen",
+      "prio": "niedrig",
+      "stand": "Gottheiten, Feenwelten, Artefakttypen und -kräfte, Legenden, Rituale und allgemeine Regeltexte sind in den Grimoires, im Editor aber nicht zu sehen. Offen: eigene Ansicht ja/nein, welche Typen. Hängt mit #5 (Regel-Browser) zusammen.",
+      "notiz": false,
+      "erstellt": "2026-11-22T15:15:00.000Z",
+      "geaendert": "2026-11-22T15:15:00.000Z"
     }
   ],
   "papierkorb": [

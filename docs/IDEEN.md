@@ -1,12 +1,12 @@
 # Ideensammlung FOCUS
 
-> Automatisch erzeugt aus der Ideen-Seite · Stand 22.11.2026, 15:56 Uhr · Nicht von Hand bearbeiten – Änderungen bitte in der Ideen-Seite vornehmen.
+> Automatisch erzeugt aus der Ideen-Seite · Stand 22.11.2026, 16:15 Uhr · Nicht von Hand bearbeiten – Änderungen bitte in der Ideen-Seite vornehmen.
 
 ## Überblick
 
 | Ideen | 🟢 erledigt | 🔵 zu testen | 🟡 teilweise | ⚪ offen |
 |:-----:|:----------:|:-----------:|:-----------:|:-------:|
-| **18** | 0 | 1 | 5 | 12 |
+| **19** | 0 | 1 | 5 | 13 |
 
 Fortschritt: **0 %** erledigt
 
@@ -42,6 +42,7 @@ Offene Ideen mit Priorität *hoch* oder *mittel*:
 | 17 | Handy-Durchgang durch Charakter, Kampf & Magie, Inventar und Erschaffung | Fehler & Regelprüfung | ⚪ offen | **hoch** | 22.11.2026 |
 | 18 | PDF-Export vervollständigen: Relikte und situative Boni | Kampagne & Verwaltung | ⚪ offen | **hoch** | 22.11.2026 |
 | 19 | Gesamtprüfung mit einem echten Helden | Fehler & Regelprüfung | ⚪ offen | **hoch** | 22.11.2026 |
+| 20 | Nachschlage-Inhalte der Grimoires im Editor anzeigen | Regelwissen | ⚪ offen | niedrig | 22.11.2026 |
 
 ## Details nach Bereich
 
@@ -70,6 +71,11 @@ Offene Ideen mit Priorität *hoch* oder *mittel*:
 ⚪ offen · Priorität – · 06.11.2026
 
 > Noch nicht vorhanden.
+
+**#20 · Nachschlage-Inhalte der Grimoires im Editor anzeigen**  
+⚪ offen · Priorität niedrig · 22.11.2026
+
+> Gottheiten, Feenwelten, Artefakttypen und -kräfte, Legenden, Rituale und allgemeine Regeltexte sind in den Grimoires, im Editor aber nicht zu sehen. Offen: eigene Ansicht ja/nein, welche Typen. Hängt mit #5 (Regel-Browser) zusammen.
 
 ### Ausrüstung & Handel
 
