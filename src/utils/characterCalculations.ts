@@ -1,3 +1,4 @@
+import { wundstufenVerschiebung } from '../regelwerk/zustaende';
 import type {
   CharacterState,
   DerivedStats,
@@ -251,11 +252,8 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     }
 
     const conditions = state.playState?.conditions ?? [];
-    const verwundetCond = conditions.find((c) => c.key === 'Verwundet');
-    if (verwundetCond) {
-      const vLevel = Number(verwundetCond.level) || 1;
-      levelIndex = Math.min(4, levelIndex + vLevel);
-    }
+    // Zustände, die laut Paket die Wundstufe verschlechtern (GRW: Verwundet): je Stufe eine Gesundheitsstufe tiefer
+    levelIndex = Math.min(4, levelIndex + wundstufenVerschiebung(conditions));
 
     let penalty = WOUND_PENALTIES[levelIndex] ?? 0;
     if (penalty < 0) {

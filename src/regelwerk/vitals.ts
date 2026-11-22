@@ -10,6 +10,7 @@
 import type { Katalog } from './katalog';
 import { ABGELEITET_ID } from './abgeleitet';
 import { norm } from './bruecke';
+import { wundstufenVerschiebung } from './zustaende';
 
 export interface Gesundheitsstufe { name: string; wundabzug: number }
 export interface BegleiterZustand {
@@ -48,7 +49,7 @@ export interface Lebenslage {
   verloren: number; frei: number;
   /** Gesundheitsstufe nach allem verlorenen LP (Anzeige) */
   stufe: number;
-  /** Wundabzug nur aus echtem Schaden */
+  /** Wundabzug aus echtem Schaden, verschoben durch Zustände wie Verwundet */
   wundabzug: number; stufenName: string;
   ausser: boolean;
 }
@@ -60,10 +61,12 @@ export function lebenslage(lp: number, stufen: Gesundheitsstufe[], z: BegleiterZ
   const idx = (n: number) => (lp > 0 && n > 0 ? Math.min(stufen.length - 1, Math.floor((n - 1) / lp)) : 0);
   const ausser = gesamt > 0 && verloren >= gesamt;
   const stufe = idx(verloren);
-  const echte = stufen[idx(Math.min(schaden, gesamt))];
+  // Verwundet u. ä.: je Stufe eine Gesundheitsstufe tiefer (nur für den Wundabzug)
+  const schieben = wundstufenVerschiebung(z.zustaende ?? []);
+  const echte = stufen[Math.min(stufen.length - 1, idx(Math.min(schaden, gesamt)) + schieben)];
   return {
     lp, stufen, gesamt, verloren, frei: gesamt - verloren, stufe,
-    wundabzug: schaden > 0 ? echte.wundabzug : 0, stufenName: ausser ? 'Außer Gefecht' : stufen[stufe]?.name ?? '',
+    wundabzug: schaden > 0 || schieben > 0 ? echte?.wundabzug ?? 0 : 0, stufenName: ausser ? 'Außer Gefecht' : stufen[stufe]?.name ?? '',
     ausser,
   };
 }

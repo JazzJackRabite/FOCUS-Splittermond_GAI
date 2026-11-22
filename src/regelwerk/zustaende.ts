@@ -41,6 +41,16 @@ export function zustandsliste(k: Katalog | null = aktiverKatalog()): Zustandsang
   return liste;
 }
 
+/**
+ * Um wie viele Gesundheitsstufen Zustände den Wundabzug verschieben (zustandswirkung.probe.art „wundstufe“,
+ * GRW: Verwundet, je Stufe eine Gesundheitsstufe tiefer). Der Wundabzug enthält das dann schon; kein eigener Abzug je Zustand.
+ */
+export function wundstufenVerschiebung(zustaende: { key: string; level?: number | string }[] = [], k: Katalog | null = aktiverKatalog()): number {
+  let n = 0;
+  for (const c of zustaende) if (zustand(c.key, k)?.wirkung?.probe?.art === 'wundstufe') n += Number(c.level) || 1;
+  return n;
+}
+
 export function zustand(name: string, k: Katalog | null = aktiverKatalog()): Zustandsangabe | undefined {
   return zustandsliste(k).find((z) => z.name === name);
 }
@@ -93,4 +103,21 @@ export function nachPause<Z extends { key: string; level?: number }>(zustaende: 
  */
 export function ohneNatuerlicheHeilung(zustaende: { key: string }[], k: Katalog | null = aktiverKatalog()): string[] {
   return [...new Set(zustaende.filter((z) => zustand(z.key, k)?.ohneNatuerlicheHeilung).map((z) => z.key))];
+}
+
+/**
+ * Kurzer Text, welche Zustände eine Pause laut Paket aufhebt oder abbaut (für die Rast-Ansicht), z. B.
+ * „baut je 1 Stufe Erschöpft ab, hebt Glaubenskrise und Lahm auf“. Leer, wenn kein geladener Zustand ein Pausenende hat.
+ */
+export function pausenZustandstext(art: 'verschnaufpause' | 'ruhephase', k: Katalog | null = aktiverKatalog(), stufen = 1): string {
+  const auf: string[] = []; const ab: string[] = [];
+  for (const z of zustandsliste(k)) {
+    const pe = z.pauseEnde;
+    const regel = art === 'ruhephase' ? (pe?.ruhephase ?? (pe?.verschnaufpause === 'stufe' ? 'aufheben' : pe?.verschnaufpause)) : pe?.verschnaufpause;
+    if (regel === 'aufheben') auf.push(z.name);
+    else if (regel === 'stufe') ab.push(z.name);
+  }
+  const liste = (n: string[]) => (n.length > 1 ? `${n.slice(0, -1).join(', ')} und ${n[n.length - 1]}` : n[0]);
+  const teile = [ab.length ? `baut je ${stufen} Stufe ${liste(ab)} ab` : '', auf.length ? `hebt ${liste(auf)} auf` : ''].filter(Boolean);
+  return teile.join(', ');
 }

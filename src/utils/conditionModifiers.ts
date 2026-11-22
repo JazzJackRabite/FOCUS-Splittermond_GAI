@@ -1,6 +1,6 @@
 import type { StatusCondition } from '../types';
 import { aktiverKatalog } from '../regelwerk/bruecke';
-import { gesundheitsstufen } from '../regelwerk/vitals';
+import { positionsText } from '../regelwerk/kampflage';
 
 import type { Probenbereich } from '../types/regeldaten';
 import { zustand, zustandQuelle } from '../regelwerk/zustaende';
@@ -46,18 +46,10 @@ export type { Probenbereich } from '../types/regeldaten';
 export interface Zustandskontext {
   /** Fertigkeitsgruppe der Probe; ohne Angabe gilt „allgemein“ */
   bereich?: Probenbereich;
-  /** aktueller Wundabzug (0, −1, −2, −4, −8) – für den Zustand Verwundet */
+  /** aktueller Wundabzug (enthält Verwundet schon; nur noch zur Auskunft) */
   wundabzug?: number;
   /** Name der Fertigkeit oder Magieschule – für Zustände, die an Attributen hängen */
   fertigkeit?: string;
-}
-
-/** Wundabzüge je Gesundheitsstufe (GRW S. 172); Rückfall, falls das Paket nicht geladen ist */
-const WUNDABZUEGE_RUECKFALL = [0, -1, -2, -4, -8];
-
-function wundabzuege(): number[] {
-  const liste = gesundheitsstufen(aktiverKatalog()).stufen.map((s) => Number(s.wundabzug)).filter((n) => Number.isFinite(n));
-  return liste.length >= 5 ? liste.slice(0, 5) : WUNDABZUEGE_RUECKFALL;
 }
 
 /** Abzug auf eigene Angriffe im Liegen aus der Tabelle der Kampfpositionen (GRW S. 170); Rückfall −6 */
@@ -83,7 +75,8 @@ export function getConditionMalus(condition: StatusCondition, kontext: Zustandsk
   if (condition.key === 'Liegend') {
     if (bereich !== 'kampf') return null;
     const malus = liegendEigeneAngriffe();
-    return { label: 'Liegend', malus, description: `${malus} auf eigene Angriffe im Nahkampf und Fernkampf (Armbrust: kein Abzug). Angriffe gegen Liegende: Nahkampf +6, Fernkampf −6` };
+    // Text aus der Tabelle der Kampfpositionen im Paket (GRW S. 170)
+    return { label: 'Liegend', malus, description: positionsText('Liegend') };
   }
 
   // Zahlen aus dem Regelpaket (daten.zustandswirkung); ohne Paket der Grundregelwerk-Rückfall
@@ -93,12 +86,8 @@ export function getConditionMalus(condition: StatusCondition, kontext: Zustandsk
   const kurz = getConditionDescription(condition);
   const label = z.mitStufe ? `${condition.key} ${level}` : condition.key;
 
-  if (p.art === 'wundstufe') {
-    const stufen = wundabzuege();
-    const jetzt = Math.max(0, stufen.indexOf(kontext.wundabzug ?? 0));
-    const malus = stufen[Math.min(stufen.length - 1, jetzt + level)] - stufen[jetzt];
-    return malus === 0 ? null : { label, malus, description: `${kurz} (${malus} zusätzlich)` };
-  }
+  // Verwundet u. ä. verschiebt die Gesundheitsstufe; das steckt schon im Wundabzug (wundstufenVerschiebung), kein zweiter Abzug
+  if (p.art === 'wundstufe') return null;
   if (p.bereiche && !p.bereiche.includes(bereich)) return null;
   if (p.attribute) {
     // hängt an Attributen: gilt nur, wenn die Fertigkeit bekannt ist und eines der Attribute nutzt

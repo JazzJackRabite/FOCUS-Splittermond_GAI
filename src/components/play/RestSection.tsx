@@ -4,6 +4,7 @@ import { Sun, Moon, RotateCcw, Settings, Heart, Sparkles, X, Check, Clock } from
 import type { ItemEntry, Mastery } from '../../types';
 import { regelverstoss } from '../../fundament/hausregeln';
 import { ruheregeln, ruhephasenRegeneration, ruhewirkungen, type Ruhewirkung } from '../../regelwerk/spielwirkungen';
+import { pausenZustandstext } from '../../regelwerk/zustaende';
 
 export interface VerschnaufpauseOptions {
   healAllStun: boolean;
@@ -221,7 +222,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
 
             {/* Effect in 1 sentence */}
             <p className="text-xs text-schrift leading-relaxed min-h-[36px]">
-              Heilt Betäubungsschaden &amp; erschöpften Fokus, baut 1 Stufe Erschöpfung ab.
+              Heilt Betäubungsschaden &amp; erschöpften Fokus{pausenZustandstext('verschnaufpause') ? `, ${pausenZustandstext('verschnaufpause')}` : ''}.
             </p>
           </div>
 
@@ -304,7 +305,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
 
             {/* Effect in 1 sentence */}
             <p className="text-xs text-schrift leading-relaxed min-h-[36px]">
-              Heilt zusätzlich echten Schaden &amp; verzehrten Fokus, baut Erschöpfung komplett ab.
+              Heilt zusätzlich echten Schaden &amp; verzehrten Fokus, beendet kanalisierte Zauber{pausenZustandstext('ruhephase') ? `, ${pausenZustandstext('ruhephase')}` : ''}.
             </p>
             {regeln.ruhephasenJeTag > 0 && (
               <div className="flex items-center justify-between gap-2 text-xs">
@@ -387,7 +388,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
                       <span className="font-normal text-[11px] text-leise">{regeln.quelle}</span>
                     </div>
                     <p className="leading-relaxed">
-                      Dauer: <strong>{vpDuration}</strong> ununterbrochene Rast. Heilt allen Betäubungsschaden, stellt erschöpften Fokus wieder her und baut 1 Stufe <em>Erschöpft</em> ab.
+                      Dauer: <strong>{vpDuration}</strong> ununterbrochene Rast. Heilt allen Betäubungsschaden und stellt erschöpften Fokus wieder her{pausenZustandstext('verschnaufpause') ? `; ${pausenZustandstext('verschnaufpause')}` : ''}. Kanalisierter Schaden und kanalisierte Zauber bleiben.
                     </p>
 
                     {(hasSegenMondkraft || kurzpausen.length > 0) && (

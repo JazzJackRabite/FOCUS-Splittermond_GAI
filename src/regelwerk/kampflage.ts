@@ -69,6 +69,25 @@ export function positionsModifikator(position: string, art: Angriffsart, rolle: 
   return z ? z[rolle] : 0;
 }
 
+/**
+ * Modifikatoren einer Kampfposition als Text aus der Tabelle des Pakets (GRW S. 170), z. B. für Liegend:
+ * „eigene Angriffe: Nahkampf −6, Fernkampf −6 (Armbrust ±0); Angriffe gegen ihn: Nahkampf +6, Fernkampf −6“.
+ */
+export function positionsText(position: string, k: Katalog | null = aktiverKatalog()): string {
+  const zeilen = kampfsituationen(k).positionen.filter((p) => p.position === position);
+  if (!zeilen.length) return '';
+  const zahl = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0');
+  const name = (a: string) => (a === 'nahkampf' ? 'Nahkampf' : a === 'fernkampf' ? 'Fernkampf' : a === 'beide' ? 'alle Angriffe' : a.charAt(0).toUpperCase() + a.slice(1));
+  const teil = (rolle: 'eigene' | 'gegnerisch') => {
+    const reihe = ['nahkampf', 'fernkampf', 'beide'];
+    const allg = zeilen.filter((z) => reihe.includes(z.angriff)).sort((x, y) => reihe.indexOf(x.angriff) - reihe.indexOf(y.angriff));
+    const sonder = zeilen.filter((z) => !['nahkampf', 'fernkampf', 'beide'].includes(z.angriff) && z[rolle] !== (allg.find((x) => x.angriff === 'fernkampf')?.[rolle] ?? 0));
+    const t = allg.map((z) => `${name(z.angriff)} ${zahl(z[rolle])}`).join(', ');
+    return t + (sonder.length ? ` (${sonder.map((z) => `${name(z.angriff)} ${zahl(z[rolle])}`).join(', ')})` : '');
+  };
+  return `eigene Angriffe: ${teil('eigene')}; Angriffe gegen ihn: ${teil('gegnerisch')}`;
+}
+
 /** Bonus aus Lücke suchen bzw. Zielen für aufgewendete Ticks */
 export function vorbereitungsBonus(ticks: number, art: Angriffsart, k: Katalog | null = aktiverKatalog()): number {
   const s = kampfsituationen(k); const r = art === 'fernkampf' ? s.zielen : s.lueckeSuchen;
