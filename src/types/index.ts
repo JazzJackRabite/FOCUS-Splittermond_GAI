@@ -456,6 +456,15 @@ export interface CreationUsage {
   creationMasteries: number;
   strengthLimit: number;
   resourceLimit: number;
+  /** Grenzen der Erschaffung aus dem Paket */
+  attrLimit: number;
+  attrMin: number;
+  attrMax: number;
+  skillLimit: number;
+  skillMax: number;
+  nonMagicMin: number;
+  masteryLimit: number;
+  languageLimit: number;
 }
 
 // ============================================================

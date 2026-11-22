@@ -1057,6 +1057,24 @@ Relikt-Werkstatt, Handy-Breite). Behoben:
   eine freie Meisterschaft offen ist, gesperrte Knöpfe für Attribute und Fertigkeiten nennen den Grund.
 - Tests: 501 grün ohne Bücher; 562 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 45 (22.11.2026): offene Punkte aus dem Praxistest
+
+- Sterben aus dem Paket (Kernregel „Sterben“, GRW S. 172–173): neue Felder `zustand_bei_erstem_schaden`,
+  `zustaende_bei_allen_lp`, `tot_mehr_als_stufen` (Datenseite `kernregeln.py`). Der Editor setzt beim ersten echten Punkt
+  auf Todgeweiht Sterbend 2, bei allen LP dort Bewusstlos und Sterbend 3 (Bewusstlos fehlte bisher) und erst bei MEHR als
+  einer Stufe darunter Tod (bisher schon bei genau einer). Die LP-Leiste hat dafür LP × (Stufen + 1) + 1 Kästchen
+  (`lpKaestchen`, `sterbestand`); gespeicherte Charaktere passen sich von selbst an. Der Schadensdialog nennt die Probe auf
+  Zähigkeit gegen 20. Feste Zahlen 4/5/6 im Reducer sind weg.
+- Grenzen der Erschaffung aus dem Paket (`erschaffungsGrenzen`): 18 Attributpunkte (1–3), 55 Fertigkeitspunkte (höchstens
+  6), 5 nicht-magische Punkte, 8 Ressourcenpunkte, 3 Start-Meisterschaften, 2 Sprachen; vorher fest im Code. Schwellen
+  der Meisterschaften in der Fertigkeitszeile aus dem Paket (`schwellenwert`).
+- Verwundet: nur der Wundabzug verschiebt sich, die Gesundheitsstufe bleibt (GRW: „gilt in Bezug auf die Wundabzüge …
+  als um eine Wundstufe schwerer verletzt“). Die Probe zeigt „Wundabzug (Angeschlagen, Verwundet 1)“.
+- Anzeige: „Abzüge durch Erschöpft halbiert“ statt „Abzüge aus Zuständen −Hälfte“; im Zauberdialog nur noch eine goldene
+  Hauptaktion; Protokoll „4 Schaden“ statt „4 SP“.
+- Vorlage Arrou: Wildnisläufer ist eine der drei freien Start-Meisterschaften (kostete 5 EP).
+- Tests: 506 grün ohne Bücher; 567 mit Grimoires, Falldatei und Volltest; Praxistest 109 ok; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

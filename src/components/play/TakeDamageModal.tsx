@@ -1,5 +1,5 @@
 import { wundstufenVerschiebung } from '../../regelwerk/zustaende';
-import { splitterSchadensminderung, standardGesundheitsstufen, zustaendeFuerSchaden } from '../../regelwerk/schadenUndHeilung';
+import { splitterSchadensminderung, standardGesundheitsstufen, sterberegeln, zustaendeFuerSchaden } from '../../regelwerk/schadenUndHeilung';
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf, useEscape } from '../../fundament';
 import React, { useId, useMemo, useState } from 'react';
 import { Flame, Shield, Sparkles, X, Plus, Minus, AlertTriangle, Heart, Check } from 'lucide-react';
@@ -86,6 +86,8 @@ export const TakeDamageModal: React.FC<TakeDamageModalProps> = ({
   const damageHittingHealth = useMemo(() => {
     return Math.max(0, finalDamage - absorbedByTemp);
   }, [finalDamage, absorbedByTemp]);
+
+  const sterben = useMemo(() => sterberegeln(), []);
 
   // Wound preview simulation
   const woundPreview = useMemo(() => {
@@ -469,6 +471,9 @@ export const TakeDamageModal: React.FC<TakeDamageModalProps> = ({
                 <AlertTriangle size={14} className="text-schaden shrink-0" />
                 <span className="font-bold">
                   Achtung: Todgeweiht oder alle Lebenspunkte aufgebraucht (Sterbend / Bewusstlos)!
+                  {sterben?.probe && damageKind === 'consumed' && !begleiter && (
+                    <> Beim ersten echten Punkt auf {woundPreview.nextName}: Probe auf {sterben.probe.fertigkeit} gegen {sterben.probe.schwierigkeit}, sonst bewusstlos ({sterben.quelle}).</>
+                  )}
                 </span>
               </div>
             )}

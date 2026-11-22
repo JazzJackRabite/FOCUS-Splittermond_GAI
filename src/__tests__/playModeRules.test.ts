@@ -10,7 +10,7 @@ import { useCharacterState } from '../hooks/useCharacterState';
 import { renderHook, act } from '@testing-library/react';
 
 describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
-  it('initializes health boxes according to Splittermond standard (6 levels of maxLP)', () => {
+  it('Lebenspunkt-Leiste: 5 Gesundheitsstufen + eine Stufe bis zum Tod + 1 (tot erst bei MEHR als einer Stufe unter Todgeweiht, GRW S. 172)', () => {
     const { result } = renderHook(() => useCharacterState());
     const maxLP = 8; // e.g. GK 5 + KON 3
 
@@ -21,8 +21,8 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
       });
     });
 
-    // 6 health levels * 8 maxLP = 48 health slots
-    expect(result.current.state.playState.healthSlots).toHaveLength(48);
+    // 5 Stufen × 8 + 1 Stufe × 8 + 1 = 49 Kästchen
+    expect(result.current.state.playState.healthSlots).toHaveLength(49);
     expect(result.current.state.playState.healthSlots.every((s) => s.type === 'empty')).toBe(true);
   });
 
@@ -61,7 +61,7 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
 
   it('applies Splittermond damage overflow rule when all health slots are full', () => {
     const { result } = renderHook(() => useCharacterState());
-    // Small health pool for testing overflow: maxLP = 2 -> 12 slots
+    // Small health pool for testing overflow: maxLP = 2 -> 13 slots
     act(() => {
       result.current.dispatch({
         type: 'PLAY_RESET',
@@ -69,12 +69,12 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
       });
     });
 
-    // Fill all 12 slots with exhausted damage
+    // Fill all 13 slots with exhausted damage
     act(() => {
-      result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'exhausted', maxLP: 2, amount: 12 } });
+      result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'exhausted', maxLP: 2, amount: 13 } });
     });
 
-    expect(result.current.state.playState.healthSlots.filter((s) => s.type === 'exhausted')).toHaveLength(12);
+    expect(result.current.state.playState.healthSlots.filter((s) => s.type === 'exhausted')).toHaveLength(13);
 
     // Taking more exhausted damage overflows and converts the last exhausted slot into consumed damage!
     act(() => {
@@ -82,7 +82,7 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
     });
 
     expect(result.current.state.playState.healthSlots.filter((s) => s.type === 'consumed')).toHaveLength(1);
-    expect(result.current.state.playState.healthSlots.filter((s) => s.type === 'exhausted')).toHaveLength(11);
+    expect(result.current.state.playState.healthSlots.filter((s) => s.type === 'exhausted')).toHaveLength(12);
   });
 
   it('automatically adds Bewusstlos condition when character is fully filled with non-empty damage', () => {
@@ -95,7 +95,7 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
     });
 
     act(() => {
-      result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'exhausted', maxLP: 2, amount: 12 } });
+      result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'exhausted', maxLP: 2, amount: 13 } });
     });
 
     const conditions = result.current.state.playState.conditions;
@@ -136,10 +136,16 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
       result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'consumed', maxLP: 2, amount: 1 } });
     });
     expect(result.current.state.playState.dyingLevel).toBe(3);
+    // alle LP auf Todgeweiht verloren: zusätzlich bewusstlos (Paket: zustaende_bei_allen_lp)
+    expect(result.current.state.playState.conditions.some((c) => c.key === 'Bewusstlos')).toBe(true);
 
-    // 2 more consumed damage fills Tod range (index 10 and 11) -> dyingLevel becomes 4 (Tod)
+    // genau eine Stufe darunter (2 Punkte): noch nicht tot – erst MEHR als eine Stufe
     act(() => {
       result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'consumed', maxLP: 2, amount: 2 } });
+    });
+    expect(result.current.state.playState.dyingLevel).toBe(3);
+    act(() => {
+      result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'consumed', maxLP: 2, amount: 1 } });
     });
     expect(result.current.state.playState.dyingLevel).toBe(4);
     expect(result.current.state.playState.conditions.some((c) => c.key === 'Tod')).toBe(true);

@@ -137,12 +137,13 @@ export function getActiveRollModifiers(
     });
   }
 
-  // Health / Wound penalty
+  // Health / Wound penalty (Verwundet u. ä. steckt schon im Wundabzug; sie stehen in der Beschriftung)
+  const verschiebende = conditions.filter((c) => zustand(c.key)?.wirkung?.probe?.art === 'wundstufe').map((c) => `${c.key} ${c.level || 1}`);
   if (woundPenalty !== 0) {
     result.push({
       id: 'wound_penalty',
       source: 'wound',
-      label: `Wundabzug (${healthLevelName})`,
+      label: `Wundabzug (${[healthLevelName, ...verschiebende].join(', ')})`,
       malus: woundPenalty,
       active: true,
       description: `Gesundheitsstatus: ${healthLevelName}`,

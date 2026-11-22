@@ -28,11 +28,11 @@ export function useAttributeHandlers({ state, calc, dispatch }: AttributeHandler
 
   const modAttrBase = useCallback((key: string, delta: number) => {
     const newVal = (attrBase[key as keyof AttrMap] ?? 0) + delta;
-    if (newVal < 1) return;
-    if (newVal > 3 && regelverstoss('Attribute lassen sich bei der Erschaffung höchstens auf 3 setzen.')) return;
-    if (delta > 0 && creationUsage.attr >= 18 && regelverstoss('Alle 18 Attributspunkte sind verteilt.')) return;
+    if (newVal < creationUsage.attrMin) return;
+    if (newVal > creationUsage.attrMax && regelverstoss(`Attribute lassen sich bei der Erschaffung höchstens auf ${creationUsage.attrMax} setzen.`)) return;
+    if (delta > 0 && creationUsage.attr >= creationUsage.attrLimit && regelverstoss(`Alle ${creationUsage.attrLimit} Attributspunkte sind verteilt.`)) return;
     dispatch({ type: 'MOD_ATTR_BASE', payload: { key: key as keyof AttrMap, delta } });
-  }, [attrBase, creationUsage.attr, dispatch]);
+  }, [attrBase, creationUsage.attr, creationUsage.attrMin, creationUsage.attrMax, creationUsage.attrLimit, dispatch]);
 
   const modAttrXP = useCallback((key: string, delta: number) => {
     const currentInc = attrIncrements[key as keyof AttrMap] ?? 0;

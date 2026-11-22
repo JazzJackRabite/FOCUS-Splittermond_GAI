@@ -11,7 +11,7 @@ import { getSkillXpCost, getAttrXpCost, calculateItemCost } from './costCalculat
 import { heldengrade } from '../regelwerk/steigerungsregeln';
 import { abgeleiteteFuerCharakter, wirkungenFuerCharakter, type CharakterWirkungen, type KatalogWerte } from '../regelwerk/bruecke';
 import { reliktWiderstandFuerCharakter } from '../regelwerk/relikte';
-import { grwAlleFertigkeiten, grwAttribute, grwFertigkeitsKategorien, grwFertigkeitsattribute, grwGesundheitsstufen, grwRassen, staerkenBudget } from '../regelwerk/grwListen';
+import { grwAlleFertigkeiten, grwAttribute, grwFertigkeitsKategorien, grwFertigkeitsattribute, grwGesundheitsstufen, grwRassen, staerkenBudget, erschaffungsGrenzen } from '../regelwerk/grwListen';
 import { ausruestungsMinderung, traglast, wundabzugMinderung } from '../regelwerk/spielwirkungen';
 
 export interface CharacterCalculationResult {
@@ -248,16 +248,18 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
 
   if (slots.length > 0 && maxLP > 0) {
     const consumedCount = slots.filter((s) => s.type === 'consumed').length;
+    const letzte = Math.max(0, stufenGrw.length - 1);
     let levelIndex = 0;
     if (consumedCount > maxLP) {
-      levelIndex = Math.min(4, Math.floor((consumedCount - 1) / maxLP));
+      levelIndex = Math.min(letzte, Math.floor((consumedCount - 1) / maxLP));
     }
 
     const conditions = state.playState?.conditions ?? [];
-    // Zustände, die laut Paket die Wundstufe verschlechtern (GRW: Verwundet): je Stufe eine Gesundheitsstufe tiefer
-    levelIndex = Math.min(4, levelIndex + wundstufenVerschiebung(conditions));
+    // Verwundet u. ä. (Paketfeld wundstufe): „gilt in Bezug auf die Wundabzüge … als um eine Wundstufe schwerer verletzt“
+    // – nur der Abzug verschiebt sich, die Gesundheitsstufe selbst bleibt
+    const abzugIndex = Math.min(letzte, levelIndex + wundstufenVerschiebung(conditions));
 
-    let penalty = WOUND_PENALTIES[levelIndex] ?? 0;
+    let penalty = WOUND_PENALTIES[abzugIndex] ?? 0;
     if (penalty < 0) {
       // Wundabzüge verringert (Schmerzresistenz, Schmerzwiderstand; Wirkungen aus dem Paket, GRW S. 172)
       const reduction = wundabzugMinderung(state).summe;
@@ -304,6 +306,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
   });
 
   const strengthLimit = staerkenBudget(race);
+  const grenzen = erschaffungsGrenzen();
 
   const creationUsage: CreationUsage = {
     attr: attrPoints,
@@ -313,19 +316,27 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     language: languagePoints,
     languages: languagesList.length,
     nonMagicPoints,
-    creationMasteries: Math.min(3, creationMasteriesCount),
+    creationMasteries: Math.min(grenzen.startMeisterschaften, creationMasteriesCount),
     strengthLimit,
-    resourceLimit: 8,
+    resourceLimit: grenzen.ressourcenPunkte,
+    attrLimit: grenzen.attributPunkte,
+    attrMin: grenzen.attributMin,
+    attrMax: grenzen.attributMax,
+    skillLimit: grenzen.fertigkeitPunkte,
+    skillMax: grenzen.fertigkeitMax,
+    nonMagicMin: grenzen.nichtMagischMin,
+    masteryLimit: grenzen.startMeisterschaften,
+    languageLimit: grenzen.sprachen,
   };
 
   const isCreationComplete =
-    creationUsage.attr === 18 &&
-    creationUsage.skill === 55 &&
-    creationUsage.nonMagicPoints >= 5 &&
+    creationUsage.attr === creationUsage.attrLimit &&
+    creationUsage.skill === creationUsage.skillLimit &&
+    creationUsage.nonMagicPoints >= creationUsage.nonMagicMin &&
     creationUsage.strength === creationUsage.strengthLimit &&
     creationUsage.resource === creationUsage.resourceLimit &&
-    (creationUsage.creationMasteries === 3 || totalMasteriesCount >= 3 || !!state.creationFinalized) &&
-    creationUsage.languages === 2 &&
+    (creationUsage.creationMasteries === creationUsage.masteryLimit || totalMasteriesCount >= creationUsage.masteryLimit || !!state.creationFinalized) &&
+    creationUsage.languages === creationUsage.languageLimit &&
     homeRegion !== '';
 
   // 9. Free mastery slots

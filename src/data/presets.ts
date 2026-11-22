@@ -88,7 +88,7 @@ const RAW_CHARACTER_PRESETS: ArchetypePreset[] = [
       masteries: {
         Überleben: [
           { id: 'arrou_m1', name: 'Geländekunde (S1)', tier: 1, cost: 0, isCreationBonus: false, isFree: true, source: 'Erschaffung', desc: 'Bonus in Terrain.' },
-          { id: 'arrou_m2', name: 'Wildnisläufer (S1)', tier: 1, cost: 5, isCreationBonus: false, isFree: false, source: 'Erschaffung', desc: 'Schnell reisen.' },
+          { id: 'arrou_m2', name: 'Wildnisläufer (S1)', tier: 1, cost: 0, isCreationBonus: true, isFree: false, source: 'Erschaffung', desc: 'Schnell reisen.' },
         ],
         Schusswaffen: [
           { id: 'arrou_m3', name: 'Scharfschütze (S1)', tier: 1, cost: 0, isCreationBonus: false, isFree: true, source: 'Erschaffung', desc: 'Reichweitenkategorien erhöht.' },

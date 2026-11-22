@@ -231,6 +231,31 @@ export function staerkenBudget(rasse: string, k: Katalog | null = aktiverKatalog
   return grund + (r?.traits ?? []).reduce((n, t) => n + (t.modifiers.strengthPoints ?? 0), 0);
 }
 
+/** Grenzen der freien Erschaffung aus dem Paket (GRW S. 22–25); ohne Paket 0 */
+export interface ErschaffungsGrenzen {
+  attributPunkte: number; attributMin: number; attributMax: number;
+  fertigkeitPunkte: number; fertigkeitMax: number;
+  /** Punkte, die auf Fertigkeiten ohne Magieschulen gehen müssen (Abstammung: keine Magieschulen) */
+  nichtMagischMin: number;
+  ressourcenPunkte: number; startMeisterschaften: number; sprachen: number;
+}
+export function erschaffungsGrenzen(k: Katalog | null = aktiverKatalog()): ErschaffungsGrenzen {
+  type Teil = { fertigkeitspunkte?: number; ressourcenpunkte?: number; meisterschaften_schwelle_1?: number; magieschulen_erlaubt?: boolean };
+  const s = k?.get(ERSCHAFFUNG_ID)?.daten.strukturiert as Record<string, Teil & Record<string, unknown>> | undefined;
+  const z = (x: unknown) => (typeof x === 'number' ? x : 0);
+  const teile = [s?.kultur_frei, s?.abstammung_frei, s?.ausbildung_frei, s?.schritt_7];
+  const attr = s?.attribute as { punkte?: number; minimum?: number; maximum?: number } | undefined;
+  return {
+    attributPunkte: z(attr?.punkte), attributMin: z(attr?.minimum), attributMax: z(attr?.maximum),
+    fertigkeitPunkte: teile.reduce((n, t) => n + z(t?.fertigkeitspunkte), 0),
+    fertigkeitMax: z(s?.schritt_7?.fertigkeit_hoechstwert_spielbeginn),
+    nichtMagischMin: s?.abstammung_frei?.magieschulen_erlaubt === false ? z(s.abstammung_frei.fertigkeitspunkte) : 0,
+    ressourcenPunkte: teile.reduce((n, t) => n + z(t?.ressourcenpunkte), 0),
+    startMeisterschaften: teile.reduce((n, t) => n + z(t?.meisterschaften_schwelle_1), 0),
+    sprachen: Array.isArray((s?.feinschliff as { sprachen?: unknown[] } | undefined)?.sprachen) ? (s!.feinschliff as { sprachen: unknown[] }).sprachen.length : 0,
+  };
+}
+
 /** Attribute (Kürzel des Editors → Name) */
 export function grwAttribute(k: Katalog | null = aktiverKatalog()): Record<string, string> {
   const l: { name: string; kuerzel: string }[] | undefined = k?.get(ATTRIBUTE_ID)?.daten.strukturiert?.attribute;

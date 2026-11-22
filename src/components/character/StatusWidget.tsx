@@ -109,13 +109,13 @@ export const StatusWidget: React.FC<StatusWidgetProps> = ({
     {mode === 'creation' && (
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4">
         {[
-          { label: 'Attr', current: creationUsage.attr, max: 18, extra: null },
+          { label: 'Attr', current: creationUsage.attr, max: creationUsage.attrLimit, extra: null },
           {
             label: 'Skill',
             current: creationUsage.skill,
-            max: 55,
+            max: creationUsage.skillLimit,
             extra:
-              creationUsage.nonMagicPoints < 5 ? 'Min. 5 nicht-magisch!' : null,
+              creationUsage.nonMagicPoints < creationUsage.nonMagicMin ? `Min. ${creationUsage.nonMagicMin} nicht-magisch!` : null,
           },
           {
             label: 'Stärk',
@@ -129,7 +129,7 @@ export const StatusWidget: React.FC<StatusWidgetProps> = ({
             max: creationUsage.resourceLimit,
             extra: null,
           },
-          { label: 'Sprach', current: creationUsage.languages, max: 2, extra: null },
+          { label: 'Sprach', current: creationUsage.languages, max: creationUsage.languageLimit, extra: null },
         ].map(({ label, current, max, extra }) => {
           const done = current === max;
           return (
@@ -158,10 +158,10 @@ export const StatusWidget: React.FC<StatusWidgetProps> = ({
           <span className="text-schrift">Start-Meisterschaften:</span>
           <span
             className={`font-bold ${
-              creationUsage.creationMasteries === 3 ? 'text-unverletzt' : 'text-schaden'
+              creationUsage.creationMasteries === creationUsage.masteryLimit ? 'text-unverletzt' : 'text-schaden'
             }`}
           >
-            {creationUsage.creationMasteries}/3
+            {creationUsage.creationMasteries}/{creationUsage.masteryLimit}
           </span>
         </div>
       )}

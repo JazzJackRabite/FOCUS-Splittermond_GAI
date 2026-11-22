@@ -77416,6 +77416,22 @@
      },
      "tot_wenn": "mehr als eine Gesundheitsstufe unter Todgeweiht",
      "gilt_nicht_fuer_betaeubungsschaden": true,
+     "zustand_bei_erstem_schaden": {
+      "name": "Sterbend",
+      "stufe": 2,
+      "ursache": "Wunden"
+     },
+     "zustaende_bei_allen_lp": [
+      {
+       "name": "Bewusstlos"
+      },
+      {
+       "name": "Sterbend",
+       "stufe": 3,
+       "ursache": "Wunden"
+      }
+     ],
+     "tot_mehr_als_stufen": 1,
      "belege": [
       {
        "id": "grw:regel:kampf-regeln:sterben",

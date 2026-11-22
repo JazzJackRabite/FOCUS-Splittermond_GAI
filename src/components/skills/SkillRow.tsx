@@ -1,3 +1,4 @@
+import { schwellenwert } from '../../regelwerk/grwListen';
 import React from 'react';
 import { Knopf } from '../../fundament';
 import { SourceBadge } from '../ui/SourceBadge';
@@ -204,15 +205,11 @@ export const SkillRow: React.FC<SkillRowProps> = ({
           <div className="text-[11px] uppercase tracking-wider font-bold border-b border-rahmen pb-1.5 flex justify-between items-center text-gold">
             <span>Optionen</span>
             <span className="no-print hidden md:inline text-[11px] font-normal text-leise">
-              {val < 6
-                ? 'Meisterschaften ab Wert 6'
-                : val < 9
-                ? 'Schwelle 1 verfügbar'
-                : val < 12
-                ? 'Schwelle 2 verfügbar'
-                : val < 15
-                ? 'Schwelle 3 verfügbar'
-                : 'Schwelle 4 verfügbar'}
+              {(() => {
+                // Schwellen aus dem Paket (GRW S. 92: Fertigkeitspunkte je Schwelle)
+                const erreicht = [1, 2, 3, 4].filter((n) => schwellenwert(n) > 0 && val >= schwellenwert(n)).pop();
+                return erreicht ? `Schwelle ${erreicht} verfügbar` : `Meisterschaften ab Wert ${schwellenwert(1)}`;
+              })()}
             </span>
           </div>
           {val >= grossmeisterAb() && (

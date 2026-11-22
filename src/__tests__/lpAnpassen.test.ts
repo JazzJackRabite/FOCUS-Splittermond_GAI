@@ -7,13 +7,13 @@ const mit = (slots: HealthSlot[]) => ({ ...DEFAULT_STATE, playState: { ...DEFAUL
 const slots = (n: number, schaden: number) => Array.from({ length: n }, (_, i) => ({ type: i < schaden ? 'consumed' : 'empty' }) as HealthSlot);
 
 describe('PLAY_LP_ANPASSEN', () => {
-  it('9 → 10 LP je Stufe: 54 → 60 Kästchen, 8 Schaden bleiben', () => {
-    const s = baseCharacterReducer(mit(slots(54, 8)), { type: 'PLAY_LP_ANPASSEN', payload: { maxLP: 10 } });
-    expect(s.playState.healthSlots.length).toBe(60);
+  it('9 → 10 LP je Stufe: 55 → 61 Kästchen, 8 Schaden bleiben', () => {
+    const s = baseCharacterReducer(mit(slots(55, 8)), { type: 'PLAY_LP_ANPASSEN', payload: { maxLP: 10 } });
+    expect(s.playState.healthSlots.length).toBe(61);
     expect(s.playState.healthSlots.filter((x) => x.type === 'consumed').length).toBe(8);
   });
   it('gleiche Zahl: unverändert', () => {
-    const vor = mit(slots(60, 3));
+    const vor = mit(slots(61, 3));
     expect(baseCharacterReducer(vor, { type: 'PLAY_LP_ANPASSEN', payload: { maxLP: 10 } })).toBe(vor);
   });
 });

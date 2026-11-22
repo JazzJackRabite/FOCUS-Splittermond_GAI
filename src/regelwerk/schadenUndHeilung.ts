@@ -57,3 +57,67 @@ export { KAMPFPOSITION_LIEGEND };
 export function heilkundeAuswirkungen(k: Katalog | null = aktiverKatalog()): Record<string, string> {
   return (k?.get('grw:fertigkeit:heilkunde')?.daten.auswirkungen as Record<string, string> | undefined) ?? {};
 }
+
+// ---------------------------------------------------------------- Sterben (GRW S. 172–173)
+const STERBEN_ID = 'grw:regel:kampf-regeln:sterben';
+
+export interface SterbeZustand { key: string; level?: number; ursache?: string }
+export interface Sterberegeln {
+  /** Zustand beim ersten echten Schadenspunkt auf der letzten Gesundheitsstufe (Todgeweiht) */
+  beiErstemSchaden: SterbeZustand[];
+  /** Probe gegen Wundschock (Fertigkeit, Schwierigkeit); misslungen: bewusstlos */
+  probe: { fertigkeit: string; schwierigkeit: number } | null;
+  /** Zustände, wenn alle Lebenspunkte der letzten Stufe verloren sind */
+  beiAllenLp: SterbeZustand[];
+  /** tot, wenn der echte Schaden über die letzte Stufe hinaus mehr als totMehrAlsStufen × LP beträgt */
+  totMehrAlsStufen: number;
+  quelle: string;
+}
+
+type ZustandRoh = { name?: string; stufe?: number; ursache?: string };
+const alsZustand = (z: ZustandRoh): SterbeZustand => ({ key: String(z.name ?? ''), ...(z.stufe ? { level: z.stufe } : {}), ...(z.ursache ? { ursache: z.ursache } : {}) });
+
+/** Regeln zum Sterben aus dem Paket (Kernregel „Sterben“, strukturiert); ohne Paket null (keine automatischen Zustände) */
+export function sterberegeln(k: Katalog | null = aktiverKatalog()): Sterberegeln | null {
+  const e = k?.get(STERBEN_ID);
+  const s = e?.daten.strukturiert as {
+    zustand_bei_erstem_schaden?: ZustandRoh; zustaende_bei_allen_lp?: ZustandRoh[]; tot_mehr_als_stufen?: number;
+    erster_echter_schaden_auf_todgeweiht?: { probe?: { fertigkeit?: string; schwierigkeit?: number } };
+  } | undefined;
+  if (!e || !s?.zustand_bei_erstem_schaden || typeof s.tot_mehr_als_stufen !== 'number') return null;
+  const p = s.erster_echter_schaden_auf_todgeweiht?.probe;
+  const fName = p?.fertigkeit ? k!.get(p.fertigkeit)?.name ?? '' : '';
+  const seiten = e.quelle.buch_seiten ?? [];
+  return {
+    beiErstemSchaden: [alsZustand(s.zustand_bei_erstem_schaden)],
+    probe: fName && typeof p?.schwierigkeit === 'number' ? { fertigkeit: fName, schwierigkeit: p.schwierigkeit } : null,
+    beiAllenLp: (s.zustaende_bei_allen_lp ?? []).map(alsZustand),
+    totMehrAlsStufen: s.tot_mehr_als_stufen,
+    quelle: seiten.length ? `GRW S. ${seiten.length > 1 ? `${seiten[0]}–${seiten[seiten.length - 1]}` : seiten[0]}` : 'GRW',
+  };
+}
+
+/** Zahl der Kästchen der Lebenspunkt-Leiste: alle Gesundheitsstufen plus der Bereich, in dem der Abenteurer noch nicht tot ist */
+export function lpKaestchen(maxLP: number, k: Katalog | null = aktiverKatalog()): number {
+  const stufen = standardGesundheitsstufen(k).length;
+  const tot = sterberegeln(k)?.totMehrAlsStufen;
+  if (!maxLP || !stufen) return 0;
+  return tot ? maxLP * (stufen + tot) + 1 : maxLP * stufen;
+}
+
+/**
+ * Stand des Sterbens aus der Leiste (nur echter Schaden zählt): 0 = nicht sterbend, sonst die Stufe des Zustands Sterbend
+ * aus dem Paket (GRW: 2 ab dem ersten Punkt auf Todgeweiht, 3 wenn alle LP dort verloren sind), 4 = tot.
+ */
+export function sterbestand(slots: { type: string }[], maxLP: number, k: Katalog | null = aktiverKatalog()): { stufe: 0 | 2 | 3 | 4; zustaende: SterbeZustand[] } {
+  const r = sterberegeln(k); const n = standardGesundheitsstufen(k).length;
+  if (!r || !maxLP || !n) return { stufe: 0, zustaende: [] };
+  const echt = slots.filter((s) => s.type === 'consumed').length;
+  const aufLetzter = echt - maxLP * (n - 1);
+  const darueber = echt - maxLP * n;
+  const sterbend = (l: SterbeZustand[]) => (l.find((z) => z.level)?.level ?? 0) as 0 | 2 | 3;
+  if (darueber > maxLP * r.totMehrAlsStufen) return { stufe: 4, zustaende: [...r.beiErstemSchaden, ...r.beiAllenLp] };
+  if (aufLetzter >= maxLP) return { stufe: sterbend(r.beiAllenLp) || sterbend(r.beiErstemSchaden), zustaende: [...r.beiErstemSchaden, ...r.beiAllenLp] };
+  if (aufLetzter >= 1) return { stufe: sterbend(r.beiErstemSchaden), zustaende: r.beiErstemSchaden };
+  return { stufe: 0, zustaende: [] };
+}

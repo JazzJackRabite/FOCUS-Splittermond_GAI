@@ -1996,10 +1996,10 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
           {hasRolled && egCalculation?.isSuccess && (
             currentHealingInfo?.isHealingSpell ? (
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-                <Knopf art="primaer"
+                <Knopf
                   onClick={() => handleCompleteCast()}
                   disabled={!canAffordFocus}
-                  className="text-xs underline decoration-dotted"
+                  className="text-xs"
                   title="Zauber auf Ziel oder Verbündeten anwenden (ohne Selbstheilung)"
                 >
                   Auf Verbündeten wirken (-{finalCosts.totalFocus} FO)

@@ -7,7 +7,7 @@ Gemini in Google AI Studio – liest diese Datei zuerst und hält sich daran.
 - Die Prüfungen in `src/fundament/__tests__/` setzen diese Datei durch. Schlägt eine fehl, ist der Code zu ändern, nicht die Prüfung.
 - Änderungen an dieser Datei entscheidet der Projektinhaber.
 
-> **Stand 22.11.2026 (Stand 44).** Teil 2 (Regelquellen) ist gegen den Code geprüft; eine Prüfung hält Tabelle und Code seitdem
+> **Stand 22.11.2026 (Stand 45).** Teil 2 (Regelquellen) ist gegen den Code geprüft; eine Prüfung hält Tabelle und Code seitdem
 > zusammen (`src/fundament/__tests__`).
 
 ---
@@ -61,7 +61,7 @@ Felder stehen unter `daten` des jeweiligen Eintrags. **Was hier nicht steht, dar
 | Einträge finden, Namen und IDs, Umbenennungen | Einträge mit `id`, `typ`, `name`; ID-Register | `regelwerk/katalog.ts`, `regelwerk/bruecke.ts`, `regelwerk/ids.ts` |
 | Abgeleitete Werte, Heldengrade, Höchstbonus | Kernregeln: `strukturiert`; an Stärken: `abgeleitete_werte_modifikatoren`; `groessenklasse`; an Ausrüstung: `behinderung`, `vtd_bonus`, `mindest_staerke` | `regelwerk/abgeleitet.ts` |
 | Voraussetzungen | `voraussetzungen` (formal, mit IDs; `gleiche_fertigkeit` für „in der gleichen Magieschule“) | `regelwerk/bedingungen.ts` |
-| Erschaffung: Rassen, Kulturen, Abstammungen, Module, Grenzen je Schritt | `modulwerte`, `attributsmodifikatoren`, `staerken_refs`, `strukturiert`, `tabelle` | `regelwerk/erschaffung.ts`, `regelwerk/erschaffungEditor.ts` |
+| Erschaffung: Rassen, Kulturen, Abstammungen, Module, Grenzen je Schritt; Grenzen im Editor (Attributpunkte und Höchstwert, Fertigkeitspunkte und Höchstwert, nicht-magische Punkte, Ressourcen, Start-Meisterschaften, Sprachen) | `modulwerte`, `attributsmodifikatoren`, `staerken_refs`, `strukturiert`, `tabelle`; Kernregel „Übersicht über die Charaktererschaffung“: `strukturiert` (`attribute`, `kultur_frei`, `abstammung_frei`, `ausbildung_frei`, `schritt_7`, `feinschliff`) | `regelwerk/erschaffung.ts`, `regelwerk/erschaffungEditor.ts`, `regelwerk/grwListen.ts` |
 | Wirkungen von Stärken und Meisterschaften (feste Boni, Boni beim Würfeln) | `wirkungen_strukturiert` mit `fertigkeit_refs`, `alle_proben`, `gilt`, `traeger` | `regelwerk/wirkungen.ts` |
 | Kosten und Zauberdauer aus Meisterschaften | `wirkungen_strukturiert`, Gruppe B | `regelwerk/wirkungen.ts` |
 | Wirkung aktiver Zauber (Kampfwerte, Proben, Zusatzschaden, Lebenspunkte, unterdrückte Zustände) | `spielwerte`, `typus`, `reichweite` | `regelwerk/zauberwerte.ts`, `utils/magicRules.ts` |
@@ -75,6 +75,7 @@ Felder stehen unter `daten` des jeweiligen Eintrags. **Was hier nicht steht, dar
 | Baukästen: doppelte Merkmale, Verbesserte Angriffe | Feinschliff-Regeln: `strukturiert` (`merkmale_zusammenfuehren`, `verbesserte_angriffe`); Rolle: `verbesserter_angriff`; Waffen: `schaden`, `wgs`, `modus`, `merkmale_text` | `regelwerk/modifikationen.ts`, `regelwerk/wesenBaukasten.ts`, `regelwerk/golem.ts` |
 | Lebenspunkte und Stufen der Begleiter | Kernregeln: `strukturiert`; Merkmale: `gesundheitsstufen_namen`, `betaeubungsimmun` | `regelwerk/vitals.ts` |
 | Schadens- und Heildialog | Splittergaben: `strukturiert.gaben`; Heilung: `strukturiert.pausen`, `ruheregeln`; Zustände: `hat_stufe`, `zustandswirkung`; Heilkunde: `auswirkungen` | `regelwerk/schadenUndHeilung.ts` |
+| Sterben: Zustände beim ersten echten Punkt auf der letzten Gesundheitsstufe und wenn dort alle LP verloren sind, Probe gegen Wundschock, Tod; Länge der LP-Leiste | Kernregel „Sterben“: `strukturiert` (`zustand_bei_erstem_schaden`, `zustaende_bei_allen_lp`, `tot_mehr_als_stufen`, `erster_echter_schaden_auf_todgeweiht.probe`) | `regelwerk/schadenUndHeilung.ts`, `hooks/useCharacterState.ts` |
 | Rast der Begleiter (Begleiterarten ohne LP-Regeneration in der Ruhephase; Zustände nach Pausen) | Regeltexte: `strukturiert.ruhephase_begleiter`; sonst `ruheregeln` der Kernregel „Heilung“; Zustände: `pause_ende` (über `nachPause`) | `regelwerk/begleiterRast.ts` |
 
 Ansichten (`components/`) greifen nicht selbst in die Paketdaten, sondern fragen die Module aus `regelwerk/`. Wo eine

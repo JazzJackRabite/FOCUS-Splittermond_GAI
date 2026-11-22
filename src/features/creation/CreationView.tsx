@@ -99,8 +99,8 @@ export function CreationView() {
     if (mode === 'creation') {
       const newVal = (skillsBase[key] ?? 0) + delta;
       if (newVal < 0) return;
-      if (newVal > 6 && regelverstoss('Fertigkeiten lassen sich bei der Erschaffung höchstens auf 6 setzen.')) return;
-      if (delta > 0 && creationUsage.skill >= 55 && regelverstoss('Alle 55 Fertigkeitspunkte sind verteilt.')) return;
+      if (newVal > creationUsage.skillMax && regelverstoss(`Fertigkeiten lassen sich bei der Erschaffung höchstens auf ${creationUsage.skillMax} setzen.`)) return;
+      if (delta > 0 && creationUsage.skill >= creationUsage.skillLimit && regelverstoss(`Alle ${creationUsage.skillLimit} Fertigkeitspunkte sind verteilt.`)) return;
     } else {
       const totalVal = (skillsBase[key] ?? 0) + (skillsXp[key] ?? 0);
       if (delta > 0) {
@@ -403,7 +403,7 @@ export function CreationView() {
           <div className="bg-flaeche p-5 rounded-karte border border-rahmen relative overflow-hidden">
             <div className="flex justify-between items-center border-b border-gold pb-2 mb-4">
               <h3 className="font-bold text-[17px] fantasy-font text-gold-hell">Attribute</h3>
-              <PointDisplay current={creationUsage.attr} max={18} label="Punkte" mode={mode} />
+              <PointDisplay current={creationUsage.attr} max={creationUsage.attrLimit} label="Punkte" mode={mode} />
             </div>
             <div className="space-y-1">
               {Object.keys(grwAttribute()).map((key) => {
@@ -414,13 +414,13 @@ export function CreationView() {
                 const startValue = base + raceMod + bonus;
                 const currentInc = attrIncrements[key as keyof typeof attrIncrements] ?? 0;
                 const nextCost = getAttrXpCost(currentInc);
-                const canDecrease = mode === 'creation' ? base > 1 : currentInc > 0;
+                const canDecrease = mode === 'creation' ? base > creationUsage.attrMin : currentInc > 0;
                 return (
                   <AttributeRow
                     key={key} attrKey={key} total={total} startValue={startValue}
                     onIncrease={() => mode === 'creation' ? modAttrBase(key, 1) : modAttrXP(key, 1)}
                     onDecrease={() => mode === 'creation' ? modAttrBase(key, -1) : modAttrXP(key, -1)}
-                    canIncrease={hausregeln || (mode === 'creation' ? base < 3 && creationUsage.attr < 18 : currentInc < heldengrad.maxAttrMod && xpAvailable >= nextCost)}
+                    canIncrease={hausregeln || (mode === 'creation' ? base < creationUsage.attrMax && creationUsage.attr < creationUsage.attrLimit : currentInc < heldengrad.maxAttrMod && xpAvailable >= nextCost)}
                     canDecrease={canDecrease}
                     cost={mode === 'xp' && currentInc < heldengrad.maxAttrMod ? nextCost : 0}
                     mode={mode}
@@ -465,7 +465,7 @@ export function CreationView() {
             <div className="flex justify-between items-center border-b border-gold pb-2 mb-4 flex-wrap gap-2">
               <h3 className="font-bold text-[17px] fantasy-font text-gold-hell">Fertigkeiten</h3>
               <div className="flex items-center gap-4">
-                <PointDisplay current={creationUsage.skill} max={55} label="Punkte" mode={mode} />
+                <PointDisplay current={creationUsage.skill} max={creationUsage.skillLimit} label="Punkte" mode={mode} />
                 <div className="flex gap-1 no-print items-center">
                   {[
                     { k: 'ALL', l: 'Alle' },
@@ -502,7 +502,7 @@ export function CreationView() {
                   <SkillRow
                     key={skill} name={skill} val={val} totalValue={totalValue}
                     onIncrease={() => modSkill(skill, 1)} onDecrease={() => modSkill(skill, -1)}
-                    canIncrease={hausregeln || (mode === 'creation' ? val < 6 && creationUsage.skill < 55 : val < heldengrad.maxSkill && xpAvailable >= cost)}
+                    canIncrease={hausregeln || (mode === 'creation' ? val < creationUsage.skillMax && creationUsage.skill < creationUsage.skillLimit : val < heldengrad.maxSkill && xpAvailable >= cost)}
                     canDecrease={mode === 'creation' ? (skillsBase[skill] ?? 0) > 0 : (skillsXp[skill] ?? 0) > 0}
                     cost={mode === 'xp' && val < heldengrad.maxSkill ? cost : 0}
                     sperrgrund={mode === 'xp' ? (val >= heldengrad.maxSkill ? `${heldengrad.name}: höchstens ${heldengrad.maxSkill} Fertigkeitspunkte` : `Nicht genug EP (${cost} nötig)`) : undefined}

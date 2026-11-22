@@ -1,3 +1,4 @@
+import { lpKaestchen, sterbestand, sterberegeln } from '../regelwerk/schadenUndHeilung';
 import { istZustand, zustandHatStufe, nachPause, ohneNatuerlicheHeilung } from '../regelwerk/zustaende';
 import { useReducer, useEffect } from 'react';
 import type {
@@ -646,7 +647,7 @@ export function baseCharacterReducer(
       return { ...state, strengthsList: action.payload };
 
     case 'PLAY_LP_ANPASSEN': {
-      const ziel = Math.max(0, action.payload.maxLP) * 6;
+      const ziel = lpKaestchen(Math.max(0, action.payload.maxLP));
       const alt = state.playState.healthSlots;
       if (!ziel || alt.length === ziel) return state;
       const schaden = normalizeHealthSlots(alt).filter((x) => x.type !== 'empty').slice(0, ziel);
@@ -656,7 +657,7 @@ export function baseCharacterReducer(
 
     case 'PLAY_RESET': {
       const { maxLP, maxFocus, maxSplitter } = action.payload;
-      const slots: HealthSlot[] = Array.from({ length: maxLP * 6 }, () => ({ type: 'empty' as const }));
+      const slots: HealthSlot[] = Array.from({ length: lpKaestchen(maxLP) }, () => ({ type: 'empty' as const }));
       return {
         ...state,
         playState: {
@@ -745,36 +746,20 @@ export function baseCharacterReducer(
       }
       const newSlots = normalizeHealthSlots(slots);
 
-      // Todgeweiht-Stufe berechnen (only relevant for consumed damage)
+      // Sterben nach dem Paket (Kernregel „Sterben“, GRW S. 172–173): Zustände beim ersten echten Punkt auf der letzten
+      // Gesundheitsstufe, weitere (Bewusstlos, höhere Sterbe-Stufe), wenn dort alle LP verloren sind; darüber hinaus tot
       let newDyingLevel = state.playState.dyingLevel;
-      if (mLP && mLP > 0) {
-        const todgeweihtSlots = newSlots.slice(mLP * 4, mLP * 5);
-        const consumedOnTodgeweiht = todgeweihtSlots.filter((s) => s.type === 'consumed').length;
-        if (consumedOnTodgeweiht >= mLP) {
-          const todSlots = newSlots.slice(mLP * 5, mLP * 6);
-          const consumedOnTod = todSlots.filter((s) => s.type === 'consumed').length;
-          if (consumedOnTod >= mLP) {
-            newDyingLevel = 4;
-          } else {
-            newDyingLevel = 3;
-          }
-        } else if (consumedOnTodgeweiht >= 1) {
-          if (newDyingLevel < 2) newDyingLevel = 2;
-        }
-      }
-
-      // Auto-add Sterbend 2 / 3 condition when dyingLevel increases
       let newConditions = state.playState.conditions;
-      if (newDyingLevel > state.playState.dyingLevel && (newDyingLevel === 2 || newDyingLevel === 3)) {
-        const alreadyPresent = newConditions.some((c) => c.key === 'Sterbend' && c.level === newDyingLevel);
-        if (!alreadyPresent) {
-          newConditions = [...newConditions, { id: generateId(), key: 'Sterbend', level: newDyingLevel }];
-        }
-      }
-      if (newDyingLevel === 4 && state.playState.dyingLevel < 4) {
-        const alreadyPresent = newConditions.some((c) => c.key === 'Tod');
-        if (!alreadyPresent) {
-          newConditions = [...newConditions, { id: generateId(), key: 'Tod' }];
+      if (mLP && mLP > 0) {
+        const st = sterbestand(newSlots, mLP);
+        if (st.stufe > newDyingLevel) {
+          newDyingLevel = st.stufe;
+          for (const z of st.zustaende) {
+            if (!newConditions.some((c) => c.key === z.key && (z.level == null || c.level === z.level))) {
+              newConditions = [...newConditions, { id: generateId(), key: z.key, ...(z.level ? { level: z.level } : {}) }];
+            }
+          }
+          if (st.stufe === 4 && !newConditions.some((c) => c.key === 'Tod')) newConditions = [...newConditions, { id: generateId(), key: 'Tod' }];
         }
       }
 
@@ -836,32 +821,13 @@ export function baseCharacterReducer(
       let newConditions = state.playState.conditions ?? [];
 
       if (mLP && mLP > 0) {
-        const todgeweihtSlots = slots.slice(mLP * 4, mLP * 5);
-        const consumedOnTodgeweiht = todgeweihtSlots.filter((s) => s.type === 'consumed').length;
-        if (consumedOnTodgeweiht >= mLP) {
-          const todSlots = slots.slice(mLP * 5, mLP * 6);
-          const consumedOnTod = todSlots.filter((s) => s.type === 'consumed').length;
-          if (consumedOnTod >= mLP) {
-            newDyingLevel = 4;
-          } else {
-            newDyingLevel = 3;
-          }
-        } else if (consumedOnTodgeweiht >= 1) {
-          newDyingLevel = 2;
-        } else {
-          newDyingLevel = 0;
-        }
-
-        // Clean up conditions if dying level dropped
-        if (newDyingLevel < 4) {
-          newConditions = newConditions.filter((c) => c.key !== 'Tod');
-        }
-        if (newDyingLevel < 3) {
-          newConditions = newConditions.filter((c) => !(c.key === 'Sterbend' && c.level === 3));
-        }
-        if (newDyingLevel < 2) {
-          newConditions = newConditions.filter((c) => c.key !== 'Sterbend');
-        }
+        // Schaden zurückgenommen: Sterbe-Stand neu aus der Leiste; Sterbe-Zustände oberhalb des neuen Stands entfallen
+        const st = sterbestand(slots, mLP);
+        newDyingLevel = st.stufe;
+        const r = sterberegeln();
+        const sterbeZustaende = [...(r?.beiErstemSchaden ?? []), ...(r?.beiAllenLp ?? [])].filter((z) => z.level);
+        if (newDyingLevel < 4) newConditions = newConditions.filter((c) => c.key !== 'Tod');
+        newConditions = newConditions.filter((c) => !sterbeZustaende.some((z) => z.key === c.key && z.level === c.level && z.level! > newDyingLevel));
       }
 
       return {

@@ -130,6 +130,8 @@ const BEZUG_TEXT: Record<string, string> = {
 function bezugText(w: Wirkung): string {
   if (w.bezug === 'fertigkeit' && w.fertigkeit_refs?.length) return w.fertigkeit_refs.map(r => r.text).join(', ');
   const b = String(w.bezug ?? '');
+  // Abzüge eines bestimmten Zustands (z. B. „Abzüge durch Erschöpft“), sonst allgemein
+  if (b === 'zustandsabzug' && w.zustand_ref?.text) return `Abzüge durch ${w.zustand_ref.text}`;
   if (b.startsWith('attributproben:')) return `Proben mit ${b.slice(15)}`;
   if (b.startsWith('attribut:')) return b.slice(9);
   return BEZUG_TEXT[b] ?? b;
@@ -137,6 +139,7 @@ function bezugText(w: Wirkung): string {
 
 /** Kurztexte je Art einer Wirkung (Schlüssel: Vokabular `art` der Wirkungen im Paket, nicht Regelnamen) */
 const KURZTEXT: Record<string, (w: Wirkung, z: string) => string> = {
+
   bonus: (w, z) => `${z} auf ${(w.auf ?? bezugText(w)).replace(/^(?:seine[nrs]?|ihre[nrs]?|den|die|das) /, '')}`.trim(),
   wert_erhoeht: (w, z) => `${bezugText(w)} ${z}`.trim(),
   schaden_gesenkt: (w) => `${w.schadensart ?? 'Schaden'} −${w.wert}`,
@@ -155,6 +158,7 @@ KURZTEXT.wert_gesenkt = KURZTEXT.wert_erhoeht;
 
 /** Kurztext einer Wirkung für die Anzeige */
 export function wirkungKurz(w: Wirkung): string {
+  if (w.art === 'wert_gesenkt' && w.wert === 'Hälfte') return `${bezugText(w)} halbiert`;
   const z = (w.art === 'malus' || w.art === 'wert_gesenkt' ? '−' : '+') + (w.wert ?? '') + (w.pro_eg ? ` (+${w.pro_eg} je EG)` : '');
   const f = KURZTEXT[w.art];
   return f ? f(w, z) : w.beleg;

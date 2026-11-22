@@ -366,7 +366,8 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
     });
 
     it('erhöht Wundstufe durch Zustand Verwundet (PDF S. 169)', () => {
-      // Character has 0 consumed damage (Unverletzt), but has Verwundet 1 -> counts as Angeschlagen (-1)
+      // 0 echter Schaden (Unverletzt) mit Verwundet 1: Wundabzug wie Angeschlagen (−1), die Gesundheitsstufe bleibt
+      // („gilt in Bezug auf die Wundabzüge … als um eine Wundstufe schwerer verletzt“)
       const state: CharacterState = {
         ...DEFAULT_STATE,
         race: 'Mensch',
@@ -380,7 +381,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
 
       const { result } = renderHook(() => useCalculations(state));
       expect(result.current.currentWoundPenalty).toBe(-1);
-      expect(result.current.currentHealthLevelName).toBe('Angeschlagen');
+      expect(result.current.currentHealthLevelName).toBe('Unverletzt');
     });
 
     it('reduziert Wundabzüge durch Stärke Schmerzresistenz (PDF S. 73) und Schmerzwiderstand (PDF S. 137)', () => {

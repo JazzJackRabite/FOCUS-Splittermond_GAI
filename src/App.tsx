@@ -1,3 +1,4 @@
+import { lpKaestchen } from './regelwerk/schadenUndHeilung';
 import { Knopf, Reiter } from './fundament';
 import React, { useState, useEffect } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
@@ -104,7 +105,7 @@ const App: React.FC = () => {
   // Lebenspunkte je Stufe geändert (Stärke Robust, Konstitution …): Kästchen mitziehen, erlittener Schaden bleibt
   useEffect(() => {
     const n = state.playState.healthSlots.length;
-    if (n > 0 && calc.maxLP > 0 && n !== calc.maxLP * 6) dispatch({ type: 'PLAY_LP_ANPASSEN', payload: { maxLP: calc.maxLP } });
+    if (n > 0 && calc.maxLP > 0 && lpKaestchen(calc.maxLP) > 0 && n !== lpKaestchen(calc.maxLP)) dispatch({ type: 'PLAY_LP_ANPASSEN', payload: { maxLP: calc.maxLP } });
   }, [state.playState.healthSlots.length, calc.maxLP, dispatch]);
 
   const handleTabClick = (targetMode: AppMode) => {

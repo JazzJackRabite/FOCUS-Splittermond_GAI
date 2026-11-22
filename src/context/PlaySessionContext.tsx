@@ -409,7 +409,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
         title: `Angriff getroffen: ${result.weapon.name} (${result.eg} EG)${result.damageRoll ? ` · ${result.damageRoll.netDamage} Schaden` : ''}`,
         description: `Manöver: ${result.maneuver.name} · Wurf: ${result.totalRoll} vs. VTD ${result.targetVTD} (${result.eg} EG erzielt)${dmgText}${condText}${result.notes ? ` · Ziel: ${result.notes}` : ''}`,
         badge: {
-          text: result.damageRoll ? `${result.damageRoll.netDamage} SP · ${result.eg} EG` : `${result.eg} EG`,
+          text: result.damageRoll ? `${result.damageRoll.netDamage} Schaden · ${result.eg} EG` : `${result.eg} EG`,
           variant: result.damageRoll ? 'danger' : 'success',
         },
       }
@@ -462,7 +462,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
         title: `Zauber gewirkt: ${castResult.spell.name} (${castResult.eg} EG)${castResult.damageRoll ? ` · ${castResult.damageRoll.total} Schaden` : ''}`,
         description: `${totalFO} FO aufgewendet [${castResult.exhaustedFocus} Erschöpft, ${castResult.channeledFocus} Kanalisiert, ${castResult.consumedFocus} Verzehrt] · Auslösezeit: ${castResult.effectiveCastTicks} Ticks${modSummary}${damageSummary}${castResult.notes ? ` · Ziel: ${castResult.notes}` : ''}`,
         badge: {
-          text: castResult.damageRoll ? `${castResult.damageRoll.total} SP · ${totalFO} FO` : `${totalFO} FO`,
+          text: castResult.damageRoll ? `${castResult.damageRoll.total} Schaden · ${totalFO} FO` : `${totalFO} FO`,
           variant: castResult.damageRoll ? 'danger' : 'info',
         },
       }
