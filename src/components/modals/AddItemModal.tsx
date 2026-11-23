@@ -388,7 +388,8 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                   <select value={zielWahl} onChange={(e) => setZielWahl(e.target.value)}
                     className="w-full p-2 border border-rahmen rounded-knopf bg-flaeche text-schrift text-sm">
                     <option value="neu">Neu: eigener Eintrag (mehrfach erwerbbar)</option>
-                    {vorhandeneIdx.map(({ e, i }) => <option key={i} value={String(i)}>Stufe erhöhen: {e.name} {e.desc ? `(${e.desc}) ` : ''}– jetzt Stufe {e.level}</option>)}
+                    {/* die Beschreibung ist oft der ganze Regeltext: nur Nummer und Stufe zeigen */}
+                    {vorhandeneIdx.map(({ e, i }, n) => <option key={i} value={String(i)}>Stufe erhöhen: {e.name} Nr. {n + 1} – jetzt Stufe {e.level}</option>)}
                   </select>
                 </label>
               ) : (

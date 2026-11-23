@@ -96,7 +96,9 @@ function ausPaket(k: Katalog): Listen | null {
       L.schwaechen.push({ name: e.name, desc: d.beschreibung ?? '', page: seite(e), source: kurz });
     } else if (e.typ === 'ressource') {
       const t = d.tabelle as { zeilen?: { punkte?: number; werte: string[] }[] } | undefined;
-      const punkte = (t?.zeilen ?? []).map((z) => z.punkte).filter((p): p is number => typeof p === 'number');
+      // offene Tabelle („jeder weitere Punkt“, Gefolge) hat keine oberste Stufe aus der Tabelle → allgemeine Grenze
+      const offen = (t?.zeilen ?? []).some((z) => typeof z.punkte !== 'number');
+      const punkte = offen ? [] : (t?.zeilen ?? []).map((z) => z.punkte).filter((p): p is number => typeof p === 'number');
       const stufen = t?.zeilen?.length ? `\n\nStufenübersicht:\n${t.zeilen.map((z) => `Stufe ${z.werte[0]}: ${z.werte.slice(1).join(' - ')}`).join('\n')}` : '';
       L.ressourcen.push({ name: e.name, source: kurz, page: seite(e) ?? 0, desc: `${d.beschreibung ?? ''}${stufen}`,
         ...(punkte.length ? { maxStufe: Math.max(...punkte) } : {}), ...(d.mehrfach_erwerbbar ? { mehrfach: true } : {}) });

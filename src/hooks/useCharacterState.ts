@@ -129,6 +129,7 @@ const ADVANCEMENT_ACTION_TYPES = new Set([
   'REMOVE_STRENGTH',
   'ADD_RESOURCE',
   'RESOURCE_STEIGERN',
+  'SCHWAECHEN_HG',
   'REMOVE_RESOURCE',
   'ADD_WEAKNESS',
   'REMOVE_WEAKNESS',
@@ -148,7 +149,7 @@ export function baseCharacterReducer(
         'skillsBase', 'skillsXp', 'masteries',
         'strengthsList', 'resourcesList', 'weaknessesList', 'languagesList',
         'spellsList', 'playState', 'inventory', 'money', 'advancementLog', 'creationFinalized',
-        'ignoreEncumbrance', 'erschaffung', 'begleiter', 'relikte', 'regelIds',
+        'ignoreEncumbrance', 'erschaffung', 'begleiter', 'relikte', 'regelIds', 'schwaechenHg',
       ];
       const safePayload: Partial<CharacterState> = {};
       for (const key of KNOWN_KEYS) {
@@ -571,6 +572,9 @@ export function baseCharacterReducer(
       }
       return { ...state, resourcesList: [...state.resourcesList, item], advancementLog: newLog };
     }
+
+    case 'SCHWAECHEN_HG':
+      return { ...state, schwaechenHg: action.payload };
 
     case 'RESOURCE_STEIGERN': {
       // eine vorhandene Ressource um Stufen erhöhen; nach der Erschaffung mit EP (bei Erschaffungs-Einträgen als xpStufen)
@@ -1437,6 +1441,7 @@ function hydrateState(): CharacterState {
     ...(Array.isArray(saved.begleiter) ? { begleiter: saved.begleiter as CharacterState['begleiter'] } : {}),
     ...(Array.isArray(saved.relikte) ? { relikte: saved.relikte as CharacterState['relikte'] } : {}),
     ...(saved.regelIds && typeof saved.regelIds === 'object' ? { regelIds: saved.regelIds as CharacterState['regelIds'] } : {}),
+    ...(typeof saved.schwaechenHg === 'number' ? { schwaechenHg: saved.schwaechenHg } : {}),
   };
   return referenceCharacterResources(raw);
 }

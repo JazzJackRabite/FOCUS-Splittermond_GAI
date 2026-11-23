@@ -75,6 +75,9 @@ const Grundangaben: React.FC<SchrittProps> = ({ k, b, aendern, besitzer }) => (
         </Auswahl>
       )}
     </div>
+    {b.vertrauter && !b.kreatur && (
+      <Erklaerung>Ein Vertrauter begleitet im Rahmen der Ressource Kreatur (Stärke Tiervertrauter, GRW S. 74). Für dieses Tier reicht keine freie Ressource Kreatur – ein kleineres Tier wählen oder die Ressource steigern.</Erklaerung>
+    )}
     <label className={`flex items-center gap-2 min-h-11 ${besitzer.tiervertrauter || b.vertrauter ? '' : 'text-leise'}`} title={besitzer.tiervertrauter ? undefined : 'Erfordert die Stärke Tiervertrauter'}>
       <input type="checkbox" className="w-5 h-5 accent-gold" checked={!!b.vertrauter} disabled={!besitzer.tiervertrauter && !b.vertrauter} onChange={ev => aendern({ vertrauter: ev.target.checked || undefined })} />
       Vertrauter (Stärke Tiervertrauter)

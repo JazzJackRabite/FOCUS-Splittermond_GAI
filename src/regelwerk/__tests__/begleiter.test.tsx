@@ -245,7 +245,8 @@ describe.skipIf(!FB)('Abrichtungen und Potenzial (lokal)', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Begleiter erstellen$/ }));
     expect((within(screen.getByTestId('begleiter-assistent')).getByRole('button', { name: /^Vertrauter/ }) as HTMLButtonElement).disabled).toBe(true);
     unmount();
-    render(<Rahmen start={{ strengthsList: [{ name: 'Tiervertrauter', source: 'test' }] as never }} />);
+    // Tiervertrauter: das Tier begleitet im Rahmen der Ressource Kreatur (GRW S. 74) – der Wolf braucht Kreatur 4
+    render(<Rahmen start={{ strengthsList: [{ name: 'Tiervertrauter', source: 'test' }], resourcesList: [{ name: 'Kreatur', level: 4, source: 'creation' }] } as never} />);
     const d = begleiterErstellen('Vertrauter');
     expect(screen.getByText('Vertrauter erstellen')).toBeTruthy();
     const sel = within(d).getByLabelText('Tier wählen') as HTMLSelectElement;

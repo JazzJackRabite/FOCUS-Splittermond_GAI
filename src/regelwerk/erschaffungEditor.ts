@@ -8,7 +8,7 @@
  * - pruefeErschaffungImEditor(): Ergebnis mit Namen statt IDs.
  */
 import type { Katalog } from './katalog';
-import { ERSCHAFFUNG_ID, pruefeErschaffung, type Bau, type ErschaffungsBefund, type ModulWahl } from './erschaffung';
+import { ERSCHAFFUNG_ID, NAHKAMPF, pruefeErschaffung, type Bau, type ErschaffungsBefund, type ModulWahl } from './erschaffung';
 import { aktiverKatalog, ATTRIBUT_NAME, fertigkeitId, idNachName, meisterschaftId, RASSE_ID } from './bruecke';
 import type { CharacterState } from '../types';
 
@@ -309,7 +309,9 @@ export function modulAuswahlListe(k: Katalog, gr: ModulGruppe): { id: string; te
   const platz = gr.optionen.filter(o => o.auswahl).map(o => o.auswahl!);
   const extra = k.nachTyp('fertigkeit').filter(e => !feste.some(f => f.id === e.id) && (
     (platz.includes('magieschule') && e.daten.kategorie === 'Magieschule') ||
-    ((platz.includes('kampffertigkeit') || platz.includes('nahkampffertigkeit')) && e.daten.kategorie === 'Kampffertigkeit')))
+    (platz.includes('kampffertigkeit') && e.daten.kategorie === 'Kampffertigkeit') ||
+    // „eine Nahkampffertigkeit“: ohne Schuss- und Wurfwaffen
+    (platz.includes('nahkampffertigkeit') && NAHKAMPF.has(e.id))))
     .map(e => ({ id: e.id, text: e.name }));
   return [...feste, ...extra];
 }

@@ -1233,6 +1233,27 @@ Steinhaut kanalisiert), Golem-Angriff, Schwerpunkt-Probe. Behoben:
   Golem-Preis wird nicht vom Geld abgezogen; Zauber ohne Nachfrage zu nicht eingesetzten EG.
 - Tests: 564 grün ohne Bücher; 626 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 54 (23.11.2026): Nachprüfung Stand 53, Varg-Totenbeschwörer mit Vertrautem, Gefolge und Untotem
+
+Stand 53 in der App bestätigt: Relikt „2 + 2 (je Relikt eine Ressource)“, Relikt-Ressource mit EP steigern (7 EP, „+1 Stufe
+für 7 EP“), Relikt wachsen lassen (Legendäre Tat, 3/3 Punkte, Chronik), Schwerpunkt-Bonus des Relikts bei der Zauberprobe,
+SP-Bonus einmal je Probe, kein Neuwurf, Feinschliff sperrt Ausweichen II ohne I, Golem heißt „Eisenherz“ im Angriff.
+Neu erschaffen: Kael (Varg, Kultur Zhoujiang aus dem Grimoire, Abstammung Landadel, Mondzeichen Der Spieler) mit 3000 EP:
+Todes-, Beherrschungs-, Naturmagie, Klingenwaffen 15; Vertrauter, Gefolgsmann (Kultur Sadu), beschworenes Wesen, erhobener
+Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach der Erschaffung. Behoben:
+- Modulwahl „eine Nahkampffertigkeit“ bot Schuss- und Wurfwaffen an (Editor und Prüfsuite `lader.py`).
+- Gefolge: offene Tabelle („jeder weitere Punkt“) ergab Höchststufe 1; jetzt bis 6.
+- Vertrauter (Stärke Tiervertrauter) ließ sich ohne passende Ressource Kreatur anlegen („ohne Ressource“); GRW S. 74:
+  „im Rahmen der Ressource Kreatur“. Jetzt Hinweis im Assistenten und Sperre beim Erstellen.
+- Schwächen: GRW S. 84 erlaubt, beim Erreichen eines neuen Heldengrades eine Schwäche abzulegen oder zu ersetzen; bisher
+  in der Steigerung gar nicht entfernbar. Jetzt einmal je neuem Heldengrad (`schwaechenHg`).
+- Ressource steigern: Auswahl zeigte den ganzen Regeltext als Namen; jetzt „Relikt Nr. 1 – jetzt Stufe 2“.
+- Gefolgsmann: Initiative fehlte in der Waffenzeile.
+- Offen: Mondzeichen-Gaben (etwa „Der Spieler“: zweitniedrigsten Würfel beim Risikowurf neu werfen) sind in den
+  Würfeldialogen nicht nutzbar – die Gaben stehen im Paket nur als Text. Schwerpunkt-Bonus (+1) in Proben fehlt weiterhin.
+  Erweiterte Dienste beschworener Wesen werden im Assistenten nicht angeboten. PDF-Export nicht geprüft (Datei-Download).
+- Tests: 567 grün ohne Bücher; 629 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

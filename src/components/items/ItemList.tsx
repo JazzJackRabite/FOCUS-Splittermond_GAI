@@ -41,9 +41,11 @@ export const ItemList: React.FC<ItemListProps> = ({
         const creationCost = (itemLevel - epStufen) * itemPointCost;
         const xpCost = itemLevel * itemPointCost * xpMultiplier;
 
+        // Schwächen: ablegen oder ersetzen beim Erreichen eines neuen Heldengrades (GRW S. 84) – ohne EP
+        const istSchwaeche = typeLabel.includes('Schwäch');
         const canDelete = mode === 'creation'
           ? !item.isRacial
-          : item.source === 'xp' && !item.isRacial && !item.isFree && item.pointCost !== 0;
+          : istSchwaeche || (item.source === 'xp' && !item.isRacial && !item.isFree && item.pointCost !== 0);
 
         let details: { desc: string; source: string; page?: number } | null = null;
         if (typeLabel.includes('Sprach')) {
@@ -116,7 +118,7 @@ export const ItemList: React.FC<ItemListProps> = ({
               <Knopf
                 onClick={() => onDelete(idx)}
                 className="text-lg no-print shrink-0"
-                title="Entfernen"
+                title={istSchwaeche && mode !== 'creation' ? 'Ablegen (beim Erreichen eines neuen Heldengrades, GRW S. 84)' : 'Entfernen'}
               >
                 ×
               </Knopf>

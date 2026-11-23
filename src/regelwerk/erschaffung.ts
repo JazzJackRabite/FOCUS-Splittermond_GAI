@@ -7,7 +7,7 @@ import type { Katalog } from './katalog';
 import type { Eintrag } from './typen';
 
 export const ERSCHAFFUNG_ID = 'grw:regel:erschaffung-regeln:uebersicht-ueber-die-charaktererschaffung';
-const NAHKAMPF = new Set(['grw:fertigkeit:handgemenge', 'grw:fertigkeit:hiebwaffen', 'grw:fertigkeit:kettenwaffen', 'grw:fertigkeit:klingenwaffen', 'grw:fertigkeit:stangenwaffen']);
+export const NAHKAMPF = new Set(['grw:fertigkeit:handgemenge', 'grw:fertigkeit:hiebwaffen', 'grw:fertigkeit:kettenwaffen', 'grw:fertigkeit:klingenwaffen', 'grw:fertigkeit:stangenwaffen']);
 
 export type Punkte = Record<string, number>;
 export interface ModulWahl { fertigkeiten?: Record<string, string>; ressourcen?: Record<string, string>; staerke?: string; meisterschaft?: number }
@@ -106,7 +106,8 @@ export function pruefeErschaffung(kat: Katalog, bau: Bau): { charakter: Erschaff
           if (!ok && i && platz.length) {
             const e = g(i);
             ok = !!e && ((platz.includes('magieschule') && istSchule(i)) ||
-              ((platz.includes('kampffertigkeit') || platz.includes('nahkampffertigkeit')) && kat.get(i)?.daten.kategorie === 'Kampffertigkeit'));
+              (platz.includes('kampffertigkeit') && kat.get(i)?.daten.kategorie === 'Kampffertigkeit') ||
+              (platz.includes('nahkampffertigkeit') && NAHKAMPF.has(i)));
           }
           if (!ok) { f(`${m.name}: ${feld}[${k}] („${gr.text}“) braucht eine gültige Wahl`); return; }
         }

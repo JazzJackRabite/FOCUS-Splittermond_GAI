@@ -596,6 +596,8 @@ export function validateCharacterImport(data: unknown): Partial<CharacterState> 
       staerken: map(r.staerken), schwaechen: map(r.schwaechen), ressourcen: map(r.ressourcen), meisterschaften: map(r.meisterschaften), zauber: map(r.zauber) };
   }
 
+  if (typeof data.schwaechenHg === 'number' && Number.isFinite(data.schwaechenHg)) result.schwaechenHg = data.schwaechenHg;
+
   if (typeof data.creationFinalized === 'boolean') {
     result.creationFinalized = data.creationFinalized;
   } else if (

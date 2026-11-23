@@ -1,5 +1,5 @@
 /** Stärken, Ressourcen, Sprachen: was nach den Paketdaten noch wählbar ist (Praxistest Liora, HG 4) */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { listenSperre } from '../regelwerk/listenAuswahl';
 import { grwRessourcen, grwStaerken } from '../regelwerk/grwListen';
@@ -194,5 +194,41 @@ describe('Erschaffung: Schritt 7 überzogen', () => {
     const st = { ...DEFAULT_STATE, race: 'Gnom', skillsBase: { Feuermagie: 6, Verwandlungsmagie: 6, Felsmagie: 6, Bannmagie: 6, Windmagie: 6 } } as never;
     const p = pruefeErschaffungImEditor(st)!;
     expect(p.hinweise.some(h => /Schritt 7 trägt .*Magie/.test(h))).toBe(true);
+  });
+});
+
+describe('Modulwahl „eine Nahkampffertigkeit“', () => {
+  it('Landadel bietet keine Schuss- oder Wurfwaffen an', async () => {
+    const { modulAuswahlListe } = await import('../regelwerk/erschaffungEditor');
+    const { aktiverKatalog } = await import('../regelwerk/bruecke');
+    const k = aktiverKatalog()!;
+    const gr = (k.get('grw:abstammung:landadel')!.daten.modulwerte as { fertigkeiten: never[] }).fertigkeiten[0];
+    const namen = modulAuswahlListe(k, gr).map(o => o.text);
+    expect(namen).toContain('Klingenwaffen');
+    expect(namen).not.toContain('Schusswaffen');
+    expect(namen).not.toContain('Wurfwaffen');
+  });
+});
+
+describe('Gefolge', () => {
+  it('Tabelle mit „jeder weitere Punkt“: keine Höchststufe 1', () => {
+    expect(grwRessourcen().find((r) => r.name === 'Gefolge')!.maxStufe).toBeUndefined();
+    expect(listenSperre('resource', grwRessourcen().find((r) => r.name === 'Gefolge')!, 'Gefolge', 'creation', [e('Gefolge', 1)]).restStufen).toBe(5);
+  });
+});
+
+describe('Schwäche ablegen', () => {
+  it('in der Steigerung einmal je neuem Heldengrad (GRW S. 84)', async () => {
+    const { useItemHandlers } = await import('../hooks/useItemHandlers');
+    const dispatch = vi.fn();
+    const basis = { mode: 'xp' as const, strengthsList: [], resourcesList: [], weaknessesList: [e('Hitzkopf')], languagesList: [], spellsList: [] };
+    const calc = { creationUsage: {} as never, xpAvailable: 100 };
+    const a = renderHook(() => useItemHandlers({ state: { ...basis, schwaechenHg: 2 }, calc: { ...calc, heldengradNr: 2 }, dispatch }));
+    act(() => a.result.current.removeListEntry('weakness', 0));
+    expect(dispatch).not.toHaveBeenCalled();
+    const b = renderHook(() => useItemHandlers({ state: { ...basis, schwaechenHg: 2 }, calc: { ...calc, heldengradNr: 3 }, dispatch }));
+    act(() => b.result.current.removeListEntry('weakness', 0));
+    expect(dispatch).toHaveBeenCalledWith({ type: 'REMOVE_WEAKNESS', payload: 0 });
+    expect(dispatch).toHaveBeenCalledWith({ type: 'SCHWAECHEN_HG', payload: 3 });
   });
 });

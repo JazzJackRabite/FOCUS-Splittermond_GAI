@@ -211,7 +211,8 @@ export function gefolgeWerte(k: Katalog, b: Begleiter, maxFertigkeit: number): G
     werte = {
       ...werte,
       abgeleitete_werte: { ...Object.fromEntries(['GK', 'GSW', 'INI', 'LP', 'FO', 'VTD', 'GW', 'KW'].map(x => [x, String(w[x] ?? '–')])), SR: '0' },
-      waffen: waffen.map(x => ({ name: x.name, wert: String(x.wert), schaden: x.schaden, wgs: x.wgs, ini: x.ini, merkmale: x.merkmale })),
+      // Initiative des Gefolgsmanns (10 − INT, abgeleitet) in der Waffenzeile, wie bei Kreaturen
+      waffen: waffen.map(x => ({ name: x.name, wert: String(x.wert), schaden: x.schaden, wgs: x.wgs, ini: x.ini || (w.INI !== undefined ? String(w.INI) : ''), merkmale: x.merkmale })),
     };
   }
   return {

@@ -160,6 +160,9 @@ export const BegleiterAssistent: React.FC<{
     // Tiergefährte über die Ressource Kreatur: Stufe des Tiers höchstens die der Ressource (GRW S. 78)
     const st = kreaturFehlt(k, entwurf);
     if (st !== null && (neu || kreaturFehlt(k, alle[index!] ?? entwurf) === null) && regelverstoss(`Das Tier braucht Kreatur ${st}; die gewählte Ressource reicht nicht.`)) return;
+    // Stärke Tiervertrauter: das Tier begleitet „im Rahmen der Ressource Kreatur“ (GRW S. 74) – ohne Ressource kein Vertrauter
+    if (entwurf.art === 'tier' && entwurf.vertrauter && !entwurf.kreatur
+      && regelverstoss('Ein Vertrauter begleitet im Rahmen der Ressource Kreatur (Stärke Tiervertrauter) – dafür fehlt eine passende Ressource Kreatur.')) return;
     if (neu) {
       if (entwurf.art === 'gefolge') {
         const brauchen = gefolgeVerbraucht(k, alle, besitzer.maxFertigkeit) + gefolgeWerte(k, entwurf, besitzer.maxFertigkeit).punkte;

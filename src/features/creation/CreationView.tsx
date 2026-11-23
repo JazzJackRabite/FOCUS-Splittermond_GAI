@@ -136,8 +136,8 @@ export function CreationView() {
   }, [mode, strengthsList, race, homeRegion, dispatch]);
 
   const { addListEntry, removeListEntry } = useItemHandlers({
-    state: { mode, strengthsList, resourcesList, weaknessesList, languagesList, spellsList },
-    calc: { creationUsage, xpAvailable },
+    state: { mode, strengthsList, resourcesList, weaknessesList, languagesList, spellsList, schwaechenHg: state.schwaechenHg },
+    calc: { creationUsage, xpAvailable, heldengradNr: heldengrad.nr },
     dispatch,
   });
 

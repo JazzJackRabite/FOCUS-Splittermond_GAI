@@ -192,6 +192,8 @@ export interface AdvancementLogEntry {
 }
 
 export interface CharacterState {
+  /** Heldengrad, auf dem zuletzt eine Schwäche abgelegt wurde (GRW S. 84: einmal je neuem Heldengrad) */
+  schwaechenHg?: number;
   mode: AppMode;
   xpTotal: number;
   name: string;
@@ -367,6 +369,7 @@ export type CharacterAction =
   | { type: 'REMOVE_STRENGTH'; payload: number }
   | { type: 'ADD_RESOURCE'; payload: ItemEntry }
   | { type: 'RESOURCE_STEIGERN'; payload: { index: number; stufen: number } }
+  | { type: 'SCHWAECHEN_HG'; payload: number }
   | { type: 'REMOVE_RESOURCE'; payload: number }
   | { type: 'ADD_WEAKNESS'; payload: ItemEntry }
   | { type: 'REMOVE_WEAKNESS'; payload: number }
