@@ -62918,6 +62918,9 @@
     "original_ueberschrift": "Defensiv [Stufe]",
     "mit_stufe": true,
     "regeltext": "Bei einer erfolgreichen Aktiven Abwehr mit einer solchen Waffe oder einem solchen Schild erhält der Abenteurer einen zusätzlichen EG pro Stufe des Merkmals (gilt nicht für herausragendes Ergebnis). Bei Waffen ohne das Merkmal Zweihändig und bei Schilden kann dies auch genutzt werden, wenn man sie zusätzlich zu einer Hauptwaffe führt – in diesem Fall gelten die entsprechenden Regeln zum Einsatz von Schilden und Parierwaffen (S. 164). Sollten zwei Gegenstände mit dem Merkmal Defensiv geführt werden, gilt stets nur der höhere Bonus (und natürlich nur der Bonus von Gegenständen, für die auch eine passende Fertigkeit für die Aktive Abwehr genutzt wurde).",
+    "merkmal_wirkung": {
+     "aktive_abwehr_eg_je_stufe": 1
+    },
     "regelgruppe": "grw:merkmal:defensiv"
    }
   },
@@ -62964,6 +62967,9 @@
     "original_ueberschrift": "Durchdringung [Stufe]",
     "mit_stufe": true,
     "regeltext": "Für jede Stufe dieses Merkmals kann 1 Punkt der gegnerischen Schadensreduktion ignoriert werden, egal aus welcher Quelle diese stammt.",
+    "merkmal_wirkung": {
+     "sr_ignorieren": "stufe"
+    },
     "regelgruppe": "grw:merkmal:durchdringung"
    }
   },
@@ -63010,6 +63016,15 @@
     "original_ueberschrift": "Improvisiert",
     "mit_stufe": false,
     "regeltext": "Diese Gegenstände des Alltags sind eigentlich nicht für den Kampf geeignet. Allerdings verbessern sich ihr Schaden und ihre Waffengeschwindigkeit um je 2 Punkte, wenn der Kämpfer über die Meisterschaft Improvisation in der entsprechenden Kampffertigkeit verfügt.",
+    "merkmal_wirkung": {
+     "schaden": 2,
+     "wgs": -2,
+     "bedingung": "meisterschaft",
+     "meisterschaften": [
+      "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:improvisation",
+      "grw:meisterschaft:wurfwaffen:improvisation"
+     ]
+    },
     "regelgruppe": "grw:merkmal:improvisiert"
    }
   },
@@ -63102,6 +63117,10 @@
     "original_ueberschrift": "Primitiv",
     "mit_stufe": false,
     "regeltext": "Die Waffe oder die Rüstung ist einfach gearbeitet und daher von nicht sehr guter Qualität. Verursacht eine Waffe mit diesem Merkmal bei einem Gegner, der eine Rüstung ohne das Merkmal Primitiv trägt, Schaden, wird dieser Schaden um 2 Punkte reduziert.",
+    "merkmal_wirkung": {
+     "schaden": -2,
+     "bedingung": "ziel_ruestung_ohne_primitiv"
+    },
     "regelgruppe": "grw:merkmal:primitiv"
    }
   },
@@ -63125,6 +63144,14 @@
     "original_ueberschrift": "Reiterwaffe [Stufe]",
     "mit_stufe": true,
     "regeltext": "Eine Waffe mit diesem Merkmal ist unabhängig von sonstigen Einschränkungen im Reiterkampf einsetzbar. Setzt der Abenteurer sie vom Rücken eines Reittiers ein und verfügt über die Meisterschaft Reiterkampf, verursacht er für jede Stufe des Merkmals einen zusätzlichen Schadenspunkt.",
+    "merkmal_wirkung": {
+     "schaden_je_stufe": 1,
+     "bedingung": "beritten",
+     "meisterschaften": [
+      "grw:meisterschaft:tierfuehrung:reiterkampf",
+      "bestien:meisterschaft:tierfuehrung:reiterkampf"
+     ]
+    },
     "regelgruppe": "grw:merkmal:reiterwaffe"
    }
   },
@@ -63148,6 +63175,9 @@
     "original_ueberschrift": "Scharf [Stufe]",
     "mit_stufe": true,
     "regeltext": "Alle Schadenswürfel einer Waffe mit diesem Merkmal werden immer als mindestens der Wert der Stufe des Merkmals gewertet, egal was eigentlich gewürfelt wurde. Eine Waffe mit 1W6+2 Schaden und dem Merkmal Scharf 2 richtet also selbst dann 4 Punkte Schaden an, wenn der Schadenswürfel eine 1 zeigt. Dies gilt nicht für zusätzliche Schadenswürfel aus Manövern, Zaubern oder sonstigen Quellen.",
+    "merkmal_wirkung": {
+     "wuerfel_mindestens": "stufe"
+    },
     "regelgruppe": "grw:merkmal:scharf"
    }
   },
@@ -63194,6 +63224,10 @@
     "original_ueberschrift": "Stumpf",
     "mit_stufe": false,
     "regeltext": "Der von der Waffe verursachte Schaden zählt vollständig als Betäubungsschaden. Dies gilt auch für zusätzlichen Schaden aus Manövern, nicht aber aus Quellen wie etwa Zaubern.",
+    "merkmal_wirkung": {
+     "schadensart": "betaeubung",
+     "mit_manoevern": true
+    },
     "regelgruppe": "grw:merkmal:stumpf"
    }
   },
@@ -63285,6 +63319,10 @@
     "original_ueberschrift": "Unhandlich",
     "mit_stufe": false,
     "regeltext": "Die Verteidigung des Trägers erhält bei Führung dieser Waffe einen Malus in Höhe von 2 Punkten.",
+    "merkmal_wirkung": {
+     "vtd": -2,
+     "bedingung": "gefuehrt"
+    },
     "regelgruppe": "grw:merkmal:unhandlich"
    }
   },
@@ -63308,6 +63346,10 @@
     "original_ueberschrift": "Vielseitig",
     "mit_stufe": false,
     "regeltext": "Bei solchen Waffen kann zwischen einhändiger und zweihändiger Führung gewechselt werden (Reaktion, 3 Ticks Dauer). In zweihändiger Führung erhöht sich ihr Schaden um 3 Punkte.",
+    "merkmal_wirkung": {
+     "schaden": 3,
+     "bedingung": "zweihaendig"
+    },
     "regelgruppe": "grw:merkmal:vielseitig"
    }
   },
