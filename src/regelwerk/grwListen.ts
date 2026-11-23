@@ -10,6 +10,7 @@ import type { Spell } from '../types/regeldaten';
 import type { MasteryEntry } from '../types/regeldaten';
 import type { StrengthData } from '../types/regeldaten';
 import type { ResourceData } from '../types/regeldaten';
+import type { ItemEntry, Money } from '../types';
 import type { LanguageData } from '../types/regeldaten';
 import type { RaceData } from '../types';
 import { RASSE_ID } from './bruecke';
@@ -94,9 +95,11 @@ function ausPaket(k: Katalog): Listen | null {
     } else if (e.typ === 'schwaeche') {
       L.schwaechen.push({ name: e.name, desc: d.beschreibung ?? '', page: seite(e), source: kurz });
     } else if (e.typ === 'ressource') {
-      const t = d.tabelle as { zeilen?: { werte: string[] }[] } | undefined;
+      const t = d.tabelle as { zeilen?: { punkte?: number; werte: string[] }[] } | undefined;
+      const punkte = (t?.zeilen ?? []).map((z) => z.punkte).filter((p): p is number => typeof p === 'number');
       const stufen = t?.zeilen?.length ? `\n\nStufenübersicht:\n${t.zeilen.map((z) => `Stufe ${z.werte[0]}: ${z.werte.slice(1).join(' - ')}`).join('\n')}` : '';
-      L.ressourcen.push({ name: e.name, source: kurz, page: seite(e) ?? 0, desc: `${d.beschreibung ?? ''}${stufen}` });
+      L.ressourcen.push({ name: e.name, source: kurz, page: seite(e) ?? 0, desc: `${d.beschreibung ?? ''}${stufen}`,
+        ...(punkte.length ? { maxStufe: Math.max(...punkte) } : {}) });
     } else if (e.typ === 'sprache') {
       L.sprachen.push({ name: e.name, source: kurz, page: seite(e) ?? 0, family: d.untergruppe ?? d.familie ?? undefined });
     } else if (e.typ === 'mondzeichen') {
@@ -298,4 +301,58 @@ export function grwHeimatregionen(k: Katalog | null = aktiverKatalog()): string[
     r.add(kk && kk.length <= 40 ? kk : e.name);
   }
   return [...r].sort((a, b) => a.localeCompare(b, 'de'));
+}
+
+// ---------------------------------------------------------------- Vermögen (Startvermögen)
+
+/** Startvermögen aus der Ressource Vermögen: Spalte „Startvermögen“ der Vermögenstabelle; maßgeblich ist die Stufe aus der Erschaffung */
+const VERMOEGEN_GRUPPE = 'grw:ressource:vermoegen';
+
+interface Tabelle { spalten?: string[]; zeilen?: { punkte?: number; werte: string[] }[]; buch_seite?: number }
+
+function vermoegenEintrag(k: Katalog | null) {
+  if (!k) return null;
+  return Object.values(k.eintraege).find((e) => e.typ === 'ressource' && e.daten.regelgruppe === VERMOEGEN_GRUPPE) ?? null;
+}
+
+/** Name der Ressource im Paket (für den Abgleich mit der Ressourcenliste) */
+export function vermoegenName(k: Katalog | null = aktiverKatalog()): string | null {
+  return vermoegenEintrag(k)?.name ?? null;
+}
+
+/** Stufe aus der Erschaffung */
+export function erschaffungsVermoegen(liste: ItemEntry[], k: Katalog | null = aktiverKatalog()): number {
+  const name = vermoegenName(k);
+  if (!name) return 0;
+  return liste.filter((r) => r.name === name && r.source === 'creation').reduce((s, r) => s + (Number(r.level) || 0), 0);
+}
+
+const MUENZE: Record<string, keyof Money> = { solar: 'solare', solare: 'solare', lunar: 'lunare', lunare: 'lunare', telar: 'telare', telare: 'telare' };
+
+/** Startvermögen für eine Stufe: Geld und Seite; null, wenn das Paket keine Tabelle hat */
+export function startvermoegen(stufe: number, k: Katalog | null = aktiverKatalog()):
+  { geld: Money; text: string; seite?: number } | null {
+  const e = vermoegenEintrag(k);
+  const t = e?.daten.tabelle as Tabelle | undefined;
+  const spalte = t?.spalten?.findIndex((s) => /start/i.test(s)) ?? -1;
+  const zeile = t?.zeilen?.find((z) => z.punkte === stufe);
+  if (!t || spalte < 0 || !zeile) return null;
+  const text = zeile.werte[spalte] ?? '';
+  const geld: Money = { solare: 0, lunare: 0, telare: 0 };
+  for (const m of text.matchAll(/(\d+)\s*([A-Za-zäöü]+)/g)) {
+    const art = MUENZE[m[2].toLowerCase()];
+    if (art) geld[art] += Number(m[1]);
+  }
+  return { geld, text, seite: t.buch_seite };
+}
+
+// ---------------------------------------------------------------- Schwerpunkte
+
+const SCHWERPUNKT_REGEL_ID = 'grw:regel:fertigkeiten-regeln:schwerpunkte';
+
+/** Regel „Schwerpunkte“ (für Schwerpunkt-Meisterschaften aus der Kultur): Text, Seite, Kürzel */
+export function schwerpunktRegel(k: Katalog | null = aktiverKatalog()): { text: string; seite?: number; kuerzel: string } | null {
+  const e = k?.get(SCHWERPUNKT_REGEL_ID);
+  if (!e || !k) return null;
+  return { text: String(e.daten.beschreibung ?? e.daten.text ?? ''), seite: seite(e), kuerzel: k.pakete[e.quelle.paket]?.kuerzel ?? 'GRW' };
 }

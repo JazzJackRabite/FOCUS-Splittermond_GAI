@@ -108,7 +108,7 @@ export const PlayTab: React.FC = () => {
                             >
                               <span className="truncate" title={m.name}>
                                 · {m.name}
-                                {m.tier > 1 ? ` (T${m.tier})` : ''}
+                                {m.tier > 1 && !/\(S\d\)/.test(m.name) ? ` (T${m.tier})` : ''}
                               </span>
                               <SourceBadge
                                 source={m.source || details.source || 'GRW'}

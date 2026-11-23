@@ -1159,6 +1159,25 @@ Grenzen aus dem Paket (18/55/8/8/2/3), Sperren bei Attribut 4, Fertigkeit 7, 19.
 - Gesperrte Plus-Knöpfe nennen auch bei der Erschaffung den Grund (Höchstwert je Attribut/Fertigkeit, alle Punkte verteilt).
 - Tests: 535 grün ohne Bücher; 597 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 51 (23.11.2026): Steigerung bis Heldengrad 4 durchgespielt
+
+Liora mit 2000 EP bis Heldengrad 4 gesteigert (Fertigkeiten bis 15, Attribute +4, Meisterschaften bis Schwelle 4,
+Zauber bis Grad 5, Stärken, Ressourcen, Sprachen) und alle Reiter durchgeklickt. Korrekt: Heldengrad bei 100/300/600
+ausgegebenen EP, Kosten je Zielwert, abgeleitete Werte, Splitterpunkte 8 (6 + Zusätzliche Splitterpunkte), freie
+Meisterschaften und Zauber je Schwelle, Voraussetzungsketten. Behoben:
+- Stärken „nur bei Generierung“ (z. B. Flink) ließen sich nach der Erschaffung kaufen, wenn die Suche nur sie übrig ließ
+  (der Dialog wählte dann den gesperrten Eintrag). Neue Prüfung `regelwerk/listenAuswahl.ts` für Dialog und Kauf.
+- Mehrfach wählbare Stärken (Robust, bis zu dreimal) hatten keine Obergrenze; vorhandene Stufen zählen jetzt mit.
+- Ressourcen: ein zweiter Kauf legte einen zweiten Eintrag an und überschritt die Höchststufe (Vermögen 2 + 5).
+  Jetzt höchstens die oberste Stufe der Tabelle (`maxStufe`), weitere EP-Käufe erhöhen den EP-Eintrag
+  („Ressource gesteigert“), die Liste zeigt „+N · gesamt M“.
+- Sprachen: eine bekannte Sprache ließ sich noch einmal wählen (Basargnomisch doppelt).
+- Quelle „unbekannt“ bei Kulturkunde (Selenia) und beim Kultur-Schwerpunkt; jetzt GRW S. 74 bzw. Regel Schwerpunkte S. 92.
+- Meisterschaften im Kampf- und Spiel-Reiter zeigten die Schwelle doppelt („(S2) (T2)“).
+- Inventar: Startvermögen laut Vermögenstabelle (Stufe aus der Erschaffung) mit Knopf „Als Geld übernehmen“; bisher
+  blieb der Geldbeutel bei 5 Lunaren.
+- Tests: 545 grün ohne Bücher; 607 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

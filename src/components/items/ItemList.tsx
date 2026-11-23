@@ -68,7 +68,11 @@ export const ItemList: React.FC<ItemListProps> = ({
             <div>
               <div className="flex items-center flex-wrap gap-2">
                 <span className="font-bold text-schrift">{item.name}</span>
-                {item.level && item.level > 1 ? (
+                {typeLabel.includes('Ressourc') && item.source === 'xp' && items.some((o, j) => j !== idx && o.name === item.name) ? (
+                  <span data-testid="ressource-steigerung" className="bg-erhoeht border border-rahmen px-2 py-0.5 rounded-knopf text-[11px] font-bold text-schrift uppercase tracking-wider">
+                    +{itemLevel} · gesamt {items.filter((o) => o.name === item.name).reduce((n, o) => n + (o.level ?? 1), 0)}
+                  </span>
+                ) : item.level && item.level > 1 ? (
                   <span className="bg-erhoeht border border-rahmen px-2 py-0.5 rounded-knopf text-[11px] font-bold text-schrift uppercase tracking-wider">
                     Stufe {item.level}
                   </span>

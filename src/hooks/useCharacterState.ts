@@ -545,13 +545,22 @@ export function baseCharacterReducer(
       const cost = item.isFree ? 0 : (item.level ?? 1) * (item.pointCost ?? 1) * calculateItemCost('strength', 1);
       let newLog = state.advancementLog ?? [];
       if (state.mode === 'xp') {
+        const schonDa = state.resourcesList.some((r) => r.name === item.name);
         const entry = createLogEntry(
           'resource',
-          `Ressource erworben: ${item.name}`,
+          schonDa ? `Ressource gesteigert: ${item.name} +${item.level ?? 1}` : `Ressource erworben: ${item.name}`,
           `Stufe ${item.level}${item.desc ? ` · ${item.desc}` : ''}`,
           -cost,
         );
         newLog = [entry, ...newLog];
+      }
+      // Steigerung einer schon mit EP gekauften Ressource: Stufen zusammenführen statt zweitem Eintrag
+      const vorhanden = state.mode === 'xp' ? state.resourcesList.findIndex((r) => r.name === item.name && r.source === 'xp') : -1;
+      if (vorhanden >= 0) {
+        const liste = [...state.resourcesList];
+        const alt = liste[vorhanden];
+        liste[vorhanden] = { ...alt, level: (alt.level ?? 1) + (item.level ?? 1) };
+        return { ...state, resourcesList: liste, advancementLog: newLog };
       }
       return { ...state, resourcesList: [...state.resourcesList, item], advancementLog: newLog };
     }

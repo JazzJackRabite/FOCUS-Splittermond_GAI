@@ -6,7 +6,7 @@ import type { CharacterState, Mastery, AdvancementLogEntry } from '../types';
 import { generateId } from './id';
 import type { RulebookModulePackage, RulebookMastery } from '../types/rulebookSchema';
 import { grimoireModule } from '../regelwerk/bruecke';
-import { grwAllgemeineKampfmeisterschaften, grwAllgemeineMagiemeisterschaften, grwMeisterschaften, grwRessourcen, grwRessourcenTexte, grwSchwaechenNamen, grwSchwaechenSeiten, grwSchwaechenTexte, grwSprachen, grwStaerken, grwZauber } from '../regelwerk/grwListen';
+import { grwAllgemeineKampfmeisterschaften, grwAllgemeineMagiemeisterschaften, grwMeisterschaften, grwRessourcen, grwRessourcenTexte, grwSchwaechenNamen, grwSchwaechenSeiten, grwSchwaechenTexte, grwSprachen, grwStaerken, grwZauber, schwerpunktRegel } from '../regelwerk/grwListen';
 
 export type StrengthEntry = StrengthData;
 export type ResourceEntry = ResourceData;
@@ -376,7 +376,23 @@ export function getMasteryDetails(
     }
   }
 
-  // 6. Not found in any database or loaded rulebook module
+  // 6. Schwerpunkt aus der Kultur („Schwerpunkt: Drachlinge (S1)“): Regel „Schwerpunkte“ der Fertigkeiten
+  if (/^Schwerpunkt\b/i.test(masteryName)) {
+    const regel = schwerpunktRegel();
+    if (regel) {
+      return {
+        found: true,
+        name: masteryName,
+        tier: fallbackTier,
+        desc: fallbackDesc || regel.text || 'Schwerpunkt der Fertigkeit.',
+        source: regel.kuerzel,
+        page: regel.seite,
+        skill: skillName,
+      };
+    }
+  }
+
+  // 7. Not found in any database or loaded rulebook module
   return {
     found: false,
     name: masteryName,
@@ -478,6 +494,13 @@ export function getStrengthDetails(
       page: found.page,
       cost: found.cost ?? 1,
     };
+  }
+
+  // Stärken mit Ziel („Kulturkunde (Selenia)“) stehen im Regelwerk ohne Ziel.
+  const ohneZiel = name.replace(/\s*\([^)]*\)\s*$/, '');
+  if (ohneZiel !== name) {
+    const basis = getStrengthDetails(ohneZiel, fallbackDesc);
+    if (basis.found) return basis;
   }
 
   return {

@@ -28,6 +28,7 @@ import { generateId } from '../../utils/id';
 import type { InventoryItem } from '../../types';
 import { toast } from 'react-hot-toast';
 import { ReliktKarte } from '../../components/relikte/ReliktKarte';
+import { erschaffungsVermoegen, startvermoegen } from '../../regelwerk/grwListen';
 
 export const InventoryView: React.FC = () => {
   const { state, dispatch, calc } = useCharacter();
@@ -349,6 +350,24 @@ export const InventoryView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {(() => {
+        const stufe = erschaffungsVermoegen(state.resourcesList ?? []);
+        const start = startvermoegen(stufe);
+        if (!start) return null;
+        const gleich = (['solare', 'lunare', 'telare'] as const).every((f) => (money[f] ?? 0) === start.geld[f]);
+        return (
+          <div data-testid="startvermoegen" className="text-xs text-leise flex flex-wrap items-center gap-2 -mt-2">
+            <span>Startvermögen bei Vermögen {stufe}: <strong className="text-schrift">{start.text}</strong>{start.seite ? ` (GRW S. ${start.seite})` : ''}</span>
+            {!gleich && (
+              <Knopf onClick={() => { dispatch({ type: 'SET_MONEY', payload: start.geld }); toast.success(`Geld auf Startvermögen gesetzt: ${start.text}`); }}
+                className="text-xs" title="Setzt den Geldbeutel auf das Startvermögen laut Vermögenstabelle">
+                Als Geld übernehmen
+              </Knopf>
+            )}
+          </div>
+        );
+      })()}
 
       {/* ── TRAGKRAFT & LAST (BELASTUNG) ── */}
       <div className="bg-flaeche rounded-karte border border-rahmen p-5">

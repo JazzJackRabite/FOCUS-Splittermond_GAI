@@ -77,6 +77,8 @@ export interface ResourceData {
     source: string;
     page: number;
     desc: string;
+    /** höchste Stufe der Ressourcentabelle */
+    maxStufe?: number;
 }
 
 export interface LanguageData {

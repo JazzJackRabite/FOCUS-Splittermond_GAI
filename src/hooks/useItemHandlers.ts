@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { regelverstoss } from '../fundament/hausregeln';
+import { listenSperre, type ListenArt, type ListenDaten } from '../regelwerk/listenAuswahl';
+import { getResolvedResources, getResolvedStrengths } from '../utils/gameResourceManager';
 import type React from 'react';
 import type { CharacterAction, ItemEntry, AppMode, Spell, CreationUsage } from '../types';
 
@@ -34,6 +36,14 @@ export function useItemHandlers({ state, calc, dispatch }: ItemHandlersParams) {
       toast.success(`${name} hinzugefügt`);
       return;
     }
+    if (type === 'strength' || type === 'resource' || type === 'language') {
+      const liste = type === 'strength' ? strengthsList : type === 'resource' ? resourcesList : languagesList;
+      const daten = (type === 'strength' ? getResolvedStrengths() : type === 'resource' ? getResolvedResources().list : [])
+        .find((d) => d.name === name) as ListenDaten | undefined;
+      const sp = listenSperre(type as ListenArt, daten ?? null, name, mode, liste);
+      if (sp.grund && regelverstoss(`${name}: ${sp.grund}`)) return;
+      if (!sp.grund && type !== 'language' && level > sp.restStufen && regelverstoss(`${name}: höchstens ${sp.restStufen} Stufe(n) mehr möglich`)) return;
+    }
     const multiplier = type === 'strength' || type === 'resource' ? 7 : 5;
     let cost = 0;
     if (mode === 'creation') {
@@ -52,7 +62,7 @@ export function useItemHandlers({ state, calc, dispatch }: ItemHandlersParams) {
     else if (type === 'resource') dispatch({ type: 'ADD_RESOURCE', payload: newItem });
     else if (type === 'language') dispatch({ type: 'ADD_LANGUAGE', payload: newItem });
     toast.success(`${name} hinzugefügt`);
-  }, [mode, creationUsage, xpAvailable, dispatch]);
+  }, [mode, creationUsage, xpAvailable, dispatch, strengthsList, resourcesList, languagesList]);
 
   const removeListEntry = useCallback((type: string, idx: number) => {
     let itemName = '';

@@ -9,6 +9,7 @@ import {
 import type { ItemEntry, AppMode } from '../../types';
 import { getInitialSelection } from '../../utils/modalHelpers';
 import { grwRessourcenTexte, grwSchwaechenSeiten, grwSchwaechenTexte } from '../../regelwerk/grwListen';
+import { listenSperre, type ListenDaten } from '../../regelwerk/listenAuswahl';
 
 interface StrengthData {
   name: string;
@@ -23,6 +24,7 @@ interface StrengthData {
 
 interface ResourceData {
   name: string;
+  maxStufe?: number;
   desc?: string;
   source?: string;
   page?: number;
@@ -73,6 +75,8 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
   const isStrength = type === 'strength';
   const isResource = type === 'resource';
   const isLanguage = type === 'language';
+  const sperreFuer = (i: { name: string } | null, name: string) =>
+    listenSperre(type, (i as ListenDaten | null), name, mode, existingItems);
 
   const normalizedItems = useMemo(() => {
     return (items || []).map((item) => {
@@ -109,6 +113,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
 
   const [search, setSearch] = useState('');
   const [selectedName, setSelectedName] = useState(() =>
+    normalizedItems.find((i) => !sperreFuer(i, i.name).grund)?.name ??
     getInitialSelection(
       (items || []) as Array<{ name: string; multi?: boolean } | string>,
       existingItems,
@@ -133,31 +138,17 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
     const exists = filteredItems.some((i) => i.name === selectedName);
     if (!exists) {
       // Pick first non-disabled item or first matching item
-      const available = filteredItems.find((i) => {
-        if (isStrength) {
-          const taken = existingItems.some((ei) => ei.name === i.name);
-          if (taken && !(i as StrengthData).multi) return false;
-          if (mode !== 'creation' && (i as StrengthData).onlyCreation) return false;
-          return true;
-        }
-        if (isLanguage) {
-          const taken = existingItems.some((ei) => ei.name === i.name);
-          if (taken) return false;
-          return true;
-        }
-        return true;
-      });
+      const available = filteredItems.find((i) => !sperreFuer(i, i.name).grund);
 
       if (available) {
         setSelectedName(available.name);
-      } else if (filteredItems.length > 0) {
-        setSelectedName(filteredItems[0].name);
       } else {
         setSelectedName('custom');
       }
       setLevel(1);
       setDesc('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredItems, selectedName, isStrength, isLanguage, existingItems, mode]);
 
   const hausregeln = useHausregeln();
@@ -170,7 +161,9 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
     return normalizedItems.find((i) => i.name === selectedName) || null;
   }, [normalizedItems, selectedName]);
 
-  const maxLevel = isStrength ? ((currentItemData as StrengthData)?.max ?? 2) : 6;
+  const sperre = selectedName === 'custom' ? null : sperreFuer(currentItemData, selectedName);
+  const maxLevel = sperre ? Math.max(1, sperre.restStufen) : (isStrength ? 1 : 6);
+  useEffect(() => { if (level > maxLevel) setLevel(maxLevel); }, [level, maxLevel]);
   const pointCost = isStrength ? ((currentItemData as StrengthData)?.cost ?? 1) : 1;
 
   useEffect(() => {
@@ -202,6 +195,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
     const isCustom = selectedName === 'custom';
     const name = isCustom ? custom.trim() : selectedName;
     if (!name) return;
+    if (sperre?.grund && !hausregeln) return;
     let finalDesc = desc;
     if (!finalDesc && isStrength && currentItemData) {
       finalDesc = getStrengthDescription(name, (currentItemData as StrengthData).desc ?? '');
@@ -291,24 +285,17 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                 let disabled = false;
                 let extraText = '';
 
-                if (isStrength) {
-                  const taken = existingItems.some((ei) => ei.name === name);
-                  if (taken && !(i as StrengthData).multi) disabled = true;
-                  if (mode !== 'creation' && (i as StrengthData).onlyCreation) {
-                    disabled = true;
-                    extraText = ' - Nur Erschaffung';
-                  } else if (taken && !(i as StrengthData).multi) {
-                    extraText = ' - Bereits gewählt';
-                  }
-                }
-                if (isLanguage) {
-                  const taken = existingItems.some((ei) => ei.name === name);
-                  if (taken) disabled = true;
+                const sp = sperreFuer(i, name);
+                if (sp.grund) {
+                  disabled = !hausregeln;
+                  extraText = ` - ${sp.grund}`;
+                } else if (isResource && sp.vorhanden > 0) {
+                  extraText = ` - vorhanden: Stufe ${sp.vorhanden}`;
                 }
 
                 return (
                   <option key={name} value={name} disabled={disabled}>
-                    {isStrength ? `${name} (${(i as StrengthData).cost ?? 1} Pkt)${extraText}` : name}
+                    {isStrength ? `${name} (${(i as StrengthData).cost ?? 1} Pkt)${extraText}` : `${name}${extraText}`}
                   </option>
                 );
               })}
@@ -454,13 +441,23 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
           )}
 
           {type !== 'weakness' && type !== 'language' && (
-            <div className="text-xs text-leise font-medium text-center">Max. Stufe: {maxLevel}</div>
+            <div className="text-xs text-leise font-medium text-center">
+              {sperre && sperre.vorhanden > 0 && !sperre.grund
+                ? `Vorhanden: Stufe ${sperre.vorhanden} · noch höchstens ${maxLevel} dazu`
+                : `Max. Stufe: ${maxLevel}`}
+            </div>
           )}
 
           {!isAffordable && type !== 'weakness' && (
             <div className="text-xs text-schaden font-bold text-center border border-magie bg-erhoeht p-1.5 rounded-knopf">
               Nicht genügend {mode === 'creation' ? 'Punkte' : 'EP'} verfügbar! (Rest:{' '}
               {budget})
+            </div>
+          )}
+
+          {sperre?.grund && (
+            <div data-testid="auswahl-sperre" className="text-xs text-schaden font-bold text-center border border-magie bg-erhoeht p-2 rounded-knopf">
+              {selectedName}: {sperre.grund}{hausregeln ? ' (Hausregeln erlauben es)' : ''}
             </div>
           )}
 
@@ -480,7 +477,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
           </Knopf>
           <Knopf art="primaer"
             onClick={handleAdd}
-            disabled={(!isAffordable && !hausregeln) || !isSelectionValid || isLanguageLimitReached}
+            disabled={(!isAffordable && !hausregeln) || !isSelectionValid || isLanguageLimitReached || (!!sperre?.grund && !hausregeln)}
             className="text-sm disabled:cursor-not-allowed shrink-0"
           >
             Hinzufügen
