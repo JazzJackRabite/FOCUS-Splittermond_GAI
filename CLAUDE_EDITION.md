@@ -1221,7 +1221,7 @@ Steinhaut kanalisiert), Golem-Angriff, Schwerpunkt-Probe. Behoben:
   „Stufe erhöhen“ des gewünschten Eintrags (Relikt wachsen lassen).
 - Golem: Ressource Golem als mehrfach erwerbbar (Auslegung im Werkzeug, wie Kreatur).
 - Splitterpunkte: Probenbonus +3 nur einmal je Probe (GRW: jede Splittergabe einmal); „Neuwurf (1 SP)“ ist keine
-  Splittergabe und nur mit Hausregeln wählbar.
+  Splittergabe und wurde auf Wunsch des Eigentümers aus Proben- und Zauberdialog entfernt.
 - Relikt-Schwerpunktbonus jetzt auch bei Zauberproben; Eingabe zeigt „Fertigkeit: Schwerpunkt“.
 - Golem-Feinschliff: freie Meisterschaft prüft die Voraussetzung (Ausweichen II nur mit Ausweichen I).
 - Begleiter bearbeiten: jeder Schritt direkt anwählbar; Golem ohne Rufname heißt im Angriff „Golem (Mittel)“.
