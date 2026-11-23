@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { HealModal } from '../components/play/HealModal';
 import type { HealthSlot, StatusCondition } from '../types';
 import { setzeHausregeln } from '../fundament/hausregeln';
@@ -121,5 +121,16 @@ describe('HealModal (GRW S. 165-167)', () => {
     expect(screen.getByTestId('kanalisiert-freigeben-wert').textContent).toBe('2');
     fireEvent.click(screen.getByRole('button', { name: /1 LP heilen/i }));
     expect(onApplyHeal).toHaveBeenCalledWith(expect.objectContaining({ consumedHealed: 1, channeledHealed: 0, kanalisiertFreigegeben: 2 }));
+  });
+
+  it('Heiltrank: Tränke aus dem Paket (Feld heilung_lp) setzen die Heilung', () => {
+    const onApplyHeal = vi.fn();
+    render(<HealModal onClose={() => {}} maxLP={8} currentHealthSlots={sampleSlots} activeConditions={[]} onApplyHeal={onApplyHeal} />);
+    fireEvent.click(screen.getByRole('button', { name: /Heiltrank \/ Elixier/ }));
+    const traenke = screen.getByTestId('heiltraenke');
+    fireEvent.click(within(traenke).getByRole('button', { name: /\(4 LP\)/ }));
+    expect((screen.getByRole('spinbutton') as HTMLInputElement).value).toBe('4');
+    fireEvent.click(within(traenke).getByRole('button', { name: /\(8 LP\)/ }));
+    expect((screen.getByRole('spinbutton') as HTMLInputElement).value).toBe('8');
   });
 });

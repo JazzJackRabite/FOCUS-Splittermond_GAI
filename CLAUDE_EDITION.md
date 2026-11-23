@@ -1269,6 +1269,26 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
 - FUNDAMENT Regelquellen: Zeile für Mondzeichen-Gaben, Schwerpunkt-Bonus, mehrfach erwerbbare Ressourcen.
 - Tests: 574 grün ohne Bücher; 636 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 56 (23.11.2026): Schwerpunkte wählen, Golem kaufen, Heiltränke, Erfolgsgrade, gesperrte Dienste
+
+- Schwerpunkte (GRW S. 92) im Meisterschaftsdialog: Wahl „Schwerpunkt (S1) …“ mit Vorschlägen der Fertigkeit, bei Magieschulen
+  die Zauber-Typen der Schule, freie Eingabe für offene Angaben. Derselbe Schwerpunkt höchstens einmal je Heldengrad (Sperre,
+  mit Hausregeln Warnung). Datenseite (`kernregeln.py`): Schwerpunkt-Einträge tragen `vorschlaege`, `platzhalter`,
+  `nach_typus`; die Regel trägt `hoechstens_je_heldengrad`. Editor: `schwerpunktAuswahl`, `schwerpunktHoechstensJeHeldengrad`.
+- Zauberdialog: Wirkungen mit `zauber_typus` gelten nur für Zauber dieses Typus (Datenseite `wirkungen.py`: Meisterschaft zur
+  Golem-Animierung). Bisher erschien deren Kostenerhöhung bei jedem Zauber.
+- Zauberdialog: Sind Erfolgsgrade unverteilt, weist der erste Klick auf „vollenden“ darauf hin; der zweite vollendet.
+- Golem ohne Ressource Golem: Kaufpreis wird beim Erstellen abgezogen (Schalter „Golem kaufen“), beim Bearbeiten der Aufpreis;
+  reicht das Geld nicht, Sperre (mit Hausregeln Warnung).
+- Heildialog, Methode Heiltrank: Tränke aus den Paketen (Feld `heilung_lp`, Datenseite `textauslese.py`) setzen die Heilung.
+- Waffen: Feld `zweihaendig` aus den Merkmal-IDs (Datenseite `textauslese.py`); der Wesen-Baukasten liest das Feld statt des
+  Merkmalstexts.
+- Beschworene Wesen: erweiterte Dienste, die noch fehlen, stehen mit Grund da (fehlende Meisterschaft, Stufe über der Grenze und
+  was sie anhebt). Die Grundgrenze kommt aus `freigeschaltet_durch[].bis_stufe` statt aus einer Zahl im Code.
+- Im Browser geprüft (Stand 55): Mondzeichen-Gabe beim Risikowurf (zweitniedrigster Würfel neu, 1 SP, danach gesperrt).
+- FUNDAMENT Regelquellen: neue Felder eingetragen.
+- Tests: 584 grün ohne Bücher; 646 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

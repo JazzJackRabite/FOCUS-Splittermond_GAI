@@ -113,7 +113,7 @@ export function vaKauf(k: Katalog, R: VaRegel, schluessel: string): VaKauf | nul
 }
 /** Punkte für eine Katalogwaffe nach Modus und Zweihändigkeit (Tabelle „Sonstiges“) */
 export function waffenKosten(R: VaRegel, e: Eintrag): number | null {
-  const zweih = /Zweihändig/.test(String(e.daten.merkmale_text ?? ''));
+  const zweih = e.daten.zweihaendig === true;
   const z = R.sonstiges.find(x => x.art === 'waffe' && (e.typ === 'schild' ? x.schild : x.modus === e.daten.modus && (x.zweihaendig === undefined || x.zweihaendig === zweih)));
   return z?.punkte ?? null;
 }

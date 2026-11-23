@@ -14034,7 +14034,15 @@
     "fertigkeit": "grw:fertigkeit:akrobatik",
     "fertigkeit_name": "Akrobatik",
     "schwelle": 1,
-    "auswahltext": "Ausweichen, Balancieren, Entfesseln, Körperformen, Kunststücke, Sturz abfangen"
+    "auswahltext": "Ausweichen, Balancieren, Entfesseln, Körperformen, Kunststücke, Sturz abfangen",
+    "vorschlaege": [
+     "Ausweichen",
+     "Balancieren",
+     "Entfesseln",
+     "Körperformen",
+     "Kunststücke",
+     "Sturz abfangen"
+    ]
    }
   },
   {
@@ -14053,7 +14061,13 @@
     "fertigkeit": "grw:fertigkeit:alchemie",
     "fertigkeit_name": "Alchemie",
     "schwelle": 1,
-    "auswahltext": "Gifte, Heilmittel, Stärkungsmittel, Zaubermittel"
+    "auswahltext": "Gifte, Heilmittel, Stärkungsmittel, Zaubermittel",
+    "vorschlaege": [
+     "Gifte",
+     "Heilmittel",
+     "Stärkungsmittel",
+     "Zaubermittel"
+    ]
    }
   },
   {
@@ -14072,7 +14086,15 @@
     "fertigkeit": "grw:fertigkeit:anfuehren",
     "fertigkeit_name": "Anführen",
     "schwelle": 1,
-    "auswahltext": "Einschüchtern, Flammende Rede, Koordinieren, Moral, Taktik, Schlachtpläne"
+    "auswahltext": "Einschüchtern, Flammende Rede, Koordinieren, Moral, Taktik, Schlachtpläne",
+    "vorschlaege": [
+     "Einschüchtern",
+     "Flammende Rede",
+     "Koordinieren",
+     "Moral",
+     "Taktik",
+     "Schlachtpläne"
+    ]
    }
   },
   {
@@ -14091,7 +14113,17 @@
     "fertigkeit": "grw:fertigkeit:arkane-kunde",
     "fertigkeit_name": "Arkane Kunde",
     "schwelle": 1,
-    "auswahltext": "Artefakte, Magische Kreaturen, Magische Phänomene, Orientierung in Feenwelten, Rituale, Symbole, Wahrsagung, Zaubersprüche"
+    "auswahltext": "Artefakte, Magische Kreaturen, Magische Phänomene, Orientierung in Feenwelten, Rituale, Symbole, Wahrsagung, Zaubersprüche",
+    "vorschlaege": [
+     "Artefakte",
+     "Magische Kreaturen",
+     "Magische Phänomene",
+     "Orientierung in Feenwelten",
+     "Rituale",
+     "Symbole",
+     "Wahrsagung",
+     "Zaubersprüche"
+    ]
    }
   },
   {
@@ -14110,7 +14142,14 @@
     "fertigkeit": "grw:fertigkeit:athletik",
     "fertigkeit_name": "Athletik",
     "schwelle": 1,
-    "auswahltext": "Klettern, Kraftakt, Laufen, Springen, Werfen"
+    "auswahltext": "Klettern, Kraftakt, Laufen, Springen, Werfen",
+    "vorschlaege": [
+     "Klettern",
+     "Kraftakt",
+     "Laufen",
+     "Springen",
+     "Werfen"
+    ]
    }
   },
   {
@@ -14129,7 +14168,9 @@
     "fertigkeit": "grw:fertigkeit:bannmagie",
     "fertigkeit_name": "Bannmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14148,7 +14189,9 @@
     "fertigkeit": "grw:fertigkeit:beherrschungsmagie",
     "fertigkeit_name": "Beherrschungsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14167,7 +14210,9 @@
     "fertigkeit": "grw:fertigkeit:bewegungsmagie",
     "fertigkeit_name": "Bewegungsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14186,7 +14231,25 @@
     "fertigkeit": "grw:fertigkeit:darbietung",
     "fertigkeit_name": "Darbietung",
     "schwelle": 1,
-    "auswahltext": "akrobatische Vorführung, Bauchreden, Dichtkunst, Gaukelei, Instrumentenart (Blasinstrumente, Saiteninstrumente, Schlaginstrumente), Komposition, Öffentliche Rede, Schauspielerei, Singen, Stimmenimitation, Tanzen"
+    "auswahltext": "akrobatische Vorführung, Bauchreden, Dichtkunst, Gaukelei, Instrumentenart (Blasinstrumente, Saiteninstrumente, Schlaginstrumente), Komposition, Öffentliche Rede, Schauspielerei, Singen, Stimmenimitation, Tanzen",
+    "vorschlaege": [
+     "akrobatische Vorführung",
+     "Bauchreden",
+     "Dichtkunst",
+     "Gaukelei",
+     "Blasinstrumente",
+     "Saiteninstrumente",
+     "Schlaginstrumente",
+     "Komposition",
+     "Öffentliche Rede",
+     "Schauspielerei",
+     "Singen",
+     "Stimmenimitation",
+     "Tanzen"
+    ],
+    "platzhalter": [
+     "Instrumentenart"
+    ]
    }
   },
   {
@@ -14205,7 +14268,19 @@
     "fertigkeit": "grw:fertigkeit:diplomatie",
     "fertigkeit_name": "Diplomatie",
     "schwelle": 1,
-    "auswahltext": "Bekehren, Feilschen, Gerüchte, Heraldik, Informationssuche, Minnekunst, Öffentliche Rede, Politik, Umgangsformen, Verhandeln"
+    "auswahltext": "Bekehren, Feilschen, Gerüchte, Heraldik, Informationssuche, Minnekunst, Öffentliche Rede, Politik, Umgangsformen, Verhandeln",
+    "vorschlaege": [
+     "Bekehren",
+     "Feilschen",
+     "Gerüchte",
+     "Heraldik",
+     "Informationssuche",
+     "Minnekunst",
+     "Öffentliche Rede",
+     "Politik",
+     "Umgangsformen",
+     "Verhandeln"
+    ]
    }
   },
   {
@@ -14224,7 +14299,19 @@
     "fertigkeit": "grw:fertigkeit:edelhandwerk",
     "fertigkeit_name": "Edelhandwerk",
     "schwelle": 1,
-    "auswahltext": "Architektur, Glasbläserei, Gravur, Juwelier, Kalligraphie, Kartographie, Malerei, weitere nach Spielleitermaßgabe"
+    "auswahltext": "Architektur, Glasbläserei, Gravur, Juwelier, Kalligraphie, Kartographie, Malerei, weitere nach Spielleitermaßgabe",
+    "vorschlaege": [
+     "Architektur",
+     "Glasbläserei",
+     "Gravur",
+     "Juwelier",
+     "Kalligraphie",
+     "Kartographie",
+     "Malerei"
+    ],
+    "platzhalter": [
+     "weitere nach Spielleitermaßgabe"
+    ]
    }
   },
   {
@@ -14243,7 +14330,13 @@
     "fertigkeit": "grw:fertigkeit:empathie",
     "fertigkeit_name": "Empathie",
     "schwelle": 1,
-    "auswahltext": "Beruhigen, Lügen erkennen, Motivation erkennen, Persönlichkeit einschätzen"
+    "auswahltext": "Beruhigen, Lügen erkennen, Motivation erkennen, Persönlichkeit einschätzen",
+    "vorschlaege": [
+     "Beruhigen",
+     "Lügen erkennen",
+     "Motivation erkennen",
+     "Persönlichkeit einschätzen"
+    ]
    }
   },
   {
@@ -14262,7 +14355,14 @@
     "fertigkeit": "grw:fertigkeit:entschlossenheit",
     "fertigkeit_name": "Entschlossenheit",
     "schwelle": 1,
-    "auswahltext": "Beherrschungsmagie widerstehen, Furcht widerstehen, Prinzipien einhalten, Redegewandtheit widerstehen, Unterbrechungen widerstehen"
+    "auswahltext": "Beherrschungsmagie widerstehen, Furcht widerstehen, Prinzipien einhalten, Redegewandtheit widerstehen, Unterbrechungen widerstehen",
+    "vorschlaege": [
+     "Beherrschungsmagie widerstehen",
+     "Furcht widerstehen",
+     "Prinzipien einhalten",
+     "Redegewandtheit widerstehen",
+     "Unterbrechungen widerstehen"
+    ]
    }
   },
   {
@@ -14281,7 +14381,9 @@
     "fertigkeit": "grw:fertigkeit:erkenntnismagie",
     "fertigkeit_name": "Erkenntnismagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14300,7 +14402,9 @@
     "fertigkeit": "grw:fertigkeit:felsmagie",
     "fertigkeit_name": "Felsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14319,7 +14423,9 @@
     "fertigkeit": "grw:fertigkeit:feuermagie",
     "fertigkeit_name": "Feuermagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14338,7 +14444,15 @@
     "fertigkeit": "grw:fertigkeit:fingerfertigkeit",
     "fertigkeit_name": "Fingerfertigkeit",
     "schwelle": 1,
-    "auswahltext": "Entfesseln, Falschspiel, Fesseln, Gegenstand verstecken, Taschendiebstahl, Taschenspielertricks"
+    "auswahltext": "Entfesseln, Falschspiel, Fesseln, Gegenstand verstecken, Taschendiebstahl, Taschenspielertricks",
+    "vorschlaege": [
+     "Entfesseln",
+     "Falschspiel",
+     "Fesseln",
+     "Gegenstand verstecken",
+     "Taschendiebstahl",
+     "Taschenspielertricks"
+    ]
    }
   },
   {
@@ -14357,7 +14471,19 @@
     "fertigkeit": "grw:fertigkeit:geschichte-und-mythen",
     "fertigkeit_name": "Geschichte und Mythen",
     "schwelle": 1,
-    "auswahltext": "einzelne Epoche, einzelnes Pantheon, einzelne Region, einzelner Themenbereich, einzelnes Volk, Legendäre Kreaturen, Prophezeiungen, Schöpfungsmythen"
+    "auswahltext": "einzelne Epoche, einzelnes Pantheon, einzelne Region, einzelner Themenbereich, einzelnes Volk, Legendäre Kreaturen, Prophezeiungen, Schöpfungsmythen",
+    "vorschlaege": [
+     "Legendäre Kreaturen",
+     "Prophezeiungen",
+     "Schöpfungsmythen"
+    ],
+    "platzhalter": [
+     "einzelne Epoche",
+     "einzelnes Pantheon",
+     "einzelne Region",
+     "einzelner Themenbereich",
+     "einzelnes Volk"
+    ]
    }
   },
   {
@@ -14376,7 +14502,17 @@
     "fertigkeit": "grw:fertigkeit:handgemenge",
     "fertigkeit_name": "Handgemenge",
     "schwelle": 1,
-    "auswahltext": "Biss, Faustschlag, Halten, Kopfstoß, Treten, bestimmte Waffe"
+    "auswahltext": "Biss, Faustschlag, Halten, Kopfstoß, Treten, bestimmte Waffe",
+    "vorschlaege": [
+     "Biss",
+     "Faustschlag",
+     "Halten",
+     "Kopfstoß",
+     "Treten"
+    ],
+    "platzhalter": [
+     "bestimmte Waffe"
+    ]
    }
   },
   {
@@ -14395,7 +14531,16 @@
     "fertigkeit": "grw:fertigkeit:handwerk",
     "fertigkeit_name": "Handwerk",
     "schwelle": 1,
-    "auswahltext": "Holzbearbeitung, Schneiderei/Lederverarbeitung, Schmiedekunst, Steinbearbeitung; weitere Schwerpunkte je nach Präferenz des Spielers denkbar"
+    "auswahltext": "Holzbearbeitung, Schneiderei/Lederverarbeitung, Schmiedekunst, Steinbearbeitung; weitere Schwerpunkte je nach Präferenz des Spielers denkbar",
+    "vorschlaege": [
+     "Holzbearbeitung",
+     "Schneiderei/Lederverarbeitung",
+     "Schmiedekunst",
+     "Steinbearbeitung"
+    ],
+    "platzhalter": [
+     "weitere Schwerpunkte je nach Präferenz des Spielers denkbar"
+    ]
    }
   },
   {
@@ -14414,7 +14559,14 @@
     "fertigkeit": "grw:fertigkeit:heilkunde",
     "fertigkeit_name": "Heilkunde",
     "schwelle": 1,
-    "auswahltext": "Gifte, Heilkräuter bestimmen, Krankheiten, Wunden, Zustände"
+    "auswahltext": "Gifte, Heilkräuter bestimmen, Krankheiten, Wunden, Zustände",
+    "vorschlaege": [
+     "Gifte",
+     "Heilkräuter bestimmen",
+     "Krankheiten",
+     "Wunden",
+     "Zustände"
+    ]
    }
   },
   {
@@ -14433,7 +14585,9 @@
     "fertigkeit": "grw:fertigkeit:heilungsmagie",
     "fertigkeit_name": "Heilungsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14452,7 +14606,16 @@
     "fertigkeit": "grw:fertigkeit:heimlichkeit",
     "fertigkeit_name": "Heimlichkeit",
     "schwelle": 1,
-    "auswahltext": "Beschatten, Hinterhalt, Natürliche Umgebung, Schleichen, Spuren verwischen, Städtische Umgebung, Verstecken"
+    "auswahltext": "Beschatten, Hinterhalt, Natürliche Umgebung, Schleichen, Spuren verwischen, Städtische Umgebung, Verstecken",
+    "vorschlaege": [
+     "Beschatten",
+     "Hinterhalt",
+     "Natürliche Umgebung",
+     "Schleichen",
+     "Spuren verwischen",
+     "Städtische Umgebung",
+     "Verstecken"
+    ]
    }
   },
   {
@@ -14471,7 +14634,11 @@
     "fertigkeit": "grw:fertigkeit:hiebwaffen",
     "fertigkeit_name": "Hiebwaffen",
     "schwelle": 1,
-    "auswahltext": "bestimmte Waffe"
+    "auswahltext": "bestimmte Waffe",
+    "vorschlaege": [],
+    "platzhalter": [
+     "bestimmte Waffe"
+    ]
    }
   },
   {
@@ -14490,7 +14657,9 @@
     "fertigkeit": "grw:fertigkeit:illusionsmagie",
     "fertigkeit_name": "Illusionsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14509,7 +14678,26 @@
     "fertigkeit": "grw:fertigkeit:jagdkunst",
     "fertigkeit_name": "Jagdkunst",
     "schwelle": 1,
-    "auswahltext": "Fallen stellen, Nahrungssuche, Spurensuche, einzelner Typus (wählbar sind: Bärenartiger, Fisch, Großwild, Hundeartiger, Insekt, Katzenartiger, Kleinwild, Reptil, Spinnentier, Vogel), Verarbeitung"
+    "auswahltext": "Fallen stellen, Nahrungssuche, Spurensuche, einzelner Typus (wählbar sind: Bärenartiger, Fisch, Großwild, Hundeartiger, Insekt, Katzenartiger, Kleinwild, Reptil, Spinnentier, Vogel), Verarbeitung",
+    "vorschlaege": [
+     "Fallen stellen",
+     "Nahrungssuche",
+     "Spurensuche",
+     "Bärenartiger",
+     "Fisch",
+     "Großwild",
+     "Hundeartiger",
+     "Insekt",
+     "Katzenartiger",
+     "Kleinwild",
+     "Reptil",
+     "Spinnentier",
+     "Vogel",
+     "Verarbeitung"
+    ],
+    "platzhalter": [
+     "einzelner Typus"
+    ]
    }
   },
   {
@@ -14528,7 +14716,9 @@
     "fertigkeit": "grw:fertigkeit:kampfmagie",
     "fertigkeit_name": "Kampfmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14547,7 +14737,11 @@
     "fertigkeit": "grw:fertigkeit:kettenwaffen",
     "fertigkeit_name": "Kettenwaffen",
     "schwelle": 1,
-    "auswahltext": "bestimmte Waffe"
+    "auswahltext": "bestimmte Waffe",
+    "vorschlaege": [],
+    "platzhalter": [
+     "bestimmte Waffe"
+    ]
    }
   },
   {
@@ -14566,7 +14760,11 @@
     "fertigkeit": "grw:fertigkeit:klingenwaffen",
     "fertigkeit_name": "Klingenwaffen",
     "schwelle": 1,
-    "auswahltext": "bestimmte Waffe"
+    "auswahltext": "bestimmte Waffe",
+    "vorschlaege": [],
+    "platzhalter": [
+     "bestimmte Waffe"
+    ]
    }
   },
   {
@@ -14585,7 +14783,16 @@
     "fertigkeit": "grw:fertigkeit:laenderkunde",
     "fertigkeit_name": "Länderkunde",
     "schwelle": 1,
-    "auswahltext": "einzelne Kulturen oder Völker, einzelne Regionen, Geographie, Philosophie, Recht"
+    "auswahltext": "einzelne Kulturen oder Völker, einzelne Regionen, Geographie, Philosophie, Recht",
+    "vorschlaege": [
+     "Geographie",
+     "Philosophie",
+     "Recht"
+    ],
+    "platzhalter": [
+     "einzelne Kulturen oder Völker",
+     "einzelne Regionen"
+    ]
    }
   },
   {
@@ -14604,7 +14811,9 @@
     "fertigkeit": "grw:fertigkeit:lichtmagie",
     "fertigkeit_name": "Lichtmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14623,7 +14832,21 @@
     "fertigkeit": "grw:fertigkeit:naturkunde",
     "fertigkeit_name": "Naturkunde",
     "schwelle": 1,
-    "auswahltext": "Drachen, einzelnes Terrain, Gesteinskunde, Kräutersuche/Zutaten sammeln, Kreaturen der Finsternis, Nahrungssuche, Pflanzenkunde, Sternkunde, Tierkunde, Wettervorhersage"
+    "auswahltext": "Drachen, einzelnes Terrain, Gesteinskunde, Kräutersuche/Zutaten sammeln, Kreaturen der Finsternis, Nahrungssuche, Pflanzenkunde, Sternkunde, Tierkunde, Wettervorhersage",
+    "vorschlaege": [
+     "Drachen",
+     "Gesteinskunde",
+     "Kräutersuche/Zutaten sammeln",
+     "Kreaturen der Finsternis",
+     "Nahrungssuche",
+     "Pflanzenkunde",
+     "Sternkunde",
+     "Tierkunde",
+     "Wettervorhersage"
+    ],
+    "platzhalter": [
+     "einzelnes Terrain"
+    ]
    }
   },
   {
@@ -14642,7 +14865,9 @@
     "fertigkeit": "grw:fertigkeit:naturmagie",
     "fertigkeit_name": "Naturmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14661,7 +14886,14 @@
     "fertigkeit": "grw:fertigkeit:redegewandtheit",
     "fertigkeit_name": "Redegewandtheit",
     "schwelle": 1,
-    "auswahltext": "Feilschen, Lügen & Betrügen, Überreden, Verführen, Verkleiden"
+    "auswahltext": "Feilschen, Lügen & Betrügen, Überreden, Verführen, Verkleiden",
+    "vorschlaege": [
+     "Feilschen",
+     "Lügen & Betrügen",
+     "Überreden",
+     "Verführen",
+     "Verkleiden"
+    ]
    }
   },
   {
@@ -14680,7 +14912,9 @@
     "fertigkeit": "grw:fertigkeit:schattenmagie",
     "fertigkeit_name": "Schattenmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14699,7 +14933,9 @@
     "fertigkeit": "grw:fertigkeit:schicksalsmagie",
     "fertigkeit_name": "Schicksalsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14718,7 +14954,14 @@
     "fertigkeit": "grw:fertigkeit:schloesser-und-fallen",
     "fertigkeit_name": "Schlösser und Fallen",
     "schwelle": 1,
-    "auswahltext": "Fallen entdecken, Fallen entschärfen, Fallen konstruieren, Mechanik, Schlösser öffnen"
+    "auswahltext": "Fallen entdecken, Fallen entschärfen, Fallen konstruieren, Mechanik, Schlösser öffnen",
+    "vorschlaege": [
+     "Fallen entdecken",
+     "Fallen entschärfen",
+     "Fallen konstruieren",
+     "Mechanik",
+     "Schlösser öffnen"
+    ]
    }
   },
   {
@@ -14737,7 +14980,11 @@
     "fertigkeit": "grw:fertigkeit:schusswaffen",
     "fertigkeit_name": "Schusswaffen",
     "schwelle": 1,
-    "auswahltext": "bestimmte Waffe"
+    "auswahltext": "bestimmte Waffe",
+    "vorschlaege": [],
+    "platzhalter": [
+     "bestimmte Waffe"
+    ]
    }
   },
   {
@@ -14756,7 +15003,9 @@
     "fertigkeit": "grw:fertigkeit:schutzmagie",
     "fertigkeit_name": "Schutzmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14775,7 +15024,13 @@
     "fertigkeit": "grw:fertigkeit:schwimmen",
     "fertigkeit_name": "Schwimmen",
     "schwelle": 1,
-    "auswahltext": "Kurzstrecke, Langstrecke, Tauchen, Wasser treten"
+    "auswahltext": "Kurzstrecke, Langstrecke, Tauchen, Wasser treten",
+    "vorschlaege": [
+     "Kurzstrecke",
+     "Langstrecke",
+     "Tauchen",
+     "Wasser treten"
+    ]
    }
   },
   {
@@ -14794,7 +15049,17 @@
     "fertigkeit": "grw:fertigkeit:seefahrt",
     "fertigkeit_name": "Seefahrt",
     "schwelle": 1,
-    "auswahltext": "Boote fahren, Fesseln/Knoten, Fischen, Flussschifffahrt, Navigation, Ruderschiffe, Seeschifffahrt, Segelschiffe"
+    "auswahltext": "Boote fahren, Fesseln/Knoten, Fischen, Flussschifffahrt, Navigation, Ruderschiffe, Seeschifffahrt, Segelschiffe",
+    "vorschlaege": [
+     "Boote fahren",
+     "Fesseln/Knoten",
+     "Fischen",
+     "Flussschifffahrt",
+     "Navigation",
+     "Ruderschiffe",
+     "Seeschifffahrt",
+     "Segelschiffe"
+    ]
    }
   },
   {
@@ -14813,7 +15078,9 @@
     "fertigkeit": "grw:fertigkeit:staerkungsmagie",
     "fertigkeit_name": "Stärkungsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14832,7 +15099,11 @@
     "fertigkeit": "grw:fertigkeit:stangenwaffen",
     "fertigkeit_name": "Stangenwaffen",
     "schwelle": 1,
-    "auswahltext": "bestimmte Waffe"
+    "auswahltext": "bestimmte Waffe",
+    "vorschlaege": [],
+    "platzhalter": [
+     "bestimmte Waffe"
+    ]
    }
   },
   {
@@ -14851,7 +15122,17 @@
     "fertigkeit": "grw:fertigkeit:strassenkunde",
     "fertigkeit_name": "Straßenkunde",
     "schwelle": 1,
-    "auswahltext": "Bestimmte Stadt, Gerüchte, Orientierung, Schwarzmarkt, Tatorte, Zurechtfinden"
+    "auswahltext": "Bestimmte Stadt, Gerüchte, Orientierung, Schwarzmarkt, Tatorte, Zurechtfinden",
+    "vorschlaege": [
+     "Gerüchte",
+     "Orientierung",
+     "Schwarzmarkt",
+     "Tatorte",
+     "Zurechtfinden"
+    ],
+    "platzhalter": [
+     "Bestimmte Stadt"
+    ]
    }
   },
   {
@@ -14870,7 +15151,17 @@
     "fertigkeit": "grw:fertigkeit:tierfuehrung",
     "fertigkeit_name": "Tierführung",
     "schwelle": 1,
-    "auswahltext": "Abrichten, einzelne Tierart, Fahrzeug lenken, Reiten, Tier beruhigen, Tier einschüchtern"
+    "auswahltext": "Abrichten, einzelne Tierart, Fahrzeug lenken, Reiten, Tier beruhigen, Tier einschüchtern",
+    "vorschlaege": [
+     "Abrichten",
+     "Fahrzeug lenken",
+     "Reiten",
+     "Tier beruhigen",
+     "Tier einschüchtern"
+    ],
+    "platzhalter": [
+     "einzelne Tierart"
+    ]
    }
   },
   {
@@ -14889,7 +15180,9 @@
     "fertigkeit": "grw:fertigkeit:todesmagie",
     "fertigkeit_name": "Todesmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14908,7 +15201,14 @@
     "fertigkeit": "grw:fertigkeit:ueberleben",
     "fertigkeit_name": "Überleben",
     "schwelle": 1,
-    "auswahltext": "Feuer entzünden, Lagerbereitung, Orientierung, Wettervorhersage, Wildnisführung"
+    "auswahltext": "Feuer entzünden, Lagerbereitung, Orientierung, Wettervorhersage, Wildnisführung",
+    "vorschlaege": [
+     "Feuer entzünden",
+     "Lagerbereitung",
+     "Orientierung",
+     "Wettervorhersage",
+     "Wildnisführung"
+    ]
    }
   },
   {
@@ -14927,7 +15227,9 @@
     "fertigkeit": "grw:fertigkeit:verwandlungsmagie",
     "fertigkeit_name": "Verwandlungsmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14946,7 +15248,16 @@
     "fertigkeit": "grw:fertigkeit:wahrnehmung",
     "fertigkeit_name": "Wahrnehmung",
     "schwelle": 1,
-    "auswahltext": "Durchsuchung, Hinterhalte, Hören, Riechen, Schmecken, Sehen, Tasten"
+    "auswahltext": "Durchsuchung, Hinterhalte, Hören, Riechen, Schmecken, Sehen, Tasten",
+    "vorschlaege": [
+     "Durchsuchung",
+     "Hinterhalte",
+     "Hören",
+     "Riechen",
+     "Schmecken",
+     "Sehen",
+     "Tasten"
+    ]
    }
   },
   {
@@ -14965,7 +15276,9 @@
     "fertigkeit": "grw:fertigkeit:wassermagie",
     "fertigkeit_name": "Wassermagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -14984,7 +15297,9 @@
     "fertigkeit": "grw:fertigkeit:windmagie",
     "fertigkeit_name": "Windmagie",
     "schwelle": 1,
-    "auswahltext": "Nach Zauber-Typus"
+    "auswahltext": "Nach Zauber-Typus",
+    "vorschlaege": [],
+    "nach_typus": true
    }
   },
   {
@@ -15003,7 +15318,11 @@
     "fertigkeit": "grw:fertigkeit:wurfwaffen",
     "fertigkeit_name": "Wurfwaffen",
     "schwelle": 1,
-    "auswahltext": "bestimmte Waffe"
+    "auswahltext": "bestimmte Waffe",
+    "vorschlaege": [],
+    "platzhalter": [
+     "bestimmte Waffe"
+    ]
    }
   },
   {
@@ -15022,7 +15341,14 @@
     "fertigkeit": "grw:fertigkeit:zaehigkeit",
     "fertigkeit_name": "Zähigkeit",
     "schwelle": 1,
-    "auswahltext": "Erschöpfung widerstehen, Gift widerstehen, Krankheiten widerstehen, Zaubern widerstehen, Zechen"
+    "auswahltext": "Erschöpfung widerstehen, Gift widerstehen, Krankheiten widerstehen, Zaubern widerstehen, Zechen",
+    "vorschlaege": [
+     "Erschöpfung widerstehen",
+     "Gift widerstehen",
+     "Krankheiten widerstehen",
+     "Zaubern widerstehen",
+     "Zechen"
+    ]
    }
   },
   {
@@ -55762,6 +56088,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 2, Unhandlich, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:doppelaxt:nahkampf"
    }
   },
@@ -55977,6 +56304,7 @@
      }
     ],
     "merkmale_text": "Doppelwaffe, Scharf 3, Teilbar, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:fulnisches-doppelschwert:nahkampf"
    }
   },
@@ -56086,6 +56414,7 @@
      }
     ],
     "merkmale_text": "Lange Waffe, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:glefe:nahkampf"
    }
   },
@@ -56200,6 +56529,7 @@
      }
     ],
     "merkmale_text": "Lange Waffe, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:hellebarde:nahkampf"
    }
   },
@@ -56262,6 +56592,7 @@
      }
     ],
     "merkmale_text": "Defensiv 2, Doppelwaffe, Lange Waffe, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:kampfstab:nahkampf"
    }
   },
@@ -56639,6 +56970,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 2, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:kriegsflegel:nahkampf"
    }
   },
@@ -56699,6 +57031,7 @@
      }
     ],
     "merkmale_text": "Unhandlich, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:kriegshammer:nahkampf"
    }
   },
@@ -56806,6 +57139,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 1, Scharf 2, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:kurzbogen:fernkampf"
    }
   },
@@ -56913,6 +57247,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 1, Scharf 2, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:langbogen:fernkampf"
    }
   },
@@ -57033,6 +57368,7 @@
      }
     ],
     "merkmale_text": "Lange Waffe, Reiterwaffe 6, Scharf 3, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:lanze:nahkampf"
    }
   },
@@ -57093,6 +57429,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 4, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:leichte-armbrust:fernkampf"
    }
   },
@@ -57427,6 +57764,7 @@
      }
     ],
     "merkmale_text": "Scharf 2, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:pfauenfeder:nahkampf"
    }
   },
@@ -57497,6 +57835,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 1, Reiterwaffe 0, Scharf 3, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:reiterbogen:fernkampf"
    }
   },
@@ -57852,6 +58191,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 6, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:schwere-armbrust:fernkampf"
    }
   },
@@ -58027,6 +58367,7 @@
      }
     ],
     "merkmale_text": "Improvisiert, Primitiv, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:spitzhacke:nahkampf"
    }
   },
@@ -58142,6 +58483,7 @@
      }
     ],
     "merkmale_text": "Scharf 2, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:streitaxt:nahkampf"
    }
   },
@@ -58352,6 +58694,7 @@
      }
     ],
     "merkmale_text": "Lange Waffe, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:sturmsense:nahkampf"
    }
   },
@@ -59235,6 +59578,7 @@
      }
     ],
     "merkmale_text": "Durchdringung 2, Lange Waffe, Scharf 3, Wuchtig, Zweihändig",
+    "zweihaendig": true,
     "regelgruppe": "grw:waffe:zweihaender:nahkampf"
    }
   },
@@ -61443,6 +61787,7 @@
      "telare": 500
     },
     "gruppe": "Alchemika, Gifte und Kräuter",
+    "heilung_lp": 4,
     "regelgruppe": "grw:alchemikum:heiltrank-leicht"
    }
   },
@@ -61470,6 +61815,7 @@
      "telare": 1000
     },
     "gruppe": "Alchemika, Gifte und Kräuter",
+    "heilung_lp": 8,
     "regelgruppe": "grw:alchemikum:heiltrank-stark"
    }
   },
@@ -73369,6 +73715,7 @@
     "strukturiert": {
      "bonus_je_schwerpunkt": 1,
      "mehrfach": "je Heldengrad einmal",
+     "hoechstens_je_heldengrad": 1,
      "boni_addieren": true,
      "belege": [
       {

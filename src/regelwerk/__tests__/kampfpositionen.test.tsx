@@ -4,7 +4,7 @@
  * Zauber gegen die Verteidigung mit der Position des Ziels wie gegnerischer Fernkampf.
  */
 import React from 'react';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Katalog } from '../katalog';
 import { basisAusDateien } from './hilfen';
@@ -127,5 +127,26 @@ describe('Zauber gegen die Verteidigung (GRW S. 170)', () => {
   it('gegen GW keine Position', () => {
     zauber('GW');
     expect(screen.queryByTestId('zauber-position-ziel')).toBeNull();
+  });
+
+  it('unverteilte Erfolgsgrade: erst Hinweis, beim zweiten Klick vollendet', () => {
+    const erfolg = vi.fn();
+    render(
+      <CharacterContext.Provider value={{ state: DEFAULT_STATE, dispatch: leer, calc: { wirkungen: { liste: [], fertigkeitsBoni: {} } } as never }}>
+        <CastSpellModal spell={{ name: 'Testzauber', school: 'Feuermagie', grade: 1, cost: '4', castTime: '3 Ticks', range: '10 m', duration: 'sofort', description: '', difficultyType: 'GW' } as never}
+          schoolSkillTotal={10} schoolSkillName="Feuermagie" availableFocus={20} maxFO={20}
+          focusState={{ exhausted: 0, channeled: 0, consumed: 0 } as never} splitterpunkte={0}
+          onClose={leer} onCastSuccess={erfolg} onCastFailure={leer} onSpendSplitterpunkt={leer} />
+      </CharacterContext.Provider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /echten Würfeln/ }));
+    fireEvent.change(screen.getByPlaceholderText('z. B. 15'), { target: { value: '18' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Übernehmen' }));
+    const vollenden = () => screen.getByRole('button', { name: /Zauber vollenden/ });
+    fireEvent.click(vollenden());
+    expect(erfolg).not.toHaveBeenCalled();
+    expect(screen.getByTestId('eg-ungenutzt').textContent).toMatch(/Noch \d+ EG/);
+    fireEvent.click(vollenden());
+    expect(erfolg).toHaveBeenCalledTimes(1);
   });
 });

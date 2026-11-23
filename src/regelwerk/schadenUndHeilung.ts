@@ -58,6 +58,21 @@ export function heilkundeAuswirkungen(k: Katalog | null = aktiverKatalog()): Rec
   return (k?.get('grw:fertigkeit:heilkunde')?.daten.auswirkungen as Record<string, string> | undefined) ?? {};
 }
 
+/** Heiltrank mit fester Heilung (Alchemika mit Feld `heilung_lp`) */
+export interface Heiltrank { id: string; name: string; lp: number; quelle: string; seite?: number }
+
+/** Heiltränke aus allen geladenen Paketen; gleichnamige mit gleicher Heilung nur einmal (der erste, GRW zuerst) */
+export function heiltraenke(k: Katalog | null = aktiverKatalog()): Heiltrank[] {
+  if (!k) return [];
+  const out: Heiltrank[] = [];
+  for (const e of k.nachTyp('alchemikum')) {
+    const lp = e.daten.heilung_lp;
+    if (typeof lp !== 'number' || out.some((h) => h.name === e.name && h.lp === lp)) continue;
+    out.push({ id: e.id, name: e.name, lp, quelle: k.pakete[e.quelle.paket]?.kuerzel ?? e.quelle.paket, seite: (e.quelle.buch_seiten ?? [])[0] });
+  }
+  return out.sort((a, b) => a.lp - b.lp || a.name.localeCompare(b.name, 'de'));
+}
+
 // ---------------------------------------------------------------- Sterben (GRW S. 172–173)
 const STERBEN_ID = 'grw:regel:kampf-regeln:sterben';
 

@@ -3,7 +3,7 @@ import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf,
 import React, { useId, useMemo, useState } from 'react';
 import { Heart, X, Plus, Minus, Check, Sparkles, Activity } from 'lucide-react';
 import type { HealthSlot, StatusCondition } from '../../types';
-import { heilkundeAuswirkungen, standardGesundheitsstufen } from '../../regelwerk/schadenUndHeilung';
+import { heilkundeAuswirkungen, heiltraenke, standardGesundheitsstufen } from '../../regelwerk/schadenUndHeilung';
 import { useHausregeln } from '../../fundament/hausregeln';
 
 export interface HealModalProps {
@@ -52,6 +52,8 @@ export const HealModal: React.FC<HealModalProps> = ({
   const stufen = useMemo(() => stufenProp ?? standardGesundheitsstufen(), [stufenProp]);
   const hausregeln = useHausregeln();
   const heilkunde = useMemo(() => heilkundeAuswirkungen(), []);
+  const traenke = useMemo(() => heiltraenke(), []);
+  const [trank, setTrank] = useState<string | null>(null);
   // Current slot damage counts
   const consumedCount = useMemo(
     () => currentHealthSlots.filter((s) => s.type === 'consumed').length,
@@ -267,6 +269,17 @@ export const HealModal: React.FC<HealModalProps> = ({
                 <div className="text-[11px] text-leise leading-tight">{hausregeln ? 'Hausregel: beliebige Punkte' : 'nur mit Hausregeln'}</div>
               </Wahlknopf>
             </div>
+            {method === 'heiltrank' && traenke.length > 0 && (
+              <div className="flex flex-wrap gap-1.5" data-testid="heiltraenke">
+                {traenke.map((t) => (
+                  <Wahlknopf key={t.id} mittig gewaehlt={trank === t.id} ton="erholung" className="text-xs"
+                    title={`${t.quelle}${t.seite ? ` S. ${t.seite}` : ''}`}
+                    onClick={() => { setTrank(t.id); setHealAmount(t.lp); setPriority('only_consumed'); if (!healNote.trim()) setHealNote(t.name); }}>
+                    {t.name} ({t.lp} LP)
+                  </Wahlknopf>
+                ))}
+              </div>
+            )}
             <p className="text-[11px] text-leise m-0" data-testid="heil-regel">
               Heilkunde, Heilzauber und Heiltränke heilen echten Schaden. Betäubungsschaden heilt die Verschnaufpause, echten
               Schaden auch die Ruhephase: beides im Abschnitt „Rast“ (GRW S. 173–174).

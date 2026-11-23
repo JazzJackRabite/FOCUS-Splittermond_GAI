@@ -171,7 +171,7 @@ describe.skipIf(!F)('Untote und Golems mit Grimoire (lokal)', () => {
   it('Assistent: Golem bauen und Untoten erheben', () => {
     const A = F.assistent;
     kat.aktuell = KM;
-    render(<Rahmen start={{ masteries: { [A.fertigkeit]: [{ id: 'm', name: A.meisterschaft, tier: 1, cost: 0, isFree: false, isCreationBonus: false, source: 't', skill: A.fertigkeit }] } }} />);
+    render(<Rahmen start={{ money: { solare: 50, lunare: 0, telare: 0 }, masteries: { [A.fertigkeit]: [{ id: 'm', name: A.meisterschaft, tier: 1, cost: 0, isFree: false, isCreationBonus: false, source: 't', skill: A.fertigkeit }] } }} />);
     let d = begleiterErstellen('Golem');
     fireEvent.change(within(d).getByLabelText('Korpus (Schritt 1)'), { target: { value: A.korpus } });
     weiter();
@@ -185,7 +185,11 @@ describe.skipIf(!F)('Untote und Golems mit Grimoire (lokal)', () => {
     expect(stand()).toContain(A.stand2);
     fireEvent.click(screen.getByRole('button', { name: /Zurück/ }));
     expect(within(d).getByText((t) => t.includes(A.animierung))).toBeTruthy();
+    // Kaufpreis wird beim Erstellen abgezogen (ohne Ressource Golem)
+    while (screen.queryByRole('button', { name: /^Weiter/ })) weiter();
+    expect(screen.getByTestId('golem-kaufen')).toBeTruthy();
     abschliessen();
+    expect(JSON.parse(screen.getByTestId('geld').textContent ?? '{}').solare).toBeLessThan(50);
     let blatt = screen.getByTestId('begleiter-blatt');
     expect(within(blatt).getByRole('heading', { name: A.titel })).toBeTruthy();
     expect(within(blatt).getByText(A.stand2)).toBeTruthy();
@@ -218,7 +222,7 @@ describe.skipIf(!F)('Untote und Golems mit Grimoire (lokal)', () => {
 
 const Rahmen: React.FC<{ start: Partial<CharacterState> }> = ({ start }) => {
   const [state, dispatch] = React.useReducer(baseCharacterReducer, { ...DEFAULT_STATE, ...start });
-  return <CharacterContext.Provider value={{ state, dispatch, calc: { heldengrad: { maxSkill: 6 } } as never }}><BegleiterView /></CharacterContext.Provider>;
+  return <CharacterContext.Provider value={{ state, dispatch, calc: { heldengrad: { maxSkill: 6 } } as never }}><BegleiterView /><output data-testid="geld">{JSON.stringify(state.money)}</output></CharacterContext.Provider>;
 };
 
 describe('Import: Golem- und Untoten-Felder', () => {

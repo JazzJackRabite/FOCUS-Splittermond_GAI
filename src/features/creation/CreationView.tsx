@@ -284,6 +284,7 @@ export function CreationView() {
           creationMode={mode === 'creation'}
           creationBudget={3 - creationUsage.creationMasteries}
           spells={spellsList}
+          heldengrad={heldengrad.nr}
         />
       )}
       {showXpModal && (

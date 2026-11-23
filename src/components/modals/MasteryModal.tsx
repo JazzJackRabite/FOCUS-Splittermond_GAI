@@ -1,5 +1,5 @@
 import { calculateItemCost } from '../../utils/costCalculations';
-import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, useEscape } from '../../fundament';
+import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf, useEscape } from '../../fundament';
 import { useHausregeln } from '../../fundament/hausregeln';
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { MasteryEntry as DbMasteryEntry } from '../../types/regeldaten';
@@ -14,7 +14,8 @@ import {
   type PrerequisiteCheckResult,
 } from '../../utils/prerequisiteValidator';
 import type { Mastery } from '../../types';
-import { grwAllgemeineKampfmeisterschaften, grwAllgemeineMagiemeisterschaften, grwFertigkeitsKategorien } from '../../regelwerk/grwListen';
+import { grwAllgemeineKampfmeisterschaften, grwAllgemeineMagiemeisterschaften, grwFertigkeitsKategorien,
+  schwerpunktAuswahl, schwerpunktHoechstensJeHeldengrad, schwerpunktRegel } from '../../regelwerk/grwListen';
 
 interface MasteryModalProps {
   skillName: string;
@@ -41,6 +42,8 @@ interface MasteryModalProps {
   race?: string;
   creationMode?: boolean;
   creationBudget?: number;
+  /** Nummer des Heldengrads (Schwerpunkte: je Heldengrad einmal derselbe) */
+  heldengrad?: number;
 }
 
 export const MasteryModal: React.FC<MasteryModalProps> = ({
@@ -58,6 +61,7 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
   race,
   creationMode = false,
   creationBudget = 0,
+  heldengrad = 1,
 }) => {
   const [search, setSearch] = useState('');
   const [selectedName, setSelectedName] = useState('');
@@ -68,6 +72,7 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
   const [isCreationBonus, setIsCreationBonus] = useState(false);
   const [userNote, setUserNote] = useState('');
   const [onlyAvailable, setOnlyAvailable] = useState(false);
+  const [schwerpunktName, setSchwerpunktName] = useState('');
 
   // Maximum tier theoretically reachable based on skill value
   const maxTier =
@@ -89,6 +94,15 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
   }, [allCharacterMasteries, existingMasteries, skills, skillName, skillVal, resources, spells, culture, race, creationMode, creationBudget, isCreationBonus]);
 
   const { katalog } = useRegelwerk();
+  // Schwerpunkte der Fertigkeit (Paket: Einträge vom Typ „schwerpunkt“); Name der Meisterschaft „Schwerpunkt: X (S1)“
+  const sp = useMemo(() => schwerpunktAuswahl(skillName), [skillName, katalog]);
+  const isSchwerpunkt = selectedName === 'schwerpunkt';
+  const spName = schwerpunktName.trim();
+  const spVoll = sp && spName ? `Schwerpunkt: ${spName} (S${sp.schwelle})` : '';
+  const spAnzahl = spVoll ? existingMasteries.filter((m) => m.name === spVoll).length : 0;
+  const spJe = schwerpunktHoechstensJeHeldengrad();
+  const spGrenze = spJe !== null ? spJe * Math.max(1, heldengrad) : null;
+  const spZuOft = spGrenze !== null && spAnzahl >= spGrenze;
   const filteredMasteries = useMemo(() => {
     let opts: DbMasteryEntry[] = getResolvedMasteries(skillName);
     if (grwFertigkeitsKategorien().COMBAT.includes(skillName)) {
@@ -175,7 +189,7 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
 
   // Validation result of the currently selected mastery
   const currentValidation = useMemo((): PrerequisiteCheckResult | null => {
-    if (selectedName === 'custom') {
+    if (selectedName === 'custom' || selectedName === 'schwerpunkt') {
       const reqVal = getRequiredSkillValue(tier);
       const thresholdMet = creationMode
         ? tier === 1 && (skillVal >= 6 || isCreationBonus || creationBudget > 0)
@@ -231,7 +245,7 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
 
   // Sync selectedName with searchedMasteries whenever search/filter changes
   useEffect(() => {
-    if (selectedName === 'custom') return;
+    if (selectedName === 'custom' || selectedName === 'schwerpunkt') return;
     const exists = searchedMasteries.some((m) => m.name === selectedName);
     if (!exists) {
       const available = searchedMasteries.find((m) => {
@@ -258,13 +272,21 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
 
   const hausregeln = useHausregeln();
   const isCustom = selectedName === 'custom';
-  const isSelectionInvalid = isCustom
+  const isSelectionInvalid = isSchwerpunkt
+    ? !spVoll || ((spZuOft || !(currentValidation?.canLearn ?? true)) && !hausregeln)
+    : isCustom
     ? !customName.trim() || (!(currentValidation?.canLearn ?? true) && !hausregeln)
     : !selectedName ||
       (existingMasteries.some((m) => m.name === selectedName) && !selectedEntry?.mehrfach) ||
       (currentValidation ? !currentValidation.canLearn && !hausregeln && !(isFree && freiTrotzVoraussetzung(selectedName)) : false);
 
   const handleAdd = () => {
+    if (isSchwerpunkt && sp) {
+      if (!spVoll) return;
+      onAdd(spVoll, sp.schwelle, isFree, cost, sp.seite, schwerpunktRegel()?.text, isCreationBonus, sp.quelle, userNote);
+      onClose();
+      return;
+    }
     const finalName = isCustom ? customName.trim() : selectedName;
     if (!finalName) return;
 
@@ -345,6 +367,7 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
               onChange={(e) => {
                 const val = e.target.value;
                 setSelectedName(val);
+                if (val === 'schwerpunkt') { setTier(sp?.schwelle ?? 1); return; }
                 if (val !== 'custom') {
                   setCustomSource('');
                   const m = filteredMasteries.find((it) => it.name === val);
@@ -383,9 +406,39 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
                   </option>
                 );
               })}
+              {sp && <option value="schwerpunkt">Schwerpunkt (S{sp.schwelle}) …</option>}
               <option value="custom">-- Eigene Eingabe --</option>
             </select>
           </div>
+
+          {isSchwerpunkt && sp && (
+            <div className="space-y-2 bg-seite p-3 rounded-knopf border border-gold" data-testid="schwerpunkt-auswahl">
+              <label className="block text-[11px] uppercase text-gold font-bold" htmlFor={`${titelId}-sp`}>Schwerpunkt *</label>
+              <input id={`${titelId}-sp`} type="text" list={`${titelId}-sp-liste`} value={schwerpunktName}
+                onChange={(e) => setSchwerpunktName(e.target.value)} autoFocus
+                className="w-full p-2 border border-rahmen rounded-knopf bg-seite text-schrift text-xs" placeholder="aus der Liste wählen oder selbst benennen" />
+              <datalist id={`${titelId}-sp-liste`}>
+                {sp.vorschlaege.map((v) => <option key={v} value={v} />)}
+              </datalist>
+              {sp.vorschlaege.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {sp.vorschlaege.map((v) => (
+                    <Wahlknopf key={v} mittig gewaehlt={spName === v} className="text-[11px]" onClick={() => setSchwerpunktName(v)}>{v}</Wahlknopf>
+                  ))}
+                </div>
+              )}
+              {sp.platzhalter.length > 0 && (
+                <p className="text-[11px] text-leise">Selbst benennen: {sp.platzhalter.join(', ')}</p>
+              )}
+              <p className="text-[11px] text-leise">{sp.quelle}{sp.seite ? ` S. ${sp.seite}` : ''} · Die Liste ist nicht abschließend; eigene Schwerpunkte mit Zustimmung der Spielleitung.</p>
+              {spAnzahl > 0 && (
+                <p className="text-[11px] text-schrift" data-testid="schwerpunkt-anzahl">
+                  Bereits {spAnzahl}× erworben{spGrenze !== null ? ` – höchstens ${spGrenze}× bei Heldengrad ${Math.max(1, heldengrad)}` : ''}.
+                  {spZuOft ? (hausregeln ? ' Hausregel: trotzdem wählbar.' : ' Derselbe Schwerpunkt erst wieder im nächsten Heldengrad.') : ''}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Custom mastery input */}
           {selectedName === 'custom' && (

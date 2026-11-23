@@ -6,7 +6,7 @@
  */
 import type { Katalog } from './katalog';
 import type { Eintrag } from './typen';
-import { verfuegbareDienste, type VerfuegbarerDienst } from './dienste';
+import { gesperrteDienste, verfuegbareDienste, type GesperrterDienst, type VerfuegbarerDienst } from './dienste';
 import { meisterschaftId } from './bruecke';
 import { erfuellt, type BedingungsCharakter, type Traeger } from './bedingungen';
 import type { Ergebnis } from './typen';
@@ -58,6 +58,13 @@ export function diensteFuer(k: Katalog, wesen: string, meisterschaften: Record<s
   const ids: string[] = [];
   for (const [skill, liste] of Object.entries(meisterschaften)) for (const m of liste) { const i = meisterschaftId(k, m.name, skill); if (i) ids.push(i); }
   return verfuegbareDienste(k, wesen, ids, dienstexperte);
+}
+
+/** Erweiterte Dienste des Wesens, die dieser Zauberer (noch) nicht hat, mit Grund */
+export function gesperrteDiensteFuer(k: Katalog, wesen: string, meisterschaften: Record<string, Mastery[]>): GesperrterDienst[] {
+  const ids: string[] = [];
+  for (const [skill, liste] of Object.entries(meisterschaften)) for (const m of liste) { const i = meisterschaftId(k, m.name, skill); if (i) ids.push(i); }
+  return gesperrteDienste(k, wesen, ids);
 }
 
 // ---------------------------------------------------------------- Tiere: Typus, Potenzial, Abrichtungen (Bestienmeister S. 15–23)

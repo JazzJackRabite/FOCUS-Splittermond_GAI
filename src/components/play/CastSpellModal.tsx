@@ -187,7 +187,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
   }, [candidateEquipment, selectedEquipmentId]);
   const grundkosten = useMemo(() => parseFocusCost(spell.cost), [spell.cost]);
   // Kosten- und Zauberdauer-Änderungen aus Meisterschaften (nur mit Regelpaketen)
-  const zauberWirk = useZauberAnpassungen(schoolSkillName, grundkosten.isChanneled, zaubernder === 'begleiter');
+  const zauberWirk = useZauberAnpassungen(schoolSkillName, grundkosten.isChanneled, zaubernder === 'begleiter', spell.name);
   const baseCost = useMemo(() => kostenAnwenden(grundkosten, zauberWirk.kosten), [grundkosten, zauberWirk.kosten]);
   const kostenGeaendert = baseCost !== grundkosten;
   const zauberdauer = useMemo(() => zauberdauerAnpassen(spell.castTime, zauberWirk.dauer), [spell.castTime, zauberWirk.dauer]);
@@ -285,6 +285,9 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
     [allocations, permissibleMods.specificEnhancements]
   );
   const remainingEG = Math.max(0, totalEarnedEG - spentEG);
+  // Nachfrage bei unverteilten Erfolgsgraden: erster Klick auf „vollenden“ weist darauf hin, der zweite vollendet
+  const [egNachfrage, setEgNachfrage] = useState(false);
+  useEffect(() => { setEgNachfrage(false); }, [remainingEG]);
 
   // Calculate final focus costs after applying EG savings and enhancements
   const finalCosts = useMemo(() => {
@@ -512,6 +515,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
     label: string;
   }) => {
     if (!egCalculation?.isSuccess) return;
+    if (remainingEG > 0 && !egNachfrage) { setEgNachfrage(true); return; }
 
     let channeledSpell: ChanneledSpell | undefined = undefined;
     if (finalCosts.effectiveChanneled > 0) {
@@ -2008,6 +2012,11 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
           </fieldset>
         )}
 
+        {egNachfrage && remainingEG > 0 && (
+          <p role="status" data-testid="eg-ungenutzt" className="mx-4 sm:mx-5 mb-2 p-2.5 rounded-knopf border border-gold bg-erschoepft-grund text-schrift text-xs">
+            Noch {remainingEG} EG nicht eingesetzt. Oben verteilen – oder noch einmal auf „vollenden“ klicken, dann verfallen sie.
+          </p>
+        )}
         {/* Modal Footer */}
         <div className="bg-erhoeht border-t border-rahmen px-4 sm:px-5 py-3 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5">
           <Knopf

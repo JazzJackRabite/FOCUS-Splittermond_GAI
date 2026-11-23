@@ -5,7 +5,7 @@ import { CharacterContext } from '../../context/CharacterContext';
 import { aktiverKatalog } from '../../regelwerk/bruecke';
 import { bausteineAktiv, reliktSchwerpunktBoni } from '../../regelwerk/relikte';
 import { schwerpunktBonusJe } from '../../regelwerk/grwListen';
-import { situativeBoni, zauberAnpassungen, type KostenDelta, type SituativerBonus, type WurfArtKontext, type ZauberAnpassung } from '../../regelwerk/wirkungen';
+import { situativeBoni, zauberAnpassungen, zauberTypen, type KostenDelta, type SituativerBonus, type WurfArtKontext, type ZauberAnpassung } from '../../regelwerk/wirkungen';
 
 /**
  * Bedingte Wirkungen aus Stärken, Meisterschaften und Relikten (Schwerpunkt) für einen Wurf: zum Anklicken, wenn die Lage zutrifft.
@@ -125,14 +125,14 @@ export const SituativeBoni: React.FC<{
  * Wirkungen auf Zaubermechanik (Kosten, Zauberdauer; Schwierigkeit, Reichweite … als Hinweis) für einen Zauber der Schule.
  * Gewählte Kostenänderungen und Zauberdauer-Änderungen werden vom Zauber-Dialog verrechnet.
  */
-export function useZauberAnpassungen(schule: string, kanalisiert: boolean, aus = false) {
+export function useZauberAnpassungen(schule: string, kanalisiert: boolean, aus = false, zauberName?: string) {
   const heldCtx = useContext(CharacterContext);
   const ctx = aus ? null : heldCtx;
   const liste = ctx?.calc?.wirkungen?.liste;
   const anpassungen = useMemo(() => {
     const k = aktiverKatalog();
-    return k && liste ? zauberAnpassungen(k, liste, schule, kanalisiert) : [];
-  }, [liste, schule, kanalisiert]);
+    return k && liste ? zauberAnpassungen(k, liste, schule, kanalisiert, zauberName ? zauberTypen(k, zauberName) : undefined) : [];
+  }, [liste, schule, kanalisiert, zauberName]);
   const [gewaehlt, setGewaehlt] = useState<Set<string>>(new Set());
   const umschalten = (id: string) => setGewaehlt(g => { const n = new Set(g); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const { kosten, dauer, labels } = useMemo(() => {

@@ -26,6 +26,7 @@ import { wesenSchritte } from './wesen';
 import { untotSchritte } from './untot';
 import { golemSchritte } from './golem';
 import type { Schritt } from './typen';
+import { bezahlen, geldInTelare, telareText } from '../../../regelwerk/geld';
 
 /** Steht die Art mit den geladenen Paketen zur Verfügung? Sonst der Grund */
 function artVerfuegbar(k: Katalog, art: BegleiterArt): string | null {
@@ -115,6 +116,10 @@ export const BegleiterAssistent: React.FC<{
   const [stelle, setStelle] = useState(0);
   // beim Bearbeiten sind alle Schritte schon einmal durchlaufen: jeder ist direkt anwählbar (sofern die vorigen bereit sind)
   const [weitest, setWeitest] = useState(neu ? 0 : 99);
+  // Golem ohne Ressource Golem: Kaufpreis (Die Magie, Preis je Stufe, Applikation, Sonderausstattung) vom Geld abziehen
+  const [golemKaufen, setGolemKaufen] = useState(true);
+  const golemPreisTelare = (b?: Begleiter | null) => (b?.art === 'golem' && b.id && !b.golemRessource ? golemWerte(k, b).preis * 100 : 0);
+  const golemAufpreis = Math.max(0, golemPreisTelare(entwurf) - (neu ? 0 : golemPreisTelare(alle[index!])));
 
   const artSchritt: Schritt = { id: 'art', titel: 'Art', inhalt: () => null, bereit: () => !!entwurf };
   const eigene = entwurf ? schritteFuer(k, entwurf).filter(s => neu || !s.nurNeu) : [];
@@ -163,6 +168,14 @@ export const BegleiterAssistent: React.FC<{
     // Stärke Tiervertrauter: das Tier begleitet „im Rahmen der Ressource Kreatur“ (GRW S. 74) – ohne Ressource kein Vertrauter
     if (entwurf.art === 'tier' && entwurf.vertrauter && !entwurf.kreatur
       && regelverstoss('Ein Vertrauter begleitet im Rahmen der Ressource Kreatur (Stärke Tiervertrauter) – dafür fehlt eine passende Ressource Kreatur.')) return;
+    // Golem kaufen: neuer Golem voller Preis, beim Bearbeiten der Aufpreis (z. B. weitere Sonderausstattung)
+    let geldNeu: ReturnType<typeof bezahlen> = null;
+    if (golemKaufen && golemAufpreis > 0) {
+      const geld = state.money ?? { solare: 0, lunare: 0, telare: 0 };
+      geldNeu = bezahlen(geld, golemAufpreis);
+      if (!geldNeu && regelverstoss(`Nicht genug Geld für den Golem: ${telareText(golemAufpreis)} nötig, ${telareText(geldInTelare(geld))} vorhanden.`)) return;
+    }
+    if (geldNeu) dispatch({ type: 'SET_MONEY', payload: geldNeu });
     if (neu) {
       if (entwurf.art === 'gefolge') {
         const brauchen = gefolgeVerbraucht(k, alle, besitzer.maxFertigkeit) + gefolgeWerte(k, entwurf, besitzer.maxFertigkeit).punkte;
@@ -186,6 +199,12 @@ export const BegleiterAssistent: React.FC<{
     <Dialog titel={titel} breite="breit" onSchliessen={onSchliessen}
       untertitel={entwurf ? `Schritt ${stelle + 1} von ${schritte.length}: ${aktuell?.titel ?? ''}` : 'Schritt 1: Art wählen'}
       fuss={<>
+        {letzter && golemAufpreis > 0 && (
+          <label className="flex items-center gap-2 mr-auto text-sm min-h-11 cursor-pointer" data-testid="golem-kaufen">
+            <input type="checkbox" checked={golemKaufen} onChange={(e) => setGolemKaufen(e.target.checked)} className="w-4 h-4 accent-gold" />
+            {neu ? 'Golem kaufen' : 'Aufpreis bezahlen'}: {telareText(golemAufpreis)} vom Geld abziehen
+          </label>
+        )}
         <Knopf onClick={onSchliessen}>Abbrechen</Knopf>
         <Knopf disabled={stelle === 0} onClick={() => gehe(stelle - 1)}><ChevronLeft size={14} aria-hidden />Zurück</Knopf>
         {letzter ? (

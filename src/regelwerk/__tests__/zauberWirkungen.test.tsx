@@ -63,6 +63,14 @@ describe('Magieschule', () => {
     const s = zauberAnpassungen(K, liste, 'Schutzmagie', false).map(a => `${a.quelle}:${a.art}`);
     expect(s).toEqual(['Eiliger Schutz:dauer']);
   });
+  it('Wirkung mit zauber_typus nur für Zauber dieses Typus (erfundenes Beispiel)', () => {
+    const cw = { ...liste.find(x => x.quelle === SPARSAM)!, quelle: 'test:meisterschaft:x', quelleName: 'Testmeisterschaft', quelleTyp: 'staerke' as const };
+    const w = { ...cw, wirkung: { ...cw.wirkung, art: 'kosten_erhoeht', wert: '3V3', bezug: 'zauberkosten', zauber_typus: 'Animierung' } };
+    const n = (typen?: string[]) => zauberAnpassungen(K, [w], 'Feuermagie', false, typen).length;
+    expect(n(['Animierung', 'Objekt'])).toBe(1);
+    expect(n(['Feuer'])).toBe(0);
+    expect(n(undefined)).toBe(1);
+  });
   it('Würfelbonus auf Zauber nur in der eigenen Schule', () => {
     expect(situativeBoni(K, liste, 'zauber', 'Lichtmagie').map(x => x.quelle)).toEqual(['Streiter des Lichtes']);
     expect(situativeBoni(K, liste, 'zauber', 'Feuermagie').map(x => x.quelle)).toEqual([]);

@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import { BookOpen, Hammer } from 'lucide-react';
 import { useCharacter } from '../../../context/CharacterContext';
-import { beschwoerbareWesen, diensteFuer } from '../../../regelwerk/begleiter';
+import { beschwoerbareWesen, diensteFuer, gesperrteDiensteFuer } from '../../../regelwerk/begleiter';
 import { baukastenArt, basen, wesenBaukastenWerte } from '../../../regelwerk/wesenBaukasten';
 import type { Katalog } from '../../../regelwerk/katalog';
 import { Auswahl, Eingabe } from '../../../fundament';
@@ -45,12 +45,30 @@ const Herkunft: React.FC<SchrittProps> = ({ k, b, aendern }) => {
 const Dienste: React.FC<{ k: Katalog; wesen: string }> = ({ k, wesen }) => {
   const { state } = useCharacter();
   const liste = useMemo(() => diensteFuer(k, wesen, state.masteries), [k, wesen, state.masteries]);
+  const gesperrt = useMemo(() => gesperrteDiensteFuer(k, wesen, state.masteries), [k, wesen, state.masteries]);
   if (!liste.length) return <Erklaerung>Keine Dienste verfügbar (Grimoire „Die Magie“ geladen?).</Erklaerung>;
   const art = { basis: 'Basisdienst', immer: 'immer verfügbar', erweitert: 'Erweiterter Dienst' } as const;
+  const name = (id: string) => k.get(id)?.name ?? id;
+  const oder = (ids: string[]) => ids.map(name).join(' oder ');
   return (
-    <ul className="space-y-1 text-sm">
-      {liste.map(d => <li key={d.id}><strong>{k.get(d.id)?.name ?? d.id}</strong> <span className="text-leise">– {art[d.art]}, {d.kosten}</span></li>)}
-    </ul>
+    <div className="space-y-2">
+      <ul className="space-y-1 text-sm">
+        {liste.map(d => <li key={d.id}><strong>{name(d.id)}</strong> <span className="text-leise">– {art[d.art]}, {d.kosten}</span></li>)}
+      </ul>
+      {gesperrt.length > 0 && (
+        <div data-testid="dienste-gesperrt">
+          <p className="text-xs text-leise m-0">Erweiterte Dienste, noch nicht verfügbar:</p>
+          <ul className="space-y-1 text-sm">
+            {gesperrt.map(d => (
+              <li key={d.id}><strong>{name(d.id)}</strong> <span className="text-leise">– {[
+                d.fehlt.length ? `braucht ${oder(d.fehlt)}` : '',
+                d.stufe ? `Wesen Stufe ${d.stufe.wesen}, erlaubt bis ${d.stufe.grenze}${d.stufe.anheben.length ? `; höher mit ${d.stufe.anheben.map(a => `${name(a.id)} (bis ${a.bis})`).join(' oder ')}` : ''}` : '',
+              ].filter(Boolean).join('; ')}</span></li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 };
 

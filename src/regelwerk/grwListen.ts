@@ -365,6 +365,52 @@ export function schwerpunktBonusJe(k: Katalog | null = aktiverKatalog()): number
   return typeof s?.bonus_je_schwerpunkt === 'number' ? s.bonus_je_schwerpunkt : null;
 }
 
+/** Wie oft derselbe Schwerpunkt je Heldengrad erworben werden darf (Feld `hoechstens_je_heldengrad`); null ohne Paketangabe */
+export function schwerpunktHoechstensJeHeldengrad(k: Katalog | null = aktiverKatalog()): number | null {
+  const s = k?.get(SCHWERPUNKT_REGEL_ID)?.daten.strukturiert as { hoechstens_je_heldengrad?: number } | undefined;
+  return typeof s?.hoechstens_je_heldengrad === 'number' ? s.hoechstens_je_heldengrad : null;
+}
+
+export interface SchwerpunktAuswahl {
+  /** benannte Schwerpunkte der Fertigkeit; bei Magieschulen die Zauber-Typen der Schule */
+  vorschlaege: string[];
+  /** offene Angaben („bestimmte Waffe“, „einzelne Region“), selbst zu benennen */
+  platzhalter: string[];
+  /** Schwelle der Schwerpunkt-Meisterschaft */
+  schwelle: number;
+  seite?: number;
+  quelle: string;
+}
+
+/**
+ * Schwerpunkte einer Fertigkeit aus allen geladenen Paketen (Einträge vom Typ `schwerpunkt`: `vorschlaege`, `platzhalter`,
+ * `nach_typus`, `schwelle`); bei `nach_typus` die Typen (`typus`) der Zauber dieser Schule. null, wenn kein Eintrag passt.
+ */
+export function schwerpunktAuswahl(fertigkeit: string, k: Katalog | null = aktiverKatalog()): SchwerpunktAuswahl | null {
+  if (!k) return null;
+  const fertName = (id: unknown) => (typeof id === 'string' ? k.get(id)?.name : undefined);
+  const passend = k.nachTyp('schwerpunkt').filter((e) => (fertName(e.daten.fertigkeit) ?? e.daten.fertigkeit_name) === fertigkeit);
+  if (!passend.length) return null;
+  const vor = new Set<string>();
+  const offen = new Set<string>();
+  let typus = false;
+  for (const e of passend) {
+    for (const v of (e.daten.vorschlaege as string[] | undefined) ?? []) vor.add(v);
+    for (const v of (e.daten.platzhalter as string[] | undefined) ?? []) offen.add(v);
+    if (e.daten.nach_typus) typus = true;
+  }
+  if (typus) {
+    for (const z of k.nachTyp('zauber')) {
+      const schulen = (z.daten.schulen as { id?: string; schule?: string }[] | undefined) ?? [];
+      if (!schulen.some((s) => (fertName(s.id) ?? s.schule) === fertigkeit)) continue;
+      for (const t of (z.daten.typus as string[] | undefined) ?? []) vor.add(t);
+    }
+  }
+  const e = passend[0];
+  return { vorschlaege: [...vor].sort((a, b) => a.localeCompare(b, 'de')), platzhalter: [...offen], schwelle: zahl(e.daten.schwelle, 1),
+    seite: seite(e) ?? schwerpunktRegel(k)?.seite, quelle: k.pakete[e.quelle.paket]?.kuerzel ?? 'GRW' };
+}
+
 // ---------------------------------------------------------------- Mondzeichen-Gaben
 
 export interface Mondgabe {

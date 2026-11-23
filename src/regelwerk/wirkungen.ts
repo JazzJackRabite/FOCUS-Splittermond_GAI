@@ -32,6 +32,8 @@ export interface Wirkung {
   gilt_fuer?: 'ruestung' | 'schild';
   schadensart?: string;
   gegen_typus?: string;
+  /** gilt nur für Zauber dieses Typus (Regelpaket: zauber_typus, z. B. Animierung) */
+  zauber_typus?: string;
   beleg: string;
   gilt: string;
 }
@@ -248,6 +250,12 @@ export function giltFuerSchule(k: Katalog, cw: CharakterWirkung, schule: string)
   return true;
 }
 
+/** Zauber-Typen eines Zaubers aus dem Paket (Feld `typus`); undefined, wenn der Zauber kein Paketeintrag ist */
+export function zauberTypen(k: Katalog, zauberName: string): string[] | undefined {
+  const e = k.nachName('zauber', zauberName)[0];
+  return e ? ((e.daten.typus as string[] | undefined) ?? []) : undefined;
+}
+
 /** Änderung der Fokuskosten: nicht verzehrter Anteil (erschöpft bzw. kanalisiert) und verzehrter Anteil, mit Vorzeichen */
 export interface KostenDelta { erschoepft: number; kanalisiert: number; verzehrt: number }
 
@@ -317,12 +325,15 @@ const B_HINWEIS = new Set(['schwierigkeit', 'wirkungsdauer', 'reichweite', 'erfo
  * Alle hängen von einer Lage oder einer Wahl des Spielers ab (z. B. „für Bannzauber des Typus Konter“, Auge des Zauberers):
  * Kosten und Zauberdauer sind deshalb anklickbar, der Rest wird als Hinweis gezeigt. Würfelboni stehen bei situativeBoni().
  */
-export function zauberAnpassungen(k: Katalog, liste: CharakterWirkung[], schule: string, zauberKanalisiert: boolean): ZauberAnpassung[] {
+export function zauberAnpassungen(k: Katalog, liste: CharakterWirkung[], schule: string, zauberKanalisiert: boolean,
+  zauberTypen?: string[]): ZauberAnpassung[] {
   const out: ZauberAnpassung[] = [];
   liste.forEach(cw => {
     const w = cw.wirkung;
     if (!B_HINWEIS.has(String(w.bezug)) || w.art === 'schaden') return;
     if (!giltFuerSchule(k, cw, schule)) return;
+    // nur für Zauber eines Typus (Feld zauber_typus); Typen unbekannt → anbieten, die Lage entscheidet der Spieler
+    if (w.zauber_typus && zauberTypen && !zauberTypen.includes(w.zauber_typus)) return;
     // Kosten und Zauberdauer derselben Meisterschaft gehören zusammen (z. B. Auge des Zauberers: +5 Ticks und (K)4V2) → gleiche id
     const basis = { id: cw.quelle, quelle: cw.quelleName, bedingung: w.bedingung, beleg: w.beleg };
     if (w.bezug === 'zauberkosten') {
