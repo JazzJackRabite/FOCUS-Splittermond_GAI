@@ -97,7 +97,8 @@ export const SituativeBoni: React.FC<{
       {hinweise.length > 0 && (
         <ul className={`mt-2 text-xs space-y-0.5 ${dunkel ? 'text-leise' : 'text-leise'}`}>
           {hinweise.map(b => (
-            <li key={b.id} title={b.beleg}><strong>{b.quelle}:</strong> {b.text}{b.bedingung ? ` – ${b.bedingung}` : ''}</li>
+            // Nur-Hinweis: der ganze Regelsatz statt eines Satzbruchstücks als Bedingung (die Lage steht im Satz)
+            <li key={b.id}><strong>{b.quelle}</strong> ({b.text}): {b.beleg || b.bedingung || ''}</li>
           ))}
         </ul>
       )}

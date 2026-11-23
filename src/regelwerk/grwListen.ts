@@ -99,7 +99,7 @@ function ausPaket(k: Katalog): Listen | null {
       const punkte = (t?.zeilen ?? []).map((z) => z.punkte).filter((p): p is number => typeof p === 'number');
       const stufen = t?.zeilen?.length ? `\n\nStufenübersicht:\n${t.zeilen.map((z) => `Stufe ${z.werte[0]}: ${z.werte.slice(1).join(' - ')}`).join('\n')}` : '';
       L.ressourcen.push({ name: e.name, source: kurz, page: seite(e) ?? 0, desc: `${d.beschreibung ?? ''}${stufen}`,
-        ...(punkte.length ? { maxStufe: Math.max(...punkte) } : {}) });
+        ...(punkte.length ? { maxStufe: Math.max(...punkte) } : {}), ...(d.mehrfach_erwerbbar ? { mehrfach: true } : {}) });
     } else if (e.typ === 'sprache') {
       L.sprachen.push({ name: e.name, source: kurz, page: seite(e) ?? 0, family: d.untergruppe ?? d.familie ?? undefined });
     } else if (e.typ === 'mondzeichen') {

@@ -1178,6 +1178,33 @@ Meisterschaften und Zauber je Schwelle, Voraussetzungsketten. Behoben:
   blieb der Geldbeutel bei 5 Lunaren.
 - Tests: 545 grün ohne Bücher; 607 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 52 (23.11.2026): Prüfung von Stand 51, neuer Charakter (Zwerg-Krieger) bis Heldengrad 4
+
+Stand 51 in der veröffentlichten App nachgeprüft: Flink gesperrt („Nur Erschaffung“), Robust „noch höchstens 1 dazu“,
+Vermögen „Höchststufe 6 erreicht“, Basargnomisch „Bereits bekannt“, Quellen gefunden, Schwelle nicht doppelt,
+Startvermögen übernommen (20 Lunare). Dann Brokk (Zwerg, Zwingard, Kriegsvolk) erschaffen, 2000 EP, Hiebwaffen 15,
+Kampfmeisterschaften, Streitaxt, Kettenhemd, Großschild, Handarmbrust, Angriff mit Manöver und Wuchtangriff, Schaden,
+Heilung, Rast, Relikt-Werkstatt. Behoben:
+- Neuer Charakter (und jeder Charakterwechsel) erbte Kultur-/Abstammungswahl samt eingetragener Werte, Begleiter,
+  Relikte und Regel-IDs des vorher geöffneten Charakters. `LOAD_STATE` setzt jetzt auf den Grundzustand auf.
+- Heilung heilte einen Punkt zu viel (11 statt 10): der Protokolleintrag rief `PLAY_UNDO_DAMAGE` mit Menge 0 auf, das
+  Reduzierstück machte daraus 1.
+- Ressourcen: Kreatur, Rang, Relikt, Zuflucht sind laut Paket mehrfach erwerbbar (neues Feld `mehrfach_erwerbbar`,
+  Werkzeug `staerken_mehrfach.py`); sie bleiben eigene Einträge (ein Tier je Kreatur). Andere Ressourcen werden auch bei
+  der Erschaffung zusammengeführt (Mentor aus der Abstammung plus Mentor frei gekauft: Mentor 2).
+- Angriffswurf mit Großmeister (drittem W10): Anzeige und Protokoll zeigten alle drei Würfel als Summe; jetzt die zwei,
+  die zählen, der dritte durchgestrichen. Gilt auch für Risiko (vier Würfel) und Sicherheit.
+- Sprachen bei der Erschaffung zeigten „1 Pkt (Erstellung)“; jetzt „Gratis: Muttersprache“ bzw. „Gratis (Erschaffung)“.
+- Katalogsuche im Inventar: Treffer im Namen vor Treffern in der Beschreibung („Großschild“ fand zuerst „Kette, leicht“).
+- Stärken & Meisterschaften im Angriffsdialog: Hinweise zeigen den ganzen Regelsatz statt Satzbruchstücken
+  („Kraftvoller Rundumschlag“ ohne Bedingung); Zusatzschaden als „+2 Schaden“.
+- Relikt-Werkstatt: Plus-Knopf eines Bausteins ist bei seiner Höchstzahl gesperrt (Härte +1 ließ sich 3× wählen).
+- Steigerungsprotokoll: alte Einträge mit „Quelle: unbekannt“ werden beim Laden nachgetragen.
+- Offen (Datenseite): Heiltränke tragen ihre Heilung nur als Text („Heilung von 4 Lebenspunkten“), der Heildialog kann
+  den Trank daher nicht aus dem Inventar verbrauchen; Zweihandwaffe und Schild lassen sich gleichzeitig ausrüsten, weil
+  „Zweihändig“ kein Feld für die Hände hat.
+- Tests: 550 grün ohne Bücher; 612 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

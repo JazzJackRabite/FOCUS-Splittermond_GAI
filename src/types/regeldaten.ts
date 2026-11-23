@@ -79,6 +79,8 @@ export interface ResourceData {
     desc: string;
     /** höchste Stufe der Ressourcentabelle */
     maxStufe?: number;
+    /** mehrfach erwerbbar (je Erwerb ein eigener Eintrag, z. B. ein Tier, ein Relikt) */
+    mehrfach?: boolean;
 }
 
 export interface LanguageData {

@@ -260,7 +260,12 @@ const Werkstatt: React.FC<{ k: Katalog; start: Relikt; frei: number; schliessen:
                   {g.liste.map(b => (
                     <li key={b.id} className="bg-erhoeht border border-rahmen rounded-knopf p-2">
                       <div className="flex items-center gap-2">
-                        <Knopf nurSymbol art="sekundaer" onClick={() => hinzu(b)} aria-label={`${b.name} hinzufügen`}><Plus size={14} /></Knopf>
+                        {(() => {
+                          const gewaehlt = r.bausteine.filter(w => w.id === b.id).reduce((n, w) => n + (w.anzahl || 1), 0);
+                          const voll = b.maxAnzahl !== null && gewaehlt >= b.maxAnzahl && !hausregeln;
+                          return <Knopf nurSymbol art="sekundaer" onClick={() => hinzu(b)} disabled={voll}
+                            title={voll ? `Höchstens ${b.maxAnzahl}× – schon ${gewaehlt}× gewählt` : undefined} aria-label={`${b.name} hinzufügen`}><Plus size={14} /></Knopf>;
+                        })()}
                         <div className="min-w-0 flex-1">
                           <div className="font-bold text-sm">{b.name}</div>
                           <div className="text-xs text-leise">

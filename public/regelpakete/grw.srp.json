@@ -7708,6 +7708,9 @@
      "pdf_seite": 79,
      "buch_seite": 78
     },
+    "mehrfach_erwerbbar": {
+     "beleg": "Die Ressource kann mehrfach erworben werden und gilt dann jeweils für einzelne tierische Begleiter."
+    },
     "regelgruppe": "grw:ressource:kreatur"
    }
   },
@@ -7877,6 +7880,9 @@
      "pdf_seite": 80,
      "buch_seite": 79
     },
+    "mehrfach_erwerbbar": {
+     "beleg": "Die Ressource kann bei Mitgliedschaften in mehreren Organisationen mehrfach erworben werden."
+    },
     "regelgruppe": "grw:ressource:rang"
    }
   },
@@ -7950,6 +7956,9 @@
      ],
      "pdf_seite": 80,
      "buch_seite": 79
+    },
+    "mehrfach_erwerbbar": {
+     "beleg": "Die Ressource kann mehrfach erworben werden, um unterschiedliche Relikte zu besitzen."
     },
     "relikt_baukasten": {
      "budget": "ressourcenpunkte",
@@ -8261,6 +8270,9 @@
      ],
      "pdf_seite": 81,
      "buch_seite": 80
+    },
+    "mehrfach_erwerbbar": {
+     "beleg": "Besonders wohlhabende oder paranoide Abenteurer können diese Ressource mehrfach erwerben."
     },
     "regelgruppe": "grw:ressource:zuflucht"
    }

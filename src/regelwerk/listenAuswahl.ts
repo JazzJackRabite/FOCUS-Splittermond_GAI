@@ -17,6 +17,8 @@ export interface ListenDaten {
   onlyCreation?: boolean;
   /** Ressource: höchste Stufe der Tabelle */
   maxStufe?: number;
+  /** Ressource: mehrfach erwerbbar (jeder Erwerb ein eigener Eintrag mit eigener Stufe) */
+  mehrfach?: boolean;
 }
 
 export interface ListenSperre {
@@ -38,6 +40,8 @@ export function listenSperre(art: ListenArt, eintrag: ListenDaten | null, name: 
   if (art === 'language') return { grund: gleiche.length ? 'Bereits bekannt' : null, restStufen: 1, vorhanden };
   if (art === 'resource') {
     const max = eintrag?.maxStufe ?? RESSOURCE_HOECHSTENS;
+    // mehrfach erwerbbar: ein neuer Eintrag mit eigener Stufe, vorhandene zählen nicht mit
+    if (eintrag?.mehrfach) return { grund: null, restStufen: max, vorhanden: 0 };
     const rest = max - vorhanden;
     return { grund: rest <= 0 ? `Höchststufe ${max} erreicht` : null, restStufen: Math.max(0, rest), vorhanden };
   }

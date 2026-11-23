@@ -123,7 +123,7 @@ export interface AttackModalProps {
 }
 
 type RollType = 'standard' | 'safe' | 'risk';
-import { wuerfeln } from '../../utils/wuerfeln';
+import { gezaehlteWuerfel, wuerfeln } from '../../utils/wuerfeln';
 import { SituativeBoni, useSituativeBoni } from './SituativeBoni';
 import { wurfgrenzen } from '../../regelwerk/proben';
 import { ignoriertSituation, kampfsituationen, positionsModifikator, positionsNamen, vorbereitungsBonus } from '../../regelwerk/kampflage';
@@ -316,6 +316,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   // Step 2: Roll Execution & State
   const [hasRolled, setHasRolled] = useState<boolean>(false);
   const [rollDice, setRollDice] = useState<number[]>([0, 0]);
+  const [gewuerfelteArt, setGewuerfelteArt] = useState<RollType>('standard');
   const [diceSum, setDiceSum] = useState<number>(0);
   const [isFumble, setIsFumble] = useState<boolean>(false);
   const [isCrit, setIsCrit] = useState<boolean>(false);
@@ -326,6 +327,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const [manualRollVal, setManualRollVal] = useState<string>('');
 
   // Total rolled result
+  const gezaehlt = gezaehlteWuerfel(rollDice, gewuerfelteArt, isFumble, !!target.grossmeister);
   const totalRollResult = hasRolled ? diceSum + totalAttackModifier + extraSPBonus : 0;
 
   // EG calculation
@@ -385,6 +387,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
       crit = w.isCrit;
 
       setRollDice(rolledDice);
+      setGewuerfelteArt(typeToUse);
       setDiceSum(sum);
       setIsFumble(fumble);
       setIsCrit(crit);
@@ -480,7 +483,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
           type: 'roll',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           label: `Angriff mit ${weapon.name} (${selectedManeuver.name})${allBuffLabels.length ? ` [${allBuffLabels.join(', ')}]` : ''}`,
-          d10s: rollDice,
+          d10s: gezaehlt.map((i) => rollDice[i]),
           baseVal: totalAttackModifier,
           modifier: extraSPBonus,
           total: totalRollResult,
@@ -521,7 +524,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
           type: 'roll',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           label: `Angriff mit ${weapon.name} (${selectedManeuver.name})${situativ.labels.length ? ` [${situativ.labels.join(', ')}]` : ''}`,
-          d10s: rollDice,
+          d10s: gezaehlt.map((i) => rollDice[i]),
           baseVal: totalAttackModifier,
           modifier: extraSPBonus,
           total: totalRollResult,
@@ -998,7 +1001,8 @@ export const AttackModal: React.FC<AttackModalProps> = ({
                       {rollDice.map((d, i) => (
                         <span
                           key={i}
-                          className="w-8 h-8 rounded-knopf bg-seite border border-rahmen text-schrift tabular-nums font-extrabold flex items-center justify-center text-sm "
+                          title={gezaehlt.includes(i) ? 'zählt' : 'zählt nicht'}
+                          className={`w-8 h-8 rounded-knopf bg-seite border border-rahmen text-schrift tabular-nums font-extrabold flex items-center justify-center text-sm ${gezaehlt.includes(i) ? '' : 'opacity-40 line-through'}`}
                         >
                           {d}
                         </span>
@@ -1006,7 +1010,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
                     </div>
                     <div>
                       <span className="text-xs text-leise tabular-nums">
-                        [{rollDice.join(' + ')}] + {totalAttackModifier + extraSPBonus} =
+                        [{gezaehlt.map((i) => rollDice[i]).join(' + ')}] + {totalAttackModifier + extraSPBonus} =
                       </span>
                       <span className="font-extrabold text-lg text-schrift ml-1.5 tabular-nums">
                         {totalRollResult}

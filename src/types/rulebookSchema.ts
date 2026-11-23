@@ -55,6 +55,7 @@ export interface RulebookResourceItem {
   id?: string;
   name: string;
   desc: string;
+  mehrfach?: boolean;
   page?: number;
   source?: string;
 }

@@ -19,7 +19,7 @@ import { mitRegelIds } from '../regelwerk/bruecke';
 import { saveToLocalStorage, loadFromLocalStorage } from './useLocalStorage';
 import { generateId } from '../utils/id';
 import { getSkillXpCost, getAttrXpCost, calculateItemCost } from '../utils/costCalculations';
-import { referenceCharacterResources } from '../utils/gameResourceManager';
+import { getResolvedResources, referenceCharacterResources } from '../utils/gameResourceManager';
 import { aktiverKatalog } from '../regelwerk/bruecke';
 import { spielwerteDesZaubers } from '../regelwerk/zauberwerte';
 import { gratisStaerkeDerKultur, grwStaerken } from '../regelwerk/grwListen';
@@ -162,12 +162,15 @@ export function baseCharacterReducer(
       if ('money' in action.payload) {
         safePayload.money = action.payload.money ?? { solare: 0, lunare: 5, telare: 0 };
       }
-      const referenced = referenceCharacterResources({ ...DEFAULT_STATE, ...state, ...safePayload });
+      // Ein geladener Charakter ersetzt den bisherigen vollständig: fehlende Felder (Kultur-/Abstammungswahl,
+      // Begleiter, Relikte, Regel-IDs) kommen aus dem Grundzustand, nicht vom vorher geöffneten Charakter.
+      const basis: CharacterState = { ...DEFAULT_STATE, erschaffung: undefined, begleiter: undefined, relikte: undefined, regelIds: undefined } as CharacterState;
+      const referenced = referenceCharacterResources({ ...basis, ...safePayload });
       return {
-        ...state,
+        ...basis,
         ...referenced,
-        inventory: safePayload.inventory ?? referenced.inventory ?? state.inventory ?? [],
-        money: safePayload.money ?? referenced.money ?? state.money ?? { solare: 0, lunare: 5, telare: 0 },
+        inventory: safePayload.inventory ?? referenced.inventory ?? [],
+        money: safePayload.money ?? referenced.money ?? { solare: 0, lunare: 5, telare: 0 },
       };
     }
 
@@ -545,7 +548,7 @@ export function baseCharacterReducer(
       const cost = item.isFree ? 0 : (item.level ?? 1) * (item.pointCost ?? 1) * calculateItemCost('strength', 1);
       let newLog = state.advancementLog ?? [];
       if (state.mode === 'xp') {
-        const schonDa = state.resourcesList.some((r) => r.name === item.name);
+        const schonDa = state.resourcesList.some((r) => r.name === item.name) && !getResolvedResources().list.find((r) => r.name === item.name)?.mehrfach;
         const entry = createLogEntry(
           'resource',
           schonDa ? `Ressource gesteigert: ${item.name} +${item.level ?? 1}` : `Ressource erworben: ${item.name}`,
@@ -555,7 +558,10 @@ export function baseCharacterReducer(
         newLog = [entry, ...newLog];
       }
       // Steigerung einer schon mit EP gekauften Ressource: Stufen zusammenführen statt zweitem Eintrag
-      const vorhanden = state.mode === 'xp' ? state.resourcesList.findIndex((r) => r.name === item.name && r.source === 'xp') : -1;
+      // (bei der Erschaffung genauso: ein Erschaffungseintrag je Ressource)
+      // Mehrfach erwerbbare Ressourcen (Kreatur, Relikt, Zuflucht, Rang laut Paket) bleiben eigene Einträge.
+      const mehrfach = !!getResolvedResources().list.find((r) => r.name === item.name)?.mehrfach;
+      const vorhanden = mehrfach ? -1 : state.resourcesList.findIndex((r) => r.name === item.name && r.source === item.source && !r.isFree && !item.isFree);
       if (vorhanden >= 0) {
         const liste = [...state.resourcesList];
         const alt = liste[vorhanden];
@@ -807,7 +813,8 @@ export function baseCharacterReducer(
     case 'PLAY_UNDO_DAMAGE': {
       const { kind, amount = 1, maxLP: mLP } = action.payload;
       let slots = [...state.playState.healthSlots];
-      const count = Math.max(1, amount);
+      // amount 0: nur Protokolleintrag (Heilung schon verbucht), nichts heilen
+      const count = Math.max(0, amount);
       for (let step = 0; step < count; step++) {
         if (kind === 'exhausted' || kind === 'channeled') {
           // Find the last slot from the back that matches this type and set it to empty

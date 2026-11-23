@@ -99,3 +99,64 @@ describe('Startvermögen aus der Vermögenstabelle', () => {
     expect(erschaffungsVermoegen([e('Vermögen', 2), e('Vermögen', 3, 'xp')])).toBe(2);
   });
 });
+
+describe('Charakter wechseln', () => {
+  it('ein neu geladener Charakter erbt keine Kulturwahl, Begleiter oder Relikte des vorherigen', () => {
+    const { result } = renderHook(() => useCharacterState());
+    act(() => { result.current.dispatch({ type: 'LOAD_STATE', payload: {
+      name: 'A', erschaffung: { kultur: { modul: 'grw:kultur:selenia', wahl: {} } } as never,
+      begleiter: [{ id: 'grw:kreatur:falke', art: 'tier', name: 'Falke' }] as never, xpTotal: 2015, mode: 'xp',
+    } }); });
+    expect(result.current.state.erschaffung).toBeTruthy();
+    act(() => { result.current.dispatch({ type: 'LOAD_STATE', payload: { name: 'B', xpTotal: 15, mode: 'creation' } }); });
+    expect(result.current.state.name).toBe('B');
+    expect(result.current.state.erschaffung).toBeUndefined();
+    expect(result.current.state.begleiter ?? []).toHaveLength(0);
+    expect(result.current.state.xpTotal).toBe(15);
+  });
+});
+
+describe('Ressource bei der Erschaffung', () => {
+  it('Mentor 1 aus der Abstammung plus Mentor 1 frei gekauft: ein Eintrag Mentor 2', () => {
+    const { result } = renderHook(() => useCharacterState());
+    for (let i = 0; i < 2; i++) {
+      act(() => { result.current.dispatch({ type: 'ADD_RESOURCE', payload: { name: 'Mentor', level: 1, source: 'creation', pointCost: 1 } }); });
+    }
+    const m = result.current.state.resourcesList.filter((r) => r.name === 'Mentor');
+    expect(m).toHaveLength(1);
+    expect(m[0].level).toBe(2);
+  });
+
+  it('Kreatur ist laut Paket mehrfach erwerbbar: zwei Tiere bleiben zwei Einträge, ohne gemeinsame Obergrenze', () => {
+    const kreatur = grwRessourcen().find((r) => r.name === 'Kreatur')!;
+    expect(kreatur.mehrfach).toBe(true);
+    expect(listenSperre('resource', kreatur, 'Kreatur', 'xp', [e('Kreatur', 6)]).grund).toBeNull();
+    expect(grwRessourcen().find((r) => r.name === 'Vermögen')!.mehrfach).toBeUndefined();
+    const { result } = renderHook(() => useCharacterState());
+    for (let i = 0; i < 2; i++) {
+      act(() => { result.current.dispatch({ type: 'ADD_RESOURCE', payload: { name: 'Kreatur', level: 1, source: 'creation', pointCost: 1 } }); });
+    }
+    expect(result.current.state.resourcesList.filter((r) => r.name === 'Kreatur')).toHaveLength(2);
+  });
+});
+
+describe('Angezeigte Würfel', () => {
+  it('Großmeister: von 2, 6, 2 zählen 6 und 2; Sicherheit: der höchste; Patzer: die zwei niedrigsten ohne Großmeisterwürfel', async () => {
+    const { gezaehlteWuerfel } = await import('../utils/wuerfeln');
+    expect(gezaehlteWuerfel([2, 6, 2], 'standard', false, true).map(i => [2, 6, 2][i]).sort()).toEqual([2, 6]);
+    expect(gezaehlteWuerfel([3, 9], 'safe', false)).toEqual([1]);
+    expect(gezaehlteWuerfel([1, 1, 9], 'standard', true, true)).toEqual([0, 1]);
+    expect(gezaehlteWuerfel([4, 7, 2, 9], 'risk', false)).toEqual([1, 3]);
+  });
+});
+
+describe('Heilung', () => {
+  it('30 Schaden, 10 geheilt: 20 bleiben (der Protokolleintrag mit amount 0 heilt nichts)', () => {
+    const { result } = renderHook(() => useCharacterState());
+    act(() => { result.current.dispatch({ type: 'PLAY_RESET', payload: { maxLP: 13, maxFocus: 18, maxSplitter: 6 } }); });
+    act(() => { result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'consumed', maxLP: 13, amount: 30 } }); });
+    act(() => { result.current.dispatch({ type: 'PLAY_UNDO_DAMAGE', payload: { kind: 'consumed', amount: 10, maxLP: 13 } }); });
+    act(() => { result.current.dispatch({ type: 'PLAY_UNDO_DAMAGE', payload: { kind: 'consumed', amount: 0, maxLP: 13 } }); });
+    expect(result.current.state.playState.healthSlots.filter((s) => s.type === 'consumed')).toHaveLength(20);
+  });
+});

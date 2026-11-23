@@ -50,3 +50,17 @@ export function wuerfeln(art: WurfArt, grossmeister = false, rnd: () => number =
   const best = besteZwei(alle);
   return { dice: alle, result: best, isFumble: false, isCrit: best >= grenzen.triumph, grossmeisterWuerfel: g };
 }
+
+/**
+ * Welche Würfel ins Ergebnis zählen (Indizes in `dice`): Sicherheit der höchste, Patzer die zwei niedrigsten
+ * (ohne Großmeisterwürfel), sonst die zwei höchsten. Für die Anzeige „[a + b] + Wert“.
+ */
+export function gezaehlteWuerfel(dice: number[], art: WurfArt, patzer: boolean, grossmeister = false): number[] {
+  const idx = dice.map((d, i) => ({ d, i }));
+  if (art === 'safe') return [idx.reduce((a, b) => (b.d > a.d ? b : a)).i];
+  if (patzer) {
+    const ohneG = grossmeister ? idx.slice(0, -1) : idx;
+    return [...ohneG].sort((a, b) => a.d - b.d).slice(0, 2).map((x) => x.i).sort((a, b) => a - b);
+  }
+  return [...idx].sort((a, b) => b.d - a.d).slice(0, 2).map((x) => x.i).sort((a, b) => a - b);
+}

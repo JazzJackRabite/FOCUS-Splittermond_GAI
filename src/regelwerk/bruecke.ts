@@ -134,7 +134,7 @@ export function grimoireModule(): RulebookModulePackage[] {
       } else if (e.typ === 'schwaeche') {
         weaknesses.push({ id: e.id, name: e.name, desc: d.beschreibung ?? '', page: seite(e), source: kurz } as never);
       } else if (e.typ === 'ressource') {
-        gameResources.push({ id: e.id, name: e.name, desc: d.beschreibung ?? '', page: seite(e), source: kurz } as never);
+        gameResources.push({ id: e.id, name: e.name, desc: d.beschreibung ?? '', page: seite(e), source: kurz, ...(d.mehrfach_erwerbbar ? { mehrfach: true } : {}) } as never);
       }
     }
     if (!spells.length && !masteries.length && !strengths.length && !weaknesses.length && !gameResources.length) continue;

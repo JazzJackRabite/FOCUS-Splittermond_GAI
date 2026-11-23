@@ -710,6 +710,7 @@ export function getResolvedResources(): {
           desc: r.desc,
           page: r.page ?? 0,
           source: r.source || pkg.shortName,
+          ...(r.mehrfach ? { mehrfach: true } : {}),
         });
         descMap[r.name] = r.desc;
       }
@@ -857,7 +858,15 @@ export function referenceCharacterResources(rawState: Partial<CharacterState>): 
   }
 
   // 7. Ensure Advancement Log contains entries for starting values so they show in Steigerungsprotokoll
-  const existingLog = Array.isArray(state.advancementLog) ? [...state.advancementLog] : [];
+  const existingLog = (Array.isArray(state.advancementLog) ? [...state.advancementLog] : []).map((e) => {
+    // ältere Einträge mit „Quelle: unbekannt“ nachtragen, wenn die Quelle inzwischen gefunden wird
+    if (!e.detail?.includes('Quelle: unbekannt')) return e;
+    const titel = e.title.replace(/^[^:]+:\s*/, '');
+    const d = e.category === 'strength' ? getStrengthDetails(titel)
+      : e.category === 'mastery' ? getMasteryDetails((e.detail.match(/Fertigkeit: (.+?) \(/) ?? [])[1] ?? '', titel) : null;
+    if (!d?.found) return e;
+    return { ...e, detail: e.detail.replace('Quelle: unbekannt', `Quelle: ${d.source}${d.page ? ', S. ' + d.page : ''}`) };
+  });
   const hasMasteryLog = existingLog.some((e) => e.category === 'mastery');
   const hasSpellLog = existingLog.some((e) => e.category === 'spell');
 

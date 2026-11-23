@@ -144,7 +144,7 @@ const KURZTEXT: Record<string, (w: Wirkung, z: string) => string> = {
   wert_erhoeht: (w, z) => `${bezugText(w)} ${z}`.trim(),
   schaden_gesenkt: (w) => `${w.schadensart ?? 'Schaden'} −${w.wert}`,
   immunitaet: (w) => `immun gegen ${w.zustand_ref?.text ?? ''}`.trim(),
-  zusatzschaden: (w) => `${w.wert} zusätzlicher Schaden`,
+  zusatzschaden: (w) => `+${w.wert} Schaden`,
   sr_ignorieren: (w) => `${w.wert} SR ignorieren`,
   zustand: (w) => `Zustand ${w.zustand_ref?.text ?? ''}`.trim(),
   wert_gesetzt: (w) => `${w.bezug ?? ''} = ${w.wert}`,

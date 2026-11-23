@@ -114,6 +114,12 @@ export const InventoryView: React.FC = () => {
 
   // Catalog filtered items
   const filteredCatalog = useMemo(() => {
+    // Treffer im Namen zuerst (Namensanfang vor Namensteil), Treffer nur in der Beschreibung danach
+    const q = catalogSearch.trim().toLowerCase();
+    const rang = (item: any) => {
+      const n = String(item.name ?? '').toLowerCase();
+      return !q ? 0 : n.startsWith(q) ? 0 : n.includes(q) ? 1 : 2;
+    };
     return ALL_EQUIPMENT.filter((item: any) => {
       const matchesSearch =
         item.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
@@ -133,7 +139,9 @@ export const InventoryView: React.FC = () => {
       }
 
       return true;
-    });
+    }).map((item: any, i: number) => ({ item, i, r: rang(item) }))
+      .sort((a: any, b: any) => a.r - b.r || a.i - b.i)
+      .map((x: any) => x.item);
   }, [ALL_EQUIPMENT, catalogSearch, catalogCategoryFilter, catalogSourceFilter]);
 
   // Handle Money change
