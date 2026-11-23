@@ -42,12 +42,14 @@ describe('RestSection Component (Streamlined Regeneration & Pausen)', () => {
     expect(screen.getByText('+4 LP · +6 FO')).toBeDefined();
   });
 
-  it('triggers onVerschnaufpause directly with default parameters on button click', () => {
+  it('opens the Verschnaufpause dialog and runs it with the rule defaults', () => {
     const onVerschnaufpause = vi.fn();
     render(<RestSection {...defaultProps} onVerschnaufpause={onVerschnaufpause} />);
 
-    const vpBtn = screen.getByRole('button', { name: /Verschnaufpause durchführen/i });
-    fireEvent.click(vpBtn);
+    // „Verschnaufpause durchführen“ öffnet den Dialog mit den Optionen; dort wird die Pause ausgelöst
+    fireEvent.click(screen.getByRole('button', { name: /Verschnaufpause durchführen/i }));
+    expect(onVerschnaufpause).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
 
     expect(onVerschnaufpause).toHaveBeenCalledTimes(1);
     expect(onVerschnaufpause).toHaveBeenCalledWith({
@@ -60,64 +62,53 @@ describe('RestSection Component (Streamlined Regeneration & Pausen)', () => {
     }, false);
   });
 
-  it('triggers onRuhephase directly with calculated defaults on button click', () => {
+  it('opens the Ruhephase dialog and runs it with the calculated defaults', () => {
     const onRuhephase = vi.fn();
     render(<RestSection {...defaultProps} kon={3} wil={2} onRuhephase={onRuhephase} />);
 
     // KON 3 * 2 = 6 LP, WIL 2 * 2 = 4 FO
-    const ruheBtn = screen.getByRole('button', { name: /Ruhephase durchführen/i });
-    fireEvent.click(ruheBtn);
+    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/i }));
+    expect(onRuhephase).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
 
     expect(onRuhephase).toHaveBeenCalledTimes(1);
     expect(onRuhephase).toHaveBeenCalledWith(6, 4, false); // ohne Begleiter kein „Begleiter rasten mit“
   });
 
-  it('opens options modal when "Optionen anpassen" is clicked and allows custom adjustment', () => {
-    render(<RestSection {...defaultProps} />);
+  it('has no separate "Optionen anpassen" buttons; the dialog holds the options and can be cancelled', () => {
+    const onVerschnaufpause = vi.fn();
+    render(<RestSection {...defaultProps} onVerschnaufpause={onVerschnaufpause} />);
+    expect(screen.queryByRole('button', { name: /Optionen anpassen/i })).toBeNull();
+    expect(screen.queryByRole('dialog')).toBeNull();
 
-    // Initially no modal is open
-    expect(screen.queryByText('Optionen: Verschnaufpause')).toBeNull();
-
-    // Click "Optionen anpassen" on Verschnaufpause card
-    const optionsButtons = screen.getAllByRole('button', { name: /Optionen anpassen/i });
-    fireEvent.click(optionsButtons[0]);
-
-    // Modal is now visible
-    expect(screen.getByText('Optionen: Verschnaufpause')).toBeDefined();
+    fireEvent.click(screen.getByRole('button', { name: /Verschnaufpause durchführen/i }));
+    expect(screen.getByRole('dialog', { name: 'Verschnaufpause durchführen' })).toBeDefined();
     expect(screen.getByText(/GRW S\. 173–174/)).toBeDefined();  // Fundstelle der Heilungsregeln aus dem Paket
+    expect(screen.getByText(/Kanalisierte Zauber bleiben bestehen/)).toBeDefined();
 
-    // Close button
-    const closeBtn = screen.getByRole('button', { name: /Übernehmen & Schließen/i });
-    fireEvent.click(closeBtn);
-    expect(screen.queryByText('Optionen: Verschnaufpause')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(onVerschnaufpause).not.toHaveBeenCalled();
   });
 
-  it('shows "Standardwerte wiederherstellen" when Ruhephase options are modified and resets values', () => {
-    render(<RestSection {...defaultProps} kon={2} wil={3} />);
+  it('Ruhephase dialog: adjusted values are used, reset restores them, reopening starts from the rule values', () => {
+    const onRuhephase = vi.fn();
+    render(<RestSection {...defaultProps} kon={2} wil={3} onRuhephase={onRuhephase} />);
 
-    // Initially standard is active (+4 LP / +6 FO) -> reset button should not exist
+    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/i }));
     expect(screen.queryByText('Standardwerte wiederherstellen')).toBeNull();
 
-    // Open Ruhephase options modal
-    const optionsButtons = screen.getAllByRole('button', { name: /Optionen anpassen/i });
-    fireEvent.click(optionsButtons[1]); // Ruhephase
-
-    expect(screen.getByText('Optionen: Ruhephase')).toBeDefined();
-
-    // Find the input for LP
     const inputs = screen.getAllByRole('spinbutton');
-    // First input in Ruhephase modal is LP, second is FO
     fireEvent.change(inputs[0], { target: { value: '10' } });
-
-    // "Standardwerte wiederherstellen" must now appear!
-    const resetButtons = screen.getAllByRole('button', { name: /Standardwerte wiederherstellen/i });
-    expect(resetButtons.length).toBeGreaterThan(0);
-
-    // Click reset
-    fireEvent.click(resetButtons[0]);
-
-    // Value resets to calculated default 4
+    fireEvent.click(screen.getByRole('button', { name: /Standardwerte wiederherstellen/i }));
     expect((inputs[0] as HTMLInputElement).value).toBe('4');
+
+    fireEvent.change(inputs[0], { target: { value: '9' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
+    expect(onRuhephase).toHaveBeenCalledWith(9, 6, false);
+
+    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/i }));
+    expect((screen.getAllByRole('spinbutton')[0] as HTMLInputElement).value).toBe('4');
   });
 
   it('respects traits like Segen der Mondkraft, Erhöhte Lebensregeneration, and Schnell wieder auf den Beinen', () => {

@@ -89,13 +89,13 @@ describe('Ruhephasen pro Tag', () => {
     const ruhe = vi.fn(); const neu = vi.fn();
     const { rerender } = render(<RestSection {...props} onVerschnaufpause={vi.fn()} onRuhephase={ruhe} ruhephasenHeute={max - 1} onNeuerTag={neu} />);
     expect(screen.getByText(`Ruhephasen heute: ${max - 1} von ${max}`)).toBeDefined();
-    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ })); fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
     expect(ruhe).toHaveBeenCalledTimes(1);
     rerender(<RestSection {...props} onVerschnaufpause={vi.fn()} onRuhephase={ruhe} ruhephasenHeute={max} onNeuerTag={neu} />);
-    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ })); fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
     expect(ruhe).toHaveBeenCalledTimes(1);
     setzeHausregeln(true);
-    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ })); fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
     expect(ruhe).toHaveBeenCalledTimes(2);
     fireEvent.click(screen.getByRole('button', { name: 'Neuer Tag' }));
     expect(neu).toHaveBeenCalledTimes(1);

@@ -36,7 +36,7 @@ describe('Gemeinsame Rast', () => {
     render(<Rahmen held={held} />);
     const haken = screen.getByLabelText('Begleiter rasten mit (2)') as HTMLInputElement;
     expect(haken.checked).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Ruhephase durchführen/ })); fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
     expect(held.ruhe).toHaveBeenCalledTimes(1);
     // Wolf aus dem GRW: doppelte Konstitution an Lebenspunkten zurück
     const kon = Number(K.get('grw:kreatur:wolf')!.daten.attribute.KON);
@@ -48,7 +48,7 @@ describe('Gemeinsame Rast', () => {
     const held = { ruhe: vi.fn(), pause: vi.fn() };
     render(<Rahmen held={held} />);
     fireEvent.click(screen.getByLabelText('Begleiter rasten mit (2)'));
-    fireEvent.click(screen.getByRole('button', { name: /Verschnaufpause durchführen/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Verschnaufpause durchführen/ })); fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
     expect(held.pause).toHaveBeenCalledTimes(1);
     expect(stand.begleiter![0].zustand).toEqual(wolf.zustand);
   });
@@ -56,7 +56,7 @@ describe('Gemeinsame Rast', () => {
   it('Verschnaufpause mit Häkchen: Betäubung und erschöpfter Fokus der Begleiter', () => {
     const held = { ruhe: vi.fn(), pause: vi.fn() };
     render(<Rahmen held={held} />);
-    fireEvent.click(screen.getByRole('button', { name: /Verschnaufpause durchführen/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Verschnaufpause durchführen/ })); fireEvent.click(screen.getByRole('button', { name: 'Durchführen' }));
     expect(stand.begleiter![0].zustand).toMatchObject({ schaden: 10, betaeubung: 0, fokus: { erschoepft: 0, verzehrt: 2 } });
   });
 

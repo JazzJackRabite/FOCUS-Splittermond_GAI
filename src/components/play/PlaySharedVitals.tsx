@@ -11,6 +11,8 @@ import {
   Flame,
   Plus,
   Heart,
+  Zap,
+  RefreshCw,
 } from 'lucide-react';
 import { useCharacter } from '../../context/CharacterContext';
 import { usePlaySession } from '../../context/PlaySessionContext';
@@ -21,6 +23,8 @@ import { generateId } from '../../utils/id';
 import type { StatusCondition, HealthSlot, ChanneledSpell } from '../../types';
 import { TakeDamageModal } from './TakeDamageModal';
 import { HealModal } from './HealModal';
+import { FocusCostModal } from './FocusCostModal';
+import { FocusRegenModal } from './FocusRegenModal';
 import { getActiveSpellModifiers, zauberHoechstbonus } from '../../utils/magicRules';
 
 // ============================================================================
@@ -170,9 +174,8 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
   const [showHealModal, setShowHealModal] = useState<boolean>(false);
   const [tempHPAmount, setTempHPAmount] = useState<number>(1);
 
-  const [exhaustedFocusAmount, setExhaustedFocusAmount] = useState<number>(1);
-  const [channeledFocusAmount, setChanneledFocusAmount] = useState<number>(1);
-  const [consumedFocusAmount, setConsumedFocusAmount] = useState<number>(1);
+  const [showFocusCostModal, setShowFocusCostModal] = useState<boolean>(false);
+  const [showFocusRegenModal, setShowFocusRegenModal] = useState<boolean>(false);
 
   // Condition dropdown state
 
@@ -371,30 +374,6 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
         className={styleClass}
       />
     );
-  };
-
-  // Fokus spend handler
-  const handleSpendFocus = (kind: 'exhausted' | 'channeled' | 'consumed', amount: number) => {
-    const isAdding = amount > 0;
-    const abs = Math.abs(amount);
-    const titles = {
-      exhausted: isAdding ? `${abs} Fokus erschöpft` : `${abs} erschöpfter Fokus regeneriert`,
-      channeled: isAdding ? `${abs} Fokus kanalisiert` : `${abs} kanalisierter Fokus freigegeben`,
-      consumed: isAdding ? `${abs} Fokus verzehrt` : `${abs} verzehrter Fokus regeneriert`,
-    };
-
-    session.logAndDispatch(
-      { type: 'PLAY_SPEND_FOCUS', payload: { kind, amount } },
-      {
-        category: 'focus',
-        title: titles[kind],
-        badge: {
-          text: `${isAdding ? '-' : '+'}${abs} FO`,
-          variant: isAdding ? (kind === 'consumed' ? 'danger' : 'warning') : 'success',
-        },
-      }
-    );
-    toast.success(titles[kind]);
   };
 
   // Zustände: ein gemeinsamer Bereich für die Reiter „Spielen“ und „Kampf & Magie“
@@ -987,61 +966,26 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
                 </div>
               )}
 
-              {/* 3 compound steppers */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-3 border-t border-rahmen">
-                <CompoundStepper
-                  label="Erschöpft"
-                  variant="amber"
-                  amount={exhaustedFocusAmount}
-                  onAmountChange={setExhaustedFocusAmount}
-                  onMinus={() => handleSpendFocus('exhausted', -exhaustedFocusAmount)}
-                  onPlus={() => handleSpendFocus('exhausted', exhaustedFocusAmount)}
-                  minusTitle="Erschöpften Fokus regenerieren"
-                  plusTitle="Erschöpften Fokus ausgeben"
-                />
-                <CompoundStepper
-                  label="Kanalisiert"
-                  variant="blue"
-                  amount={channeledFocusAmount}
-                  onAmountChange={setChanneledFocusAmount}
-                  onMinus={() => handleSpendFocus('channeled', -channeledFocusAmount)}
-                  onPlus={() => handleSpendFocus('channeled', channeledFocusAmount)}
-                  minusTitle="Kanalisierten Fokus freigeben"
-                  plusTitle="Fokus kanalisieren"
-                />
-                <CompoundStepper
-                  label="Verzehrt"
-                  variant="red"
-                  amount={consumedFocusAmount}
-                  onAmountChange={setConsumedFocusAmount}
-                  onMinus={() => handleSpendFocus('consumed', -consumedFocusAmount)}
-                  onPlus={() => handleSpendFocus('consumed', consumedFocusAmount)}
-                  minusTitle="Verzehrten Fokus regenerieren"
-                  plusTitle="Verzehrten Fokus ausgeben"
-                />
+              {/* ── Action Buttons Row: + Fokuskosten & Fokus regenerieren (wie + Schaden / + Heilung) ── */}
+              <div className="pt-3 border-t border-rahmen grid grid-cols-2 gap-1.5 sm:gap-2">
+                <Knopf
+                  onClick={() => setShowFocusCostModal(true)}
+                  className="min-h-11 px-4 rounded-knopf font-bold text-[13px] bg-erschoepft-grund hover:bg-erhoeht text-schrift border border-erschoepft flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                  title="Fokuskosten buchen (Modal öffnen)"
+                >
+                  <Zap size={14} className="text-gold" />
+                  <span>+ Fokuskosten</span>
+                </Knopf>
+                <Knopf art="erholung"
+                  onClick={() => setShowFocusRegenModal(true)}
+                  className="min-h-11 px-4 rounded-knopf font-bold text-[13px] bg-unverletzt-grund hover:bg-erhoeht text-schrift border border-unverletzt flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                  title="Fokus regenerieren (Modal öffnen)"
+                >
+                  <RefreshCw size={14} className="text-unverletzt" />
+                  <span>Fokus regenerieren</span>
+                </Knopf>
               </div>
 
-              {/* Quick Focus Actions */}
-              {focus.exhausted > 0 && (
-                <div className="pt-2 border-t border-rahmen flex items-center">
-                  <Knopf
-                    onClick={() => {
-                      session.logAndDispatch(
-                        { type: 'PLAY_SPEND_FOCUS', payload: { kind: 'exhausted', amount: -focus.exhausted } },
-                        {
-                          category: 'focus',
-                          title: 'Alles Erschöpfte erholt',
-                          badge: { text: `+${focus.exhausted} FO`, variant: 'success' },
-                        }
-                      );
-                      toast.success('Alles Erschöpfte erholt');
-                    }}
-                    className="w-full text-xs text-center"
-                  >
-                    Alles Erschöpfte erholen ({focus.exhausted})
-                  </Knopf>
-                </div>
-              )}
 
               {/* ── KANALISIERTE ZAUBER (Inside Focus window: displays active spells with release action) ── */}
               <div className="border border-rahmen bg-erhoeht rounded-knopf p-2.5 space-y-2 mt-2">
@@ -1364,6 +1308,72 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
                 );
               });
               toast.success(`${selectedConditions.length} Zustand/Zustände hinzugefügt`);
+            }
+          }}
+        />
+      )}
+
+      {/* ── Fokuskosten (GRW S. 194–196, 198) ── */}
+      {showFocusCostModal && (
+        <FocusCostModal
+          onClose={() => setShowFocusCostModal(false)}
+          maxFO={maxFO}
+          focusAvailable={focusAvailable}
+          focus={focus}
+          onApplyCost={({ exhausted, channeled, consumed, channeledName, title, description }) => {
+            const channeledSpell: ChanneledSpell | undefined = channeledName && channeled > 0
+              ? { id: generateId(), name: channeledName, channeledFocus: channeled }
+              : undefined;
+            const summe = Math.max(0, exhausted) + channeled + consumed;
+            session.logAndDispatch(
+              { type: 'PLAY_CAST_SPELL', payload: { exhaustedFocus: exhausted, channeledFocus: channeled, consumedFocus: consumed, channeledSpell } },
+              {
+                category: 'focus',
+                title,
+                description,
+                badge: { text: `-${summe} FO`, variant: consumed > 0 ? 'danger' : 'warning' },
+              }
+            );
+            toast.success(title);
+          }}
+        />
+      )}
+
+      {/* ── Fokus regenerieren (GRW S. 174, 196) ── */}
+      {showFocusRegenModal && (
+        <FocusRegenModal
+          onClose={() => setShowFocusRegenModal(false)}
+          maxFO={maxFO}
+          focusAvailable={focusAvailable}
+          focus={focus}
+          channeledSpells={channeledSpells ?? []}
+          wil={calc.currentAttributes?.WIL ?? 1}
+          strengthsList={state.strengthsList}
+          masteries={state.masteries}
+          onApplyRegen={({ spellsToEnd, exhaustedRegenerated, consumedRegenerated, methode, note }) => {
+            spellsToEnd.forEach((s) => session.handleCancelChanneledSpell(s));
+            if (exhaustedRegenerated > 0) {
+              dispatch({ type: 'PLAY_SPEND_FOCUS', payload: { kind: 'exhausted', amount: -exhaustedRegenerated } });
+            }
+            if (consumedRegenerated > 0) {
+              dispatch({ type: 'PLAY_SPEND_FOCUS', payload: { kind: 'consumed', amount: -consumedRegenerated } });
+            }
+            const summe = exhaustedRegenerated + consumedRegenerated;
+            if (summe > 0) {
+              const details = [
+                exhaustedRegenerated > 0 ? `${exhaustedRegenerated} erschöpft` : '',
+                consumedRegenerated > 0 ? `${consumedRegenerated} verzehrt` : '',
+              ].filter(Boolean).join(', ');
+              session.logAndDispatch(
+                { type: 'PLAY_SPEND_FOCUS', payload: { kind: 'exhausted', amount: 0 } },
+                {
+                  category: 'focus',
+                  title: `+${summe} Fokus regeneriert`,
+                  description: `${methode}: ${details}${note ? ` (${note})` : ''}`,
+                  badge: { text: `+${summe} FO`, variant: 'success' },
+                }
+              );
+              toast.success(`+${summe} Fokus regeneriert`);
             }
           }}
         />

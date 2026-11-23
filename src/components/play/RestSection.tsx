@@ -1,6 +1,6 @@
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf } from '../../fundament';
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon, RotateCcw, Settings, Heart, Sparkles, X, Check, Clock } from 'lucide-react';
+import { Sun, Moon, RotateCcw, Heart, Sparkles, X, Check, Clock } from 'lucide-react';
 import type { ItemEntry, Mastery } from '../../types';
 import { regelverstoss } from '../../fundament/hausregeln';
 import { ruheregeln, ruhephasenRegeneration, ruhewirkungen, type Ruhewirkung } from '../../regelwerk/spielwirkungen';
@@ -124,6 +124,16 @@ export const RestSection: React.FC<RestSectionProps> = ({
     setCustomFO(calculatedFODefault);
   };
 
+  // „… durchführen“ öffnet den Dialog mit den Optionen; jede Pause beginnt mit den Regelwerten
+  const oeffneVerschnaufpause = () => {
+    resetVpToDefault();
+    setActiveModal('verschnaufpause');
+  };
+  const oeffneRuhephase = () => {
+    resetRuhephaseToDefault();
+    setActiveModal('ruhephase');
+  };
+
   const handleExecuteVerschnaufpause = () => {
     onVerschnaufpause({
       healAllStun: vpHealAllStun,
@@ -211,13 +221,6 @@ export const RestSection: React.FC<RestSectionProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* Status Badge when customized */}
-              {!isVpDefault && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full font-bold bg-erhoeht text-gold border border-rahmen">
-                  Angepasst
-                </span>
-              )}
             </div>
 
             {/* Effect in 1 sentence */}
@@ -230,33 +233,13 @@ export const RestSection: React.FC<RestSectionProps> = ({
           <div className="pt-3 mt-2 border-t border-rahmen flex flex-col gap-2">
             <Knopf art="erholung"
               id="btn-execute-verschnaufpause"
-              onClick={handleExecuteVerschnaufpause}
+              onClick={oeffneVerschnaufpause}
               className="w-full active:scale-[0.99] text-sm gap-2 select-none"
             >
               <Sun size={17} className="text-gold" />
               <span>Verschnaufpause durchführen</span>
             </Knopf>
 
-            <div className="flex items-center justify-between text-xs px-0.5">
-              <Knopf
-                onClick={() => setActiveModal('verschnaufpause')}
-                className="gap-1 hover:underline"
-              >
-                <Settings size={13} className="text-gold" />
-                <span>Optionen anpassen</span>
-              </Knopf>
-
-              {!isVpDefault && (
-                <Knopf
-                  onClick={resetVpToDefault}
-                  className="gap-1 text-[11px] hover:underline"
-                  title="Auf berechnete Regelwerte zurücksetzen"
-                >
-                  <RotateCcw size={12} />
-                  <span>Standardwerte wiederherstellen</span>
-                </Knopf>
-              )}
-            </div>
           </div>
         </div>
 
@@ -292,13 +275,8 @@ export const RestSection: React.FC<RestSectionProps> = ({
 
               {/* Status or preview badges */}
               <div className="flex items-center gap-1.5">
-                {!isRuhephaseDefault && (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full font-bold bg-erhoeht text-gold border border-rahmen">
-                    Angepasst
-                  </span>
-                )}
                 <span className="text-xs font-bold tabular-nums px-2 py-0.5 rounded-knopf bg-erhoeht text-schrift border border-rahmen">
-                  +{customLP} LP · +{customFO} FO
+                  +{calculatedLPDefault} LP · +{calculatedFODefault} FO
                 </span>
               </div>
             </div>
@@ -325,33 +303,13 @@ export const RestSection: React.FC<RestSectionProps> = ({
           <div className="pt-3 mt-2 border-t border-rahmen flex flex-col gap-2">
             <Knopf art="erholung"
               id="btn-execute-ruhephase"
-              onClick={handleExecuteRuhephase}
+              onClick={oeffneRuhephase}
               className="w-full active:scale-[0.99] text-sm gap-2 select-none"
             >
               <Moon size={17} className="text-gold" />
               <span>Ruhephase durchführen</span>
             </Knopf>
 
-            <div className="flex items-center justify-between text-xs px-0.5">
-              <Knopf
-                onClick={() => setActiveModal('ruhephase')}
-                className="gap-1 hover:underline"
-              >
-                <Settings size={13} className="text-gold" />
-                <span>Optionen anpassen</span>
-              </Knopf>
-
-              {!isRuhephaseDefault && (
-                <Knopf
-                  onClick={resetRuhephaseToDefault}
-                  className="gap-1 text-[11px] hover:underline"
-                  title="Auf berechnete Regelwerte zurücksetzen"
-                >
-                  <RotateCcw size={12} />
-                  <span>Standardwerte wiederherstellen</span>
-                </Knopf>
-              )}
-            </div>
           </div>
         </div>
       </div>
@@ -367,12 +325,12 @@ export const RestSection: React.FC<RestSectionProps> = ({
           }}
         >
           <Dialogfenster
-            id="rest-options-modal-card" breite="lg" className="animate-in zoom-in-95 duration-150"
+            id="rest-options-modal-card" role="dialog" aria-modal="true" aria-label={activeModal === 'verschnaufpause' ? 'Verschnaufpause durchführen' : 'Ruhephase durchführen'} breite="lg" className="animate-in zoom-in-95 duration-150"
           >
             {/* Modal Header */}
             <Dialogkopf
               symbol={activeModal === 'verschnaufpause' ? <Sun size={20} /> : <Moon size={20} />}
-              titel={activeModal === 'verschnaufpause' ? 'Optionen: Verschnaufpause' : 'Optionen: Ruhephase'}
+              titel={activeModal === 'verschnaufpause' ? 'Verschnaufpause durchführen' : 'Ruhephase durchführen'}
               untertitel={activeModal === 'verschnaufpause' ? `Verschnaufpause (${vpDuration})` : `Ruhephase (${ruhephaseDuration})`}
               onSchliessen={() => setActiveModal(null)}
             />
@@ -513,7 +471,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
                       )}
                       <p className="text-[11px] text-leise">
                         {vpHealAllFocus
-                          ? 'Stellt sämtlichen erschöpften Fokus wieder her & beendet kanalisierte Zauber.'
+                          ? 'Stellt sämtlichen erschöpften Fokus wieder her. Kanalisierte Zauber bleiben bestehen (GRW S. 196).'
                           : `Stellt maximal ${vpFocusAmount} Punkte erschöpften Fokus wieder her.`}
                       </p>
                     </div>
@@ -723,7 +681,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
                   onClick={() => setActiveModal(null)}
                   className="text-xs"
                 >
-                  Übernehmen &amp; Schließen
+                  Abbrechen
                 </Knopf>
 
                 {activeModal === 'verschnaufpause' ? (
@@ -732,7 +690,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
                     className="text-xs gap-1.5"
                   >
                     <Sun size={14} className="text-gold" />
-                    <span>Jetzt durchführen</span>
+                    <span>Durchführen</span>
                   </Knopf>
                 ) : (
                   <Knopf art="erholung"
@@ -740,7 +698,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
                     className="text-xs gap-1.5"
                   >
                     <Moon size={14} className="text-gold" />
-                    <span>Jetzt durchführen</span>
+                    <span>Durchführen</span>
                   </Knopf>
                 )}
               </div>
