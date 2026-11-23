@@ -27,6 +27,7 @@ import type { InventoryItem } from '../../types';
 import { toast } from 'react-hot-toast';
 import { ReliktKarte } from '../../components/relikte/ReliktKarte';
 import { erschaffungsVermoegen, startvermoegen } from '../../regelwerk/grwListen';
+import { bezahlen, geldInTelare, preisInTelare, telareText } from '../../regelwerk/geld';
 
 /** Münzen des Geldbeutels: je ein Feld mit − / Wert / + nebeneinander */
 const MUENZEN = [
@@ -50,6 +51,8 @@ export const InventoryView: React.FC = () => {
   const [catalogSearch, setCatalogSearch] = useState('');
   const [catalogCategoryFilter, setCatalogCategoryFilter] = useState('all');
   const [catalogSourceFilter, setCatalogSourceFilter] = useState('all');
+  // „Gegenstand kaufen“: Preis vom Geldbeutel abziehen (Standard: aus)
+  const [kaufen, setKaufen] = useState(false);
 
   const catalogSources = useMemo(() => {
     const set = new Set<string>();
@@ -155,8 +158,31 @@ export const InventoryView: React.FC = () => {
     dispatch({ type: 'SET_MONEY', payload: { [field]: Math.max(0, value) } });
   };
 
+  /**
+   * Bezahlt den Preis, wenn „Gegenstand kaufen“ an ist. false: Geld reicht nicht, der Gegenstand wird nicht hinzugefügt.
+   * Gibt den Zusatz für die Meldung zurück.
+   */
+  const kaufBezahlen = (name: string, preisText: string | undefined, menge: number): string | false => {
+    if (!kaufen) return '';
+    const einzel = preisInTelare(preisText);
+    if (einzel === null) {
+      toast(`'${name}' hat keinen lesbaren Preis – kein Geld abgezogen.`);
+      return '';
+    }
+    const kosten = einzel * menge;
+    const neu = bezahlen(money, kosten);
+    if (!neu) {
+      toast.error(`Nicht genug Geld für '${name}': ${telareText(kosten)} nötig, ${telareText(geldInTelare(money))} vorhanden.`);
+      return false;
+    }
+    dispatch({ type: 'SET_MONEY', payload: neu });
+    return ` (gekauft für ${telareText(kosten)})`;
+  };
+
   // Handle Add Catalog item
   const handleAddCatalogItem = (item: any) => {
+    const kauf = kaufBezahlen(item.name, item.price, 1);
+    if (kauf === false) return;
     const rawLoad = typeof item.load === 'number' ? item.load : parseInt(String(item.load), 10) || 0;
     const newItem: InventoryItem = {
       id: generateId(),
@@ -183,7 +209,7 @@ export const InventoryView: React.FC = () => {
       attributes: item.attributes,
     };
     dispatch({ type: 'ADD_INVENTORY_ITEM', payload: newItem });
-    toast.success(`'${item.name}' zum Inventar hinzugefügt!`);
+    toast.success(`'${item.name}' zum Inventar hinzugefügt${kauf}!`);
   };
 
   // Handle Add Custom Item
@@ -207,8 +233,10 @@ export const InventoryView: React.FC = () => {
       page: customItem.page.trim() ? parseInt(customItem.page, 10) || undefined : undefined,
       equipped: false,
     };
+    const kauf = kaufBezahlen(newItem.name, newItem.price, newItem.quantity || 1);
+    if (kauf === false) return;
     dispatch({ type: 'ADD_INVENTORY_ITEM', payload: newItem });
-    toast.success(`'${newItem.name}' zum Inventar hinzugefügt!`);
+    toast.success(`'${newItem.name}' zum Inventar hinzugefügt${kauf}!`);
     setCustomItem({
       name: '',
       type: 'gear',
@@ -411,7 +439,7 @@ export const InventoryView: React.FC = () => {
             />
           </div>
 
-          <Knopf art="sekundaer" onClick={() => setShowAddModal(true)} className="text-xs font-bold shrink-0 whitespace-nowrap">
+          <Knopf art="sekundaer" onClick={() => { setKaufen(false); setShowAddModal(true); }} className="text-xs font-bold shrink-0 whitespace-nowrap">
             <Plus size={14} className="text-gold" />
             <span>Gegenstand</span>
           </Knopf>
@@ -622,6 +650,24 @@ export const InventoryView: React.FC = () => {
               </Reiter>
             </div>
 
+            {/* Kaufen: Preis vom Geldbeutel abziehen */}
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <label className="flex items-center gap-2 min-h-11 cursor-pointer select-none font-semibold text-schrift">
+                <input
+                  type="checkbox"
+                  checked={kaufen}
+                  onChange={(e) => setKaufen(e.target.checked)}
+                  className="w-4 h-4 rounded-knopf border-rahmen focus:ring-0 cursor-pointer"
+                  data-testid="gegenstand-kaufen"
+                />
+                <span>Gegenstand kaufen (Preis vom Geld abziehen)</span>
+              </label>
+              <span className="flex items-center gap-1.5 text-leise tabular-nums" data-testid="geld-im-dialog">
+                <Coins size={14} className="text-gold" aria-hidden />
+                Geld: <strong className="text-schrift">{telareText(geldInTelare(money))}</strong>
+              </span>
+            </div>
+
             {/* Tab 1: Catalog */}
             {modalTab === 'catalog' && (
               <div className="space-y-3 flex-1 flex flex-col min-h-0">
@@ -716,7 +762,7 @@ export const InventoryView: React.FC = () => {
                         )}
                       </div>
                       <Knopf onClick={() => handleAddCatalogItem(catItem)} className="font-bold text-xs shrink-0">
-                        + Hinzufügen
+                        {kaufen ? '+ Kaufen' : '+ Hinzufügen'}
                       </Knopf>
                     </div>
                   ))}
@@ -870,7 +916,7 @@ export const InventoryView: React.FC = () => {
                     Abbrechen
                   </Knopf>
                   <Knopf art="primaer" type="submit" className="font-bold text-xs">
-                    Gegenstand erstellen
+                    {kaufen ? 'Gegenstand kaufen' : 'Gegenstand erstellen'}
                   </Knopf>
                 </div>
               </form>
