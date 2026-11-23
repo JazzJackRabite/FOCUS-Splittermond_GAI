@@ -23,6 +23,16 @@ const besteZwei = (l: number[]) => [...l].sort((a, b) => b - a).slice(0, 2).redu
 
 import { wurfgrenzen } from '../regelwerk/proben';
 
+/** Risikowurf auswerten: niedrigste zwei ≤ Patzergrenze = Patzer, sonst die höchsten zwei (mit Großmeisterwürfel) */
+export function risikoWertung(wuerfel: number[], g: number | undefined, grenzen: { patzer: number; triumph: number } = wurfgrenzen()): WurfErgebnis {
+  const d = [...wuerfel].sort((a, b) => a - b);
+  const alle = g !== undefined ? [...d, g] : d;
+  const low = d[0] + d[1];
+  if (low <= grenzen.patzer) return { dice: alle, result: low, isFumble: true, isCrit: false, grossmeisterWuerfel: g };
+  const high = besteZwei(alle);
+  return { dice: alle, result: high, isFumble: false, isCrit: high >= grenzen.triumph, grossmeisterWuerfel: g };
+}
+
 /** Grenzen für Patzer (Summe der niedrigsten zwei höchstens …) und Triumph (Summe der höchsten zwei mindestens …) aus dem Paket */
 export function wuerfeln(art: WurfArt, grossmeister = false, rnd: () => number = Math.random, grenzen: { patzer: number; triumph: number; wuerfel?: { standard: number; safe: number; risk: number } } = wurfgrenzen()): WurfErgebnis {
   const anzahl = grenzen.wuerfel ?? wurfgrenzen().wuerfel;
@@ -33,15 +43,7 @@ export function wuerfeln(art: WurfArt, grossmeister = false, rnd: () => number =
     const alle = g !== undefined ? [...d, g] : d;
     return { dice: alle, result: Math.max(...alle), isCrit: false, isFumble: false, grossmeisterWuerfel: g };
   }
-  if (art === 'risk') {
-    const d = werfe(anzahl.risk).sort((a, b) => a - b);
-    const g = grossmeister ? w10(rnd) : undefined;
-    const alle = g !== undefined ? [...d, g] : d;
-    const low = d[0] + d[1];
-    if (low <= grenzen.patzer) return { dice: alle, result: low, isFumble: true, isCrit: false, grossmeisterWuerfel: g };
-    const high = besteZwei(alle);
-    return { dice: alle, result: high, isFumble: false, isCrit: high >= grenzen.triumph, grossmeisterWuerfel: g };
-  }
+  if (art === 'risk') return risikoWertung(werfe(anzahl.risk), grossmeister ? w10(rnd) : undefined, grenzen);
   const d = werfe(anzahl.standard);
   const g = grossmeister ? w10(rnd) : undefined;
   const alle = g !== undefined ? [...d, g] : d;
@@ -63,4 +65,29 @@ export function gezaehlteWuerfel(dice: number[], art: WurfArt, patzer: boolean, 
     return [...ohneG].sort((a, b) => a.d - b.d).slice(0, 2).map((x) => x.i).sort((a, b) => a - b);
   }
   return [...idx].sort((a, b) => b.d - a.d).slice(0, 2).map((x) => x.i).sort((a, b) => a - b);
+}
+
+const ohneGrossmeister = (w: WurfErgebnis) => (w.grossmeisterWuerfel !== undefined ? w.dice.slice(0, -1) : [...w.dice]);
+
+/**
+ * Mondzeichen-Gabe „beide Würfel addieren“ (Der Fels): beim Sicherheitswurf, wenn der höchste Würfel höchstens `hoechstens`
+ * zeigt, gilt die Summe der beiden Würfel (kein Patzer). Sonst null.
+ */
+export function gabeSicherheitBeide(art: WurfArt, w: WurfErgebnis, hoechstens: number): WurfErgebnis | null {
+  if (art !== 'safe') return null;
+  const d = ohneGrossmeister(w);
+  if (Math.max(...w.dice) > hoechstens) return null;
+  const summe = d.slice(0, 2).reduce((a, b) => a + b, 0);
+  return summe > w.result ? { ...w, result: summe, isFumble: false, isCrit: false } : null;
+}
+
+/**
+ * Mondzeichen-Gabe „zweitniedrigsten Würfel neu werfen“ (Der Spieler): Risikowurf ohne Patzer; es gilt der neue Wurf,
+ * danach normale Auswertung. Sonst null.
+ */
+export function gabeRisikoNeuwurf(art: WurfArt, w: WurfErgebnis, rnd: () => number = Math.random, grenzen: { patzer: number; triumph: number } = wurfgrenzen()): WurfErgebnis | null {
+  if (art !== 'risk' || w.isFumble) return null;
+  const d = ohneGrossmeister(w).sort((a, b) => a - b);
+  d[1] = w10(rnd);
+  return risikoWertung(d, w.grossmeisterWuerfel, grenzen);
 }

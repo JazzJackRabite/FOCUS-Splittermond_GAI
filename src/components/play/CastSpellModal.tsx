@@ -1,4 +1,5 @@
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf, useEscape } from '../../fundament';
+import { Mondgabe } from './Mondgabe';
 import React, { useState, useEffect, useId, useMemo } from 'react';
 import {
   X,
@@ -250,6 +251,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
   const [rollType, setRollType] = useState<RollType>('standard');
   const [isRolling, setIsRolling] = useState<boolean>(false);
   const [extraSPBonus, setExtraSPBonus] = useState<number>(0);
+  const [mondGenutzt, setMondGenutzt] = useState(false);
+  const [spBonusGenutzt, setSpBonusGenutzt] = useState(false);
 
   // Total rolled calculation
   const totalRollResult = hasRolled ? diceSum + totalRollModifier + extraSPBonus : 0;
@@ -417,6 +420,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
       setIsFumble(fumble);
       setIsCrit(crit);
       setExtraSPBonus(0);
+      setMondGenutzt(false);
+      setSpBonusGenutzt(false);
       setHasRolled(true);
       setCustomFailureFocus(null);
       setAllocations(INITIAL_EG_ALLOCATIONS);
@@ -462,7 +467,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
   // Splitterpunkt actions
   // GRW: jede Splittergabe genau einmal je Probe (Probenbonus +3)
   const handleSpendSPBonus = () => {
-    if (splitterpunkte <= 0 || extraSPBonus > 0) return;
+    if (splitterpunkte <= 0 || spBonusGenutzt) return;
+    setSpBonusGenutzt(true);
     onSpendSplitterpunkt();
     setExtraSPBonus((prev) => prev + 3);
   };
@@ -1106,13 +1112,24 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                   <div className="flex flex-wrap items-center gap-1.5 self-end sm:self-center">
                     <Knopf art="primaer"
                       onClick={handleSpendSPBonus}
-                      disabled={splitterpunkte <= 0 || isRolling || extraSPBonus > 0}
-                      title={extraSPBonus > 0 ? 'Der Probenbonus ist je Probe nur einmal möglich (GRW: jede Splittergabe einmal)' : 'Kostet 1 Splitterpunkt: +3 Bonus auf das Ergebnis'}
+                      disabled={splitterpunkte <= 0 || isRolling || spBonusGenutzt}
+                      title={spBonusGenutzt ? 'Der Probenbonus ist je Probe nur einmal möglich (GRW: jede Splittergabe einmal)' : 'Kostet 1 Splitterpunkt: +3 Bonus auf das Ergebnis'}
                       className="px-2.5 py-1.5 bg-gold hover:bg-gold-hell text-seite border border-erschoepft rounded-knopf text-xs font-bold transition-colors disabled:opacity-40 flex items-center gap-1 cursor-pointer"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>+3 (1 SP)</span>
                     </Knopf>
+                    {zaubernder !== 'begleiter' && (
+                      <Mondgabe art={rollType} wundabzug={woundPenalty} splitterpunkte={splitterpunkte} genutzt={mondGenutzt}
+                        ergebnis={{ dice: rollDice, result: diceSum, isFumble, isCrit, grossmeisterWuerfel: grossmeister ? rollDice[rollDice.length - 1] : undefined }}
+                        onEinsatz={(_grund, a) => {
+                          onSpendSplitterpunkt();
+                          setMondGenutzt(true);
+                          if (a.ergebnis) { setRollDice(a.ergebnis.dice); setDiceSum(a.ergebnis.result); setIsFumble(a.ergebnis.isFumble); setIsCrit(a.ergebnis.isCrit); }
+                          // Bonus (Wundabzug → Bonus) wie der Splitterpunkt-Bonus auf das Ergebnis
+                          if (a.bonus) setExtraSPBonus((prev) => prev + a.bonus!);
+                        }} />
+                    )}
                     <Knopf nurSymbol
                       onClick={() => performRoll(rollType)}
                       disabled={isRolling}

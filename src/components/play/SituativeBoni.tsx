@@ -4,6 +4,7 @@ import { Sparkles } from 'lucide-react';
 import { CharacterContext } from '../../context/CharacterContext';
 import { aktiverKatalog } from '../../regelwerk/bruecke';
 import { bausteineAktiv, reliktSchwerpunktBoni } from '../../regelwerk/relikte';
+import { schwerpunktBonusJe } from '../../regelwerk/grwListen';
 import { situativeBoni, zauberAnpassungen, type KostenDelta, type SituativerBonus, type WurfArtKontext, type ZauberAnpassung } from '../../regelwerk/wirkungen';
 
 /**
@@ -18,14 +19,27 @@ export function useSituativeBoni(art: WurfArtKontext, fertigkeit: string, aus = 
   const attribute = ctx?.calc?.currentAttributes;
   const relikte = ctx?.state?.relikte;
   const inventar = ctx?.state?.inventory;
+  const masteries = ctx?.state?.masteries;
   const boni = useMemo(() => {
     const k = aktiverKatalog();
     const aus = k && liste ? situativeBoni(k, liste, art, fertigkeit, attribute) : [];
     // Schwerpunkt-Boni aus Relikten (Verbesserung der Gegenstandsqualität) für Proben, Angriffe und Zauberproben
     // (Magieschulen haben Schwerpunkte wie andere Fertigkeiten; der Bonus erscheint, wenn die Schule im Schwerpunkt steht)
     const rel = k && relikte?.length ? reliktSchwerpunktBoni(relikte, inventar ?? [], bausteineAktiv(k), fertigkeit) : [];
-    return [...aus, ...rel] as SituativerBonus[];
-  }, [liste, art, fertigkeit, attribute, relikte, inventar]);
+    // Schwerpunkt-Meisterschaften der Fertigkeit: Bonus je Schwerpunkt aus dem Paket, mehrfach erworbene addieren sich
+    const je = schwerpunktBonusJe(k);
+    const sp: SituativerBonus[] = [];
+    if (je !== null) {
+      const zaehl = new Map<string, number>();
+      for (const m of masteries?.[fertigkeit] ?? []) {
+        const n = /^Schwerpunkt\b/i.test(m.name) ? m.name.replace(/^Schwerpunkt:?\s*/i, '').replace(/\s*\(S\d\)\s*$/, '').trim() : '';
+        if (n) zaehl.set(n, (zaehl.get(n) ?? 0) + 1);
+      }
+      for (const [n, anz] of zaehl) sp.push({ id: `schwerpunkt:${fertigkeit}:${n}`, quelle: `Schwerpunkt ${n}`, wert: je * anz,
+        text: `+${je * anz}`, bedingung: 'wenn die Probe den Schwerpunkt behandelt', beleg: 'Schwerpunkte (GRW S. 92)' });
+    }
+    return [...aus, ...rel, ...sp] as SituativerBonus[];
+  }, [liste, art, fertigkeit, attribute, relikte, inventar, masteries]);
   const [gewaehlt, setGewaehlt] = useState<Set<string>>(new Set());
   const umschalten = (id: string) => setGewaehlt(g => { const n = new Set(g); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   // Typus des Ziels: wählt die Boni gegen diesen Typus aus und nimmt die gegen andere Typen zurück

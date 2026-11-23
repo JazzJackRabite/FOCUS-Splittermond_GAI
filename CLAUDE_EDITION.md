@@ -1254,6 +1254,21 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
   Erweiterte Dienste beschworener Wesen werden im Assistenten nicht angeboten. PDF-Export nicht geprüft (Datei-Download).
 - Tests: 567 grün ohne Bücher; 629 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 55 (23.11.2026): Mondzeichen-Gaben und Schwerpunkt-Bonus aus dem Paket
+
+- Datenseite (`kernregeln.py`): jedes Mondzeichen trägt `gabe_strukturiert` (Art, Werte, 1 Splitterpunkt, Beleg = Gabentext);
+  die Regel „Schwerpunkte“ trägt `bonus_je_schwerpunkt` (1, je Heldengrad einmal, Boni addieren sich).
+- Würfeldialoge (Probe, Angriff, Zauber): Knopf für die Gabe des eigenen Mondzeichens, einmal je Wurf:
+  Der Fels (Sicherheitswurf, höchster Würfel höchstens 5: beide addieren), Der Spieler (Risikowurf ohne Patzer:
+  zweitniedrigsten Würfel neu werfen, neu auswerten), Blutiges Antlitz (Wundabzug als Bonus). Die übrigen Gaben (Der Blitz,
+  Das zweite Gesicht, Geist der Gedanken …) erscheinen als Hinweis mit Gabentext. Neue Würfelfunktionen `risikoWertung`,
+  `gabeSicherheitBeide`, `gabeRisikoNeuwurf`; Komponente `play/Mondgabe.tsx`.
+- Schwerpunkt-Meisterschaften („Schwerpunkt: Lügen erkennen“) erscheinen bei Proben der Fertigkeit als Situationsbonus (+1 je
+  Schwerpunkt, gleichnamige addiert).
+- Angriffsdialog: Probenbonus +3 nur einmal je Wurf (bisher beliebig oft).
+- FUNDAMENT Regelquellen: Zeile für Mondzeichen-Gaben, Schwerpunkt-Bonus, mehrfach erwerbbare Ressourcen.
+- Tests: 574 grün ohne Bücher; 636 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

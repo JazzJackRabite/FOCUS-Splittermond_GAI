@@ -124,6 +124,7 @@ export interface AttackModalProps {
 
 type RollType = 'standard' | 'safe' | 'risk';
 import { gezaehlteWuerfel, wuerfeln } from '../../utils/wuerfeln';
+import { Mondgabe } from './Mondgabe';
 import { SituativeBoni, useSituativeBoni } from './SituativeBoni';
 import { wurfgrenzen } from '../../regelwerk/proben';
 import { ignoriertSituation, kampfsituationen, positionsModifikator, positionsNamen, vorbereitungsBonus } from '../../regelwerk/kampflage';
@@ -323,6 +324,9 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const [rollType, setRollType] = useState<RollType>('standard');
   const [isRolling, setIsRolling] = useState<boolean>(false);
   const [extraSPBonus, setExtraSPBonus] = useState<number>(0);
+  // GRW: jede Splittergabe einmal je Probe – Probenbonus +3 und Mondzeichen-Gabe je Wurf einmal
+  const [spBonusGenutzt, setSpBonusGenutzt] = useState(false);
+  const [mondGenutzt, setMondGenutzt] = useState(false);
   const [manualInputOpen, setManualInputOpen] = useState<boolean>(false);
   const [manualRollVal, setManualRollVal] = useState<string>('');
 
@@ -388,6 +392,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
 
       setRollDice(rolledDice);
       setGewuerfelteArt(typeToUse);
+      setMondGenutzt(false);
       setDiceSum(sum);
       setIsFumble(fumble);
       setIsCrit(crit);
@@ -574,10 +579,24 @@ export const AttackModal: React.FC<AttackModalProps> = ({
             </span>
           }
           aktionen={splitterpunkte > 0 && (
-            <Knopf art="sekundaer" onClick={() => { onSpendSplitterpunkt(); setExtraSPBonus((prev) => prev + 3); }} title="Splitterpunkt einsetzen: +3 auf den Wurf">
-              <Sparkles size={13} aria-hidden="true" />
-              <span>+3 (SP: {splitterpunkte})</span>
-            </Knopf>
+            <>
+              <Knopf art="sekundaer" disabled={spBonusGenutzt}
+                onClick={() => { onSpendSplitterpunkt(); setSpBonusGenutzt(true); setExtraSPBonus((prev) => prev + 3); }}
+                title={spBonusGenutzt ? 'Der Probenbonus ist je Probe nur einmal möglich (GRW: jede Splittergabe einmal)' : 'Splitterpunkt einsetzen: +3 auf den Wurf'}>
+                <Sparkles size={13} aria-hidden="true" />
+                <span>+3 (SP: {splitterpunkte})</span>
+              </Knopf>
+              {hasRolled && angreifer !== 'begleiter' && (
+                <Mondgabe art={gewuerfelteArt} wundabzug={woundPenalty} splitterpunkte={splitterpunkte} genutzt={mondGenutzt}
+                  ergebnis={{ dice: rollDice, result: diceSum, isFumble, isCrit, grossmeisterWuerfel: target.grossmeister ? rollDice[rollDice.length - 1] : undefined }}
+                  onEinsatz={(_grund, a) => {
+                    onSpendSplitterpunkt();
+                    setMondGenutzt(true);
+                    if (a.ergebnis) { setRollDice(a.ergebnis.dice); setDiceSum(a.ergebnis.result); setIsFumble(a.ergebnis.isFumble); setIsCrit(a.ergebnis.isCrit); }
+                    if (a.bonus) setExtraSPBonus((prev) => prev + a.bonus!);
+                  }} />
+              )}
+            </>
           )}
           onSchliessen={onClose}
         />

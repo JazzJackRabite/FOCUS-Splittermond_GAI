@@ -358,3 +358,37 @@ export function schwerpunktRegel(k: Katalog | null = aktiverKatalog()): { text: 
   if (!e || !k) return null;
   return { text: String(e.daten.beschreibung ?? e.daten.text ?? ''), seite: seite(e), kuerzel: k.pakete[e.quelle.paket]?.kuerzel ?? 'GRW' };
 }
+
+/** Bonus je Schwerpunkt-Meisterschaft, die eine Probe behandelt (Regel „Schwerpunkte“, Feld `bonus_je_schwerpunkt`); null ohne Paketangabe */
+export function schwerpunktBonusJe(k: Katalog | null = aktiverKatalog()): number | null {
+  const s = k?.get(SCHWERPUNKT_REGEL_ID)?.daten.strukturiert as { bonus_je_schwerpunkt?: number } | undefined;
+  return typeof s?.bonus_je_schwerpunkt === 'number' ? s.bonus_je_schwerpunkt : null;
+}
+
+// ---------------------------------------------------------------- Mondzeichen-Gaben
+
+export interface Mondgabe {
+  /** Name des Mondzeichens */
+  name: string;
+  art: string;
+  kosten: number;
+  /** ganzer Gabentext (Beleg) */
+  text: string;
+  hoechsterHoechstens?: number;
+  ticks?: number;
+  mindestensTicks?: number;
+  initiativeBonus?: number;
+}
+
+/** Gabe des Mondzeichens (Feld `gabe_strukturiert`) zum Namen aus dem Charakter; null ohne Angabe */
+export function mondgabe(name: string | undefined, k: Katalog | null = aktiverKatalog()): Mondgabe | null {
+  if (!name || !k) return null;
+  const e = k.nachTyp('mondzeichen').find((x) => x.name === name);
+  const g = e?.daten.gabe_strukturiert as Record<string, unknown> | undefined;
+  if (!e || !g || typeof g.art !== 'string') return null;
+  const zahl = (v: unknown) => (typeof v === 'number' ? v : undefined);
+  return {
+    name: e.name, art: g.art, kosten: zahl(g.kosten_splitterpunkte) ?? 1, text: String((g.beleg as { text?: string })?.text ?? ''),
+    hoechsterHoechstens: zahl(g.hoechster_hoechstens), ticks: zahl(g.ticks), mindestensTicks: zahl(g.mindestens_ticks), initiativeBonus: zahl(g.initiative_bonus),
+  };
+}

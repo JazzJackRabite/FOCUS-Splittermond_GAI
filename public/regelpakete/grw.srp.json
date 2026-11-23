@@ -55047,6 +55047,15 @@
      "text": "Der Splitterträger übernimmt für maximal eine Stunde die bis zu diesem Zeitpunkt erlittenen Wundabzüge eines Gefährten, sodass dieser ohne Abzüge agieren kann.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "wundabzug_als_bonus",
+     "dauer": "eine Probe",
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:blutiges-antlitz-des-mondes",
+      "text": "Der Einsatz dieser Gabe verwandelt für eine Probe die Wundabzüge aufgrund angebrochener Gesundheitsstufen in einen einmaligen Bonus in gleicher Höhe."
+     }
     }
    }
   },
@@ -55080,6 +55089,15 @@
      "text": "Der Splitterträger und ein Gefährte tauschen ihre Initiative-Ergebnisse.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "ueberraschung_aufheben",
+     "initiative_bonus": 2,
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:das-zweite-gesicht",
+      "text": "Der Splitterträger erkennt Gefahren rechtzeitig und verhindert bei Einsatz dieser Gabe für sich eine etwaige Überraschung und jeden Probenmalus und Abzug, der daraus resultiert. Er kann bei einem Hinterhalt normal agieren, als wäre er nicht überrascht worden und erhält einen Bonus in Höhe von 2 Punkten auf die Initiative in solch einer Situation."
+     }
     }
    }
   },
@@ -55113,6 +55131,16 @@
      "text": "Ein Gefährte, der mit anderen Kampfteilnehmern auf dem gleichen Tick-Feld steht, wird an vorderste Stelle gerückt, darf also als erster in dieser Gruppe handeln.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "kampfhandlung_kuerzer",
+     "ticks": 4,
+     "mindestens_ticks": 2,
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:der-blitz",
+      "text": "Eine einzelne Kampfhandlung wird um 4 Ticks verkürzt, dauert aber nicht weniger als 2 Ticks."
+     }
     }
    }
   },
@@ -55146,6 +55174,16 @@
      "text": "Ein Gefährte darf nachträglich einen Sicherheitswurf als Standardwurf werten, also beide Ergebnisse addieren.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "sicherheit_beide_addieren",
+     "hoechster_hoechstens": 5,
+     "patzer_moeglich": false,
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:der-fels",
+      "text": "Wenn der höchste Würfel eines Sicherheitswurfes nur maximal 5 zeigt, darf der Abenteurer beide Würfel doch addieren und als Ergebnis werten. Ein Patzer ist hier trotzdem nicht möglich."
+     }
     }
    }
   },
@@ -55179,6 +55217,16 @@
      "text": "Ein Gefährte darf den zweitniedrigsten Würfel einer Risiko-Probe neu werfen, sofern kein Patzer vorliegt.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "risiko_zweitniedrigster_neu",
+     "nicht_bei_patzer": true,
+     "zweiter_wurf_gilt": true,
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:der-spieler",
+      "text": "Mit der Gabe darf, sofern kein Patzer vorliegt, bei einer Risiko-Probe der zweitniedrigste Würfel neu geworfen werden. Es gilt stets der zweite Würfelwurf, die Probe wird anschließend ganz normal ausgewertet."
+     }
     }
    }
   },
@@ -55212,6 +55260,15 @@
      "text": "Der gewählte Gefährte verleiht seine Fertigkeitspunkte für eine Probe an den Splitterträger.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "fertigkeitspunkte_verleihen",
+     "dauer": "eine Probe",
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:freundschaft-der-trabanten",
+      "text": "Aktiviert der Splitterträger diese Gabe, kann er für eine bestimmte Probe seine eigenen Fertigkeitspunkte an einen Gefährten verleihen. Dieser benutzt die geliehenen Punkte statt seiner eigenen für diese eine Probe."
+     }
     }
    }
   },
@@ -55245,6 +55302,15 @@
      "text": "Ein Gefährte kann die Kosten eines gerade gewirkten Zaubers ganz oder teilweise auf den Splitterträger umlenken.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "schaden_fokus_umleiten",
+     "zeitpunkt": "beim Erleiden bzw. Aufwenden",
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:geist-der-gedanken",
+      "text": "Mit Einsatz dieser Gabe kann der Splitterträger Schaden auf seine Fokuspunkte umleiten beziehungsweise aufgewendete Fokuspunkte auf seine Lebensenergie. Der Einsatz muss in dem Moment erfolgen, wenn der Schaden erlitten wird oder der Fokus benötigt wird, nicht zu einem späteren Zeitpunkt. Entsprechend müssen die Punkte aus einer einzelnen Quelle wie einem gegnerischen Angriff oder einem gewirkten Zauber herrühren. Wie viele der aus dieser Quelle stammenden Punkte umgeleitet werden, unterliegt keinen Beschränkungen. Die Art der Verwendung (erschöpft, kanalisiert, verzehrt) bleibt bestehen. Eine solche Umleitung ist nur möglich, wenn der Abenteurer noch genügend Punkte besitzt, auf die der Schaden umgeleitet werden kann."
+     }
     }
    }
   },
@@ -55278,6 +55344,16 @@
      "text": "Ein Gefährte des Splitterträgers nutzt ein beiseite gelegtes Würfelergebnis für eine konkrete Probe.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "risiko_wuerfel_beiseite",
+     "nicht_patzerwuerfel": true,
+     "hoechstens_bereit": 1,
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:gunst-des-reichen-mannes",
+      "text": "Der Splitterträger legt nach einer Risiko-Probe ein beliebiges Würfelergebnis beiseite, das hierdurch für die aktuelle Probe nicht genutzt werden kann. Würfel, die einen Patzer erzeugen, können nicht ausgewählt werden. Diesen Würfel kann er für eine spätere Probe während der Spielsitzung verwenden und wirft in diesem Fall einen Würfel weniger. Es kann stets nur ein Würfel bereitgehalten werden."
+     }
     }
    }
   },
@@ -55311,6 +55387,15 @@
      "text": "Ein Gefährte darf einen einzelnen Würfel neu werfen, sofern kein Patzer vorliegt.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "gegnerprobe_wiederholen",
+     "zweite_probe_gilt": true,
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:omen-des-schwarzen-mondes",
+      "text": "Der Einsatz dieser Gabe zwingt den Spielleiter zur Wiederholung einer Probe, die sich unmittelbar gegen den Splitterträger richtet. Die zweite Probe gilt in jedem Fall. Die Gabe muss vor einer etwaigen Gegen- oder Vergleichsprobe des Abenteurers eingesetzt werden."
+     }
     }
    }
   },
@@ -55344,6 +55429,20 @@
      "text": "Ein Gefährte kann sich die Zeit leichter Tätigkeit (Wandern, Reiten) als Ruhephase anrechnen lassen.",
      "kosten_splitterpunkte": "je 1 für alle Beteiligten",
      "ab_heldengrad": 4
+    },
+    "gabe_strukturiert": {
+     "art": "dauer_halbieren",
+     "bereiche": [
+      "gift",
+      "krankheit",
+      "ruhebedarf",
+      "verschnaufpause"
+     ],
+     "kosten_splitterpunkte": 1,
+     "beleg": {
+      "id": "grw:mondzeichen:segen-der-mondkraft",
+      "text": "Der Einsatz dieser Gabe halbiert die Dauer von Gift- und Krankheitsverläufen und den Ruhebedarf bei natürlicher Lebenspunkte-Heilung. Letzteres bedeutet, dass der Splitterträger in einer Ruhephase zweimal regeneriert oder bereits durch eine halbe Ruhephase einmal regenerieren kann. Auch die Dauer einer Verschnaufpause kann halbiert werden."
+     }
     }
    }
   },
@@ -73266,7 +73365,22 @@
       "buch_seite": 92
      }
     ],
-    "regelbereich": "fertigkeiten_regeln"
+    "regelbereich": "fertigkeiten_regeln",
+    "strukturiert": {
+     "bonus_je_schwerpunkt": 1,
+     "mehrfach": "je Heldengrad einmal",
+     "boni_addieren": true,
+     "belege": [
+      {
+       "id": "grw:regel:fertigkeiten-regeln:schwerpunkte",
+       "text": "Wählt ein Abenteurer einen Schwerpunkt, erhält er einen Bonus in Höhe von 1 Punkt in der Fertigkeit, sobald eine Probe seinen Schwerpunkt behandelt."
+      },
+      {
+       "id": "grw:regel:fertigkeiten-regeln:schwerpunkte",
+       "text": "Einzelne Schwerpunkte sind Schwelle-1-Meisterschaften und können mehrfach erworben werden (je einmal pro Heldengrad), wobei sich der Bonus addiert."
+      }
+     ]
+    }
    }
   },
   {

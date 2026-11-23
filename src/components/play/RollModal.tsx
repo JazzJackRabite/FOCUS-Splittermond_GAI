@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { X, Sparkles, Zap, Check } from 'lucide-react';
 import DiceIcon from '../ui/DiceIcon';
 import { Dialog, Knopf, Wahlknopf } from '../../fundament';
+import { Mondgabe } from './Mondgabe';
 import type { RollEntry } from './DiceLog';
 import { generateId } from '../../utils/id';
 import type { StatusCondition, ChanneledSpell } from '../../types';
@@ -190,6 +191,9 @@ export const RollModal: React.FC<RollModalProps> = ({
   const [result, setResult] = useState<RollResult | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [splinterBonusSpent, setSplinterBonusSpent] = useState(false);
+  // Mondzeichen-Gabe (einmal je Probe): ersetztes Wurfergebnis oder Bonus
+  const [mondGenutzt, setMondGenutzt] = useState(false);
+  const [mondBonus, setMondBonus] = useState(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Clean up timeout on unmount
@@ -204,7 +208,7 @@ export const RollModal: React.FC<RollModalProps> = ({
     .reduce((sum, m) => sum + m.malus, 0);
 
   const splinterModifier = splinterBonusSpent ? 3 : 0;
-  const effectiveModifier = conditionMalusTotal + situativ.summe + extraModifier + splinterModifier + spellBonusTotal;
+  const effectiveModifier = conditionMalusTotal + situativ.summe + extraModifier + splinterModifier + spellBonusTotal + mondBonus;
   const diceCount = (rollType === 'risk' ? 4 : 2) + (grossmeister ? 1 : 0);
 
   const toggleModifier = (id: string) => {
@@ -273,6 +277,8 @@ export const RollModal: React.FC<RollModalProps> = ({
 
   const handleRoll = () => {
     setSplinterBonusSpent(false);
+    setMondGenutzt(false);
+    setMondBonus(0);
     executeRoll(false);
   };
 
@@ -587,6 +593,16 @@ export const RollModal: React.FC<RollModalProps> = ({
                   <Sparkles size={14} />
                   <span>{splinterBonusSpent ? '✓ +3 SP aktiv' : 'Splitterpunkt: +3 (1 SP)'}</span>
                 </Knopf>
+
+                {wuerfelnder === 'held' && (
+                  <Mondgabe art={rollType} ergebnis={result} wundabzug={woundPenalty} splitterpunkte={splitterPoints} genutzt={mondGenutzt}
+                    onEinsatz={(grund, a) => {
+                      onSpendSplitterPoint(`${grund} (${skillName})`);
+                      setMondGenutzt(true);
+                      if (a.ergebnis) setResult(a.ergebnis);
+                      if (a.bonus) setMondBonus(a.bonus);
+                    }} />
+                )}
 
               </div>
             </div>
