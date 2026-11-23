@@ -1106,9 +1106,8 @@ Relikt-Werkstatt, Handy-Breite). Behoben:
   (Improvisation, Reiterkampf) werden über ihre IDs geprüft. Merkmale zur Aktiven Abwehr als Hinweis.
 - **Verteidigung:** geführte Waffen mit „Unhandlich“ senken die VTD um 2 (einmal), im Überfahren der VTD erklärt.
 - **Code:** neu `regelwerk/merkmale.ts` (Auswertung); gelesen wird `merkmal_wirkung` in `utils/combatRules.ts`
-  (`merkmaleMitSpielwerten`), das in FUNDAMENT.md für die Merkmale eingetragen ist. Vorschlag für die Tabelle
-  „Regelquellen“ (Entscheidung des Projektinhabers): Zeile „Kampfmanöver …, Merkmal Wuchtig“ um „Spielwerte der Merkmale:
-  `merkmal_wirkung`“ und die Datei `regelwerk/merkmale.ts` ergänzen.
+  (`merkmaleMitSpielwerten`). Tabelle „Regelquellen“ in FUNDAMENT.md nach Freigabe des Projektinhabers (23.11.) ergänzt:
+  Spielwerte der Merkmale, Feld `merkmal_wirkung`, Datei `regelwerk/merkmale.ts`.
 - Das GRW-Paket im Editor war hinter dem auf D: (Verstärkungen mit Zuständen vom 22.11.); jetzt gleich.
 - Tests: neu `merkmale.test.tsx` (Werte, Bedingungen, Schadenswurf mit festen Würfeln inkl. Beispiel S. 186, Dialog;
   Grimoire-Merkmale nur über ihre Werte). 485 grün ohne Bücher, 542 mit allen Grimoires und Buchfällen; Build.
