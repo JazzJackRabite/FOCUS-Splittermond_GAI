@@ -242,7 +242,7 @@ export function CreationView() {
       {showResourceModal && (
         <AddItemModal
           title="Ressource" items={getResolvedResources().list} onClose={() => setShowResourceModal(false)}
-          onAdd={(n, l, d, c, s, p, f) => addListEntry('resource', n, l, d, c, s, p, f)}
+          onAdd={(n, l, d, c, s, p, f, z) => addListEntry('resource', n, l, d, c, s, p, f, z)}
           mode={mode} type="resource" budget={resourceBudget} existingItems={resourcesList}
         />
       )}

@@ -547,6 +547,14 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
             {!canBeFreeRank && (
               <div className="text-xs text-gold font-medium mt-1 ml-6">
                 Kein passender Gratis-Slot für Schwelle {tier} verfügbar.
+                {(() => {
+                  // höchste Schwelle, für die noch ein Platz frei ist (Plätze der Schwellen 1–4 je erreichter Schwelle)
+                  const frei = [4, 3, 2, 1].find((t) => validateFreeMasteryAssignment(skillVal, [...currentFreeTiers, t]));
+                  if (frei) return ` Frei ist noch ein Platz für Schwelle ${frei} oder niedriger.`;
+                  return currentFreeTiers.some((t) => t < tier)
+                    ? ' Alle Plätze sind belegt; gratis gewählte Meisterschaften niedrigerer Schwelle können höhere Plätze belegen.'
+                    : '';
+                })()}
               </div>
             )}
           </div>

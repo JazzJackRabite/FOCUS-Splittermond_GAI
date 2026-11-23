@@ -160,3 +160,39 @@ describe('Heilung', () => {
     expect(result.current.state.playState.healthSlots.filter((s) => s.type === 'consumed')).toHaveLength(20);
   });
 });
+
+describe('Ressource steigern mit EP', () => {
+  it('Relikt 2 aus der Erschaffung um 1 gesteigert: Stufe 3, 7 EP, Erschaffungspunkte bleiben 2', async () => {
+
+
+    const { result } = renderHook(() => useCharacterState());
+    act(() => { result.current.dispatch({ type: 'ADD_RESOURCE', payload: { name: 'Relikt', level: 2, source: 'creation', pointCost: 1 } }); });
+    act(() => { result.current.dispatch({ type: 'SET_MODE', payload: 'xp' } as never); });
+    act(() => { result.current.dispatch({ type: 'RESOURCE_STEIGERN', payload: { index: 0, stufen: 1 } }); });
+    const r = result.current.state.resourcesList[0];
+    expect(r.level).toBe(3);
+    expect(r.xpStufen).toBe(1);
+    expect(result.current.state.advancementLog?.[0].xpDelta).toBe(-7);
+  });
+});
+
+describe('Relikte je Ressource', () => {
+  it('Relikt 2 + Relikt 2 (mehrfach): ein Relikt höchstens 2 Punkte; das zweite wieder 2; ohne mehrfach die Summe', async () => {
+    const { reliktFrei } = await import('../regelwerk/relikte');
+    expect(reliktFrei([2, 2], true, [])).toBe(2);
+    expect(reliktFrei([2, 2], true, [2])).toBe(2);
+    expect(reliktFrei([2, 2], true, [2, 2])).toBe(0);
+    expect(reliktFrei([3, 1], true, [1])).toBe(3);
+    expect(reliktFrei([2, 2], false, [1])).toBe(3);
+  });
+});
+
+describe('Erschaffung: Schritt 7 überzogen', () => {
+  it('nennt die Fertigkeiten, die über den Grenzen der Ausbildung liegen', async () => {
+    const { pruefeErschaffungImEditor } = await import('../regelwerk/erschaffungEditor');
+    const { DEFAULT_STATE } = await import('../hooks/useCharacterState');
+    const st = { ...DEFAULT_STATE, race: 'Gnom', skillsBase: { Feuermagie: 6, Verwandlungsmagie: 6, Felsmagie: 6, Bannmagie: 6, Windmagie: 6 } } as never;
+    const p = pruefeErschaffungImEditor(st)!;
+    expect(p.hinweise.some(h => /Schritt 7 trägt .*Magie/.test(h))).toBe(true);
+  });
+});

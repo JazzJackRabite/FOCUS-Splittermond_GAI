@@ -1,4 +1,5 @@
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf, useEscape } from '../../fundament';
+import { useHausregeln } from '../../fundament/hausregeln';
 import React, { useState, useEffect, useId, useMemo } from 'react';
 import {
   X,
@@ -250,6 +251,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
   const [rollType, setRollType] = useState<RollType>('standard');
   const [isRolling, setIsRolling] = useState<boolean>(false);
   const [extraSPBonus, setExtraSPBonus] = useState<number>(0);
+  const hausregeln = useHausregeln();
 
   // Total rolled calculation
   const totalRollResult = hasRolled ? diceSum + totalRollModifier + extraSPBonus : 0;
@@ -460,14 +462,15 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
   };
 
   // Splitterpunkt actions
+  // GRW: jede Splittergabe genau einmal je Probe (Probenbonus +3); ein Neuwurf ist keine Splittergabe → nur mit Hausregeln
   const handleSpendSPBonus = () => {
-    if (splitterpunkte <= 0) return;
+    if (splitterpunkte <= 0 || extraSPBonus > 0) return;
     onSpendSplitterpunkt();
     setExtraSPBonus((prev) => prev + 3);
   };
 
   const handleSpendSPReroll = () => {
-    if (splitterpunkte <= 0) return;
+    if (splitterpunkte <= 0 || !hausregeln) return;
     onSpendSplitterpunkt();
     performRoll(rollType);
   };
@@ -1111,8 +1114,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                   <div className="flex flex-wrap items-center gap-1.5 self-end sm:self-center">
                     <Knopf art="primaer"
                       onClick={handleSpendSPBonus}
-                      disabled={splitterpunkte <= 0 || isRolling}
-                      title="Kostet 1 Splitterpunkt: +3 Bonus auf das Ergebnis"
+                      disabled={splitterpunkte <= 0 || isRolling || extraSPBonus > 0}
+                      title={extraSPBonus > 0 ? 'Der Probenbonus ist je Probe nur einmal möglich (GRW: jede Splittergabe einmal)' : 'Kostet 1 Splitterpunkt: +3 Bonus auf das Ergebnis'}
                       className="px-2.5 py-1.5 bg-gold hover:bg-gold-hell text-seite border border-erschoepft rounded-knopf text-xs font-bold transition-colors disabled:opacity-40 flex items-center gap-1 cursor-pointer"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
@@ -1120,8 +1123,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </Knopf>
                     <Knopf art="sekundaer"
                       onClick={handleSpendSPReroll}
-                      disabled={splitterpunkte <= 0 || isRolling}
-                      title="Kostet 1 Splitterpunkt: Neuwurf"
+                      disabled={splitterpunkte <= 0 || isRolling || !hausregeln}
+                      title={hausregeln ? 'Hausregel: 1 Splitterpunkt für einen Neuwurf' : 'Ein Neuwurf ist keine Splittergabe des GRW (Probenbonus, Widerstand, Schadensminderung, Mondzeichen, Resonanz) – nur mit Hausregeln'}
                       className="px-2.5 py-1.5 bg-flaeche text-schrift border border-gold hover:bg-rahmen rounded-knopf text-xs font-semibold transition-colors disabled:opacity-40 flex items-center gap-1 cursor-pointer"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />

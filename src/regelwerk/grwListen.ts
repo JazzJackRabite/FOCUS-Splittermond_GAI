@@ -324,7 +324,7 @@ export function vermoegenName(k: Katalog | null = aktiverKatalog()): string | nu
 export function erschaffungsVermoegen(liste: ItemEntry[], k: Katalog | null = aktiverKatalog()): number {
   const name = vermoegenName(k);
   if (!name) return 0;
-  return liste.filter((r) => r.name === name && r.source === 'creation').reduce((s, r) => s + (Number(r.level) || 0), 0);
+  return liste.filter((r) => r.name === name && r.source === 'creation').reduce((s, r) => s + (Number(r.level) || 0) - (Number(r.xpStufen) || 0), 0);
 }
 
 const MUENZE: Record<string, keyof Money> = { solar: 'solare', solare: 'solare', lunar: 'lunare', lunare: 'lunare', telar: 'telare', telare: 'telare' };

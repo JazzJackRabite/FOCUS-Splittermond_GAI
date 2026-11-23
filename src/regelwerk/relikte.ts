@@ -221,6 +221,26 @@ export function ressourcePunkte(resources: Array<{ name: string; level: number }
   return resources.filter(r => /^Relikt\b/i.test(r.name)).reduce((s, r) => s + (Number(r.level) || 0), 0);
 }
 
+/** Stufen der einzelnen Ressourcen Relikt */
+export function reliktRessourcen(resources: Array<{ name: string; level: number }>): number[] {
+  return resources.filter(r => /^Relikt\b/i.test(r.name)).map(r => Number(r.level) || 0).filter(n => n > 0);
+}
+
+/**
+ * Höchste Punktzahl für ein Relikt neben den übrigen Relikten. Ist die Ressource laut Paket mehrfach erwerbbar
+ * („um unterschiedliche Relikte zu besitzen“, GRW S. 79), gehört zu jedem Relikt eine eigene Ressource: die übrigen
+ * Relikte belegen je die kleinste passende, frei ist die größte verbleibende. Sonst gilt die Summe der Punkte.
+ */
+export function reliktFrei(stufen: number[], mehrfach: boolean, andere: number[]): number {
+  if (!mehrfach) return stufen.reduce((a, b) => a + b, 0) - andere.reduce((a, b) => a + b, 0);
+  const frei = [...stufen].sort((a, b) => a - b);
+  for (const p of [...andere].sort((a, b) => b - a)) {
+    const i = frei.findIndex(x => x >= p);
+    frei.splice(i >= 0 ? i : frei.length - 1, 1);
+  }
+  return frei.length ? Math.max(...frei) : 0;
+}
+
 const FELDNAME: Record<string, string> = {
   schaden: 'Schaden', wgs: 'WGS', sr: 'SR', behinderung: 'Behinderung', tick_zuschlag: 'Tick-Zuschlag', haerte: 'Härte', last: 'Last',
   gw: 'GW', kw: 'KW', schwerpunkt: 'Schwerpunkt', merkmal: 'Merkmal', merkmal_entfernen: 'Merkmal entfällt',

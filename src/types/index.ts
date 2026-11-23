@@ -72,6 +72,8 @@ export interface ItemEntry {
   page?: number;
   isRacial?: boolean;
   onlyCreation?: boolean;
+  /** Ressource: mit EP gekaufte Stufen auf einem Eintrag aus der Erschaffung (in `level` enthalten) */
+  xpStufen?: number;
 }
 
 // ============================================================
@@ -364,6 +366,7 @@ export type CharacterAction =
   | { type: 'ADD_STRENGTH'; payload: ItemEntry }
   | { type: 'REMOVE_STRENGTH'; payload: number }
   | { type: 'ADD_RESOURCE'; payload: ItemEntry }
+  | { type: 'RESOURCE_STEIGERN'; payload: { index: number; stufen: number } }
   | { type: 'REMOVE_RESOURCE'; payload: number }
   | { type: 'ADD_WEAKNESS'; payload: ItemEntry }
   | { type: 'REMOVE_WEAKNESS'; payload: number }

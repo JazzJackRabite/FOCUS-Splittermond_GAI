@@ -37,7 +37,8 @@ export const ItemList: React.FC<ItemListProps> = ({
       {items.map((item, idx) => {
         const itemLevel = item.level ?? 1;
         const itemPointCost = item.pointCost !== undefined ? item.pointCost : 1;
-        const creationCost = itemLevel * itemPointCost;
+        const epStufen = Number(item.xpStufen) || 0;
+        const creationCost = (itemLevel - epStufen) * itemPointCost;
         const xpCost = itemLevel * itemPointCost * xpMultiplier;
 
         const canDelete = mode === 'creation'
@@ -99,6 +100,7 @@ export const ItemList: React.FC<ItemListProps> = ({
                   ) : item.source === 'creation' ? (
                     <span className="text-gold font-bold">
                       {creationCost} Pkt (Erstellung)
+                      {epStufen > 0 && <span className="text-leise font-normal"> · +{epStufen} Stufe{epStufen > 1 ? 'n' : ''} für {epStufen * itemPointCost * xpMultiplier} EP</span>}
                     </span>
                   ) : item.isFree ? (
                     <span className="text-unverletzt font-bold">Gratis</span>

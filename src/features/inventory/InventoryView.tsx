@@ -331,7 +331,8 @@ export const InventoryView: React.FC = () => {
         return (
           <div data-testid="startvermoegen" className="text-xs text-leise flex flex-wrap items-center gap-2 -mt-2">
             <span>Startvermögen bei Vermögen {stufe}: <strong className="text-schrift">{start.text}</strong>{start.seite ? ` (GRW S. ${start.seite})` : ''}</span>
-            {!gleich && (
+            {/* nur solange der Geldbeutel noch auf dem Grundwert (5 Lunare) oder leer ist: kein Überschreiben von Spielgeld */}
+            {!gleich && ((money.solare ?? 0) === 0 && (money.telare ?? 0) === 0 && [0, 5].includes(money.lunare ?? 0)) && (
               <Knopf onClick={() => { dispatch({ type: 'SET_MONEY', payload: start.geld }); toast.success(`Geld auf Startvermögen gesetzt: ${start.text}`); }}
                 className="text-xs" title="Setzt den Geldbeutel auf das Startvermögen laut Vermögenstabelle">
                 Als Geld übernehmen

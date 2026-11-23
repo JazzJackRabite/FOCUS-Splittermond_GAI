@@ -1205,6 +1205,34 @@ Heilung, Rast, Relikt-Werkstatt. Behoben:
   „Zweihändig“ kein Feld für die Hände hat.
 - Tests: 550 grün ohne Bücher; 612 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 53 (23.11.2026): Gnom-Magierin mit Golem und Relikten bis Heldengrad 4
+
+Mirelda (Gnom, Mertalischer Städtebund, Zauberer) erschaffen: drei Magieschulen auf 6, Gratis-Zauber Grad 0–2,
+Start-Meisterschaften, Golem 2 und Relikt 2 + 2. Mit 2000 EP: Fels-, Feuer-, Verwandlungsmagie 15, Arkane Kunde und
+Handwerk 12, 21 Gratis-Zauber bis Grad 5, Meisterschaftsketten (Feuersturm, Inferno, Großmeister, Meister der Objekte,
+Komplexe Golembefehle, Bindende Animierung …). 2000 Solare Spielgeld, Einkauf mit „Gegenstand kaufen“. Golem „Eisenherz“
+(Mittel, Metall, Aggressiv, Gerüstet, Kämpfer, drei Applikationen mit Schwachpunkt, Sonderausstattung, Feinschliff), Relikte
+„Stab der Glut“ (Schwerpunkt-Bonus) und „Ring der Ahnen“ (beseelt, Domäne, Queste). Zauber gewirkt (Feuerball mit Patzer,
+Steinhaut kanalisiert), Golem-Angriff, Schwerpunkt-Probe. Behoben:
+- Relikte: Die Ressource Relikt ist mehrfach erwerbbar („um unterschiedliche Relikte zu besitzen“). Ein Relikt hat
+  höchstens die Punkte einer Ressource (Relikt 2 + Relikt 2 = zwei Relikte zu je 2, nicht eines zu 4). `reliktFrei`.
+- Ressourcen steigern: vorhandene Ressource mit EP erhöhen (`RESOURCE_STEIGERN`; bei Einträgen aus der Erschaffung als
+  `xpStufen`, die EP und Erschaffungspunkte getrennt zählen). Bei mehrfach erwerbbaren wählt der Dialog „neu“ oder
+  „Stufe erhöhen“ des gewünschten Eintrags (Relikt wachsen lassen).
+- Golem: Ressource Golem als mehrfach erwerbbar (Auslegung im Werkzeug, wie Kreatur).
+- Splitterpunkte: Probenbonus +3 nur einmal je Probe (GRW: jede Splittergabe einmal); „Neuwurf (1 SP)“ ist keine
+  Splittergabe und nur mit Hausregeln wählbar.
+- Relikt-Schwerpunktbonus jetzt auch bei Zauberproben; Eingabe zeigt „Fertigkeit: Schwerpunkt“.
+- Golem-Feinschliff: freie Meisterschaft prüft die Voraussetzung (Ausweichen II nur mit Ausweichen I).
+- Begleiter bearbeiten: jeder Schritt direkt anwählbar; Golem ohne Rufname heißt im Angriff „Golem (Mittel)“.
+- Erschaffung: bei überzogenem Schritt 7 nennt die Prüfung die Fertigkeiten über den Grenzen der Ausbildung
+  (je Fertigkeit +3, Magieschule +4) statt nur „27 statt 30“.
+- Meisterschaft ohne passenden Gratis-Platz: Hinweis, für welche Schwelle noch ein Platz frei ist.
+- Inventar: „Als Geld übernehmen“ (Startvermögen) nur, solange der Geldbeutel auf dem Grundwert steht.
+- Offen: Auswahl „Bindende Animierung“ erscheint als Kostenoption bei jedem Zauber (Daten ohne Bezug „nur Animierung“);
+  Golem-Preis wird nicht vom Geld abgezogen; Zauber ohne Nachfrage zu nicht eingesetzten EG.
+- Tests: 564 grün ohne Bücher; 626 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

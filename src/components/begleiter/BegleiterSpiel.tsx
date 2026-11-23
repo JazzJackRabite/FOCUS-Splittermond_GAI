@@ -316,7 +316,8 @@ export const BegleiterVitals: React.FC<{ spiel: ReturnType<typeof useBegleiterSp
 /** Spieldaten aus einem Wertekasten (LP und FO je Stufe, Merkmale) */
 export function spielDaten(b: Begleiter, w: Wertekasten | null | undefined): BegleiterSpielDaten {
   const merkmale = String(w?.felder?.merkmale ?? '').split(/,(?![^(]*\))/).map(x => x.trim()).filter(Boolean);
-  return { name: b.rufname || b.name, lp: zahl(w?.abgeleitete_werte?.LP), fo: zahl(w?.abgeleitete_werte?.FO), sr: w?.abgeleitete_werte?.SR, merkmale, art: b.art, attribute: w?.attribute };
+  // Golem ohne Rufname: „Golem (Mittel)“ statt nur des Korpus („Mittel“), wie im Kopf des Blatts
+  return { name: b.rufname || (b.art === 'golem' ? `Golem (${b.name})` : b.name), lp: zahl(w?.abgeleitete_werte?.LP), fo: zahl(w?.abgeleitete_werte?.FO), sr: w?.abgeleitete_werte?.SR, merkmale, art: b.art, attribute: w?.attribute };
 }
 
 /** Kurzanzeige im Kopf eines Begleiters: LP und Fokus */

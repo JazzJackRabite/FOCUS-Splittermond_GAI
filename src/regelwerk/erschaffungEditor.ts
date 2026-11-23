@@ -155,13 +155,20 @@ export function bauAusEditor(k: Katalog, state: CharacterState): { bau: Bau; hin
     });
     if (offen > 0) verteilung.schritt7[i] = (verteilung.schritt7[i] ?? 0) + offen; // nicht unterzubringen: Schritt 7 überzogen → Meldung der Prüfung
   });
+  // Schritt 7 überzogen: sagen, welche Fertigkeiten über den Grenzen der freien Schritte liegen (sonst nur „27 statt 30“)
+  const s7 = Object.entries(verteilung.schritt7 ?? {}).filter(([, v]) => v > 0);
+  if (s7.reduce((a, [, v]) => a + v, 0) > K7.fertigkeitspunkte) {
+    hinweise.push(`Schritt 7 trägt ${s7.map(([i, v]) => `${k.get(i)?.name ?? i} +${v}`).join(', ')} – mehr als ${K7.fertigkeitspunkte} Punkte. `
+      + `Die Ausbildung gibt je Fertigkeit höchstens +${K5.max_je_fertigkeit} (Magieschule +${K5.max_je_magieschule}); `
+      + `Punkte darüber gehen nur über Schritt 7. Weniger auf diese Fertigkeiten, dafür mehr auf andere verteilen.`);
+  }
 
   // ---- Ressourcen
   const res: Record<string, number> = {};
   for (const r of state.resourcesList.filter(r => r.source === 'creation')) {
     const i = idNachName(k, 'ressource', r.name.replace(/\s*\(.*\)$/, ''));
     if (!i) { hinweise.push(`Ressource „${r.name}“ steht nicht im Regelwerk`); continue; }
-    res[i] = (res[i] ?? 0) + (Number(r.level) || 1);
+    res[i] = (res[i] ?? 0) + (Number(r.level) || 1) - (Number(r.xpStufen) || 0);
   }
   for (const m of [wahl.kultur, wahl.abstammung]) {
     if (!m?.modul || !k.get(m.modul)) continue;
@@ -236,7 +243,14 @@ export function bauAusEditor(k: Katalog, state: CharacterState): { bau: Bau; hin
     ep.attribute = attr(Object.fromEntries(Object.entries(state.attrIncrements).filter(([, v]) => v)));
     ep.fertigkeiten = Object.fromEntries(Object.entries(state.skillsXp).filter(([, v]) => v).map(([nm, v]) => [fid(nm) ?? nm, v]));
     ep.staerken = state.strengthsList.filter(s => s.source === 'xp').map(s => idNachName(k, 'staerke', s.name)).filter((i): i is string => !!i);
-    ep.ressourcen = Object.fromEntries(state.resourcesList.filter(r => r.source === 'xp').map(r => [idNachName(k, 'ressource', r.name) ?? r.name, Number(r.level) || 1]));
+    // mit EP gekaufte Ressourcenstufen: eigene EP-Einträge und EP-Stufen auf Erschaffungs-Einträgen, je Ressource summiert
+    ep.ressourcen = {};
+    for (const r of state.resourcesList) {
+      const n = r.source === 'xp' ? (Number(r.level) || 1) : (Number(r.xpStufen) || 0);
+      if (!n) continue;
+      const id = idNachName(k, 'ressource', r.name) ?? r.name;
+      ep.ressourcen[id] = (ep.ressourcen[id] ?? 0) + n;
+    }
     ep.sprachen = state.languagesList.filter(l => l.source === 'xp').length;
     ep.meisterschaften = epM;
     ep.zauber = state.spellsList.filter(s => !s.isFree && s.sourceMode === 'xp').map(s => zauberId(s.name)).filter((i): i is string => !!i);

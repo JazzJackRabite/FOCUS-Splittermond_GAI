@@ -128,6 +128,7 @@ const ADVANCEMENT_ACTION_TYPES = new Set([
   'ADD_STRENGTH',
   'REMOVE_STRENGTH',
   'ADD_RESOURCE',
+  'RESOURCE_STEIGERN',
   'REMOVE_RESOURCE',
   'ADD_WEAKNESS',
   'REMOVE_WEAKNESS',
@@ -569,6 +570,23 @@ export function baseCharacterReducer(
         return { ...state, resourcesList: liste, advancementLog: newLog };
       }
       return { ...state, resourcesList: [...state.resourcesList, item], advancementLog: newLog };
+    }
+
+    case 'RESOURCE_STEIGERN': {
+      // eine vorhandene Ressource um Stufen erhöhen; nach der Erschaffung mit EP (bei Erschaffungs-Einträgen als xpStufen)
+      const { index, stufen } = action.payload;
+      const alt = state.resourcesList[index];
+      if (!alt || stufen <= 0) return state;
+      const liste = [...state.resourcesList];
+      const mitEp = state.mode === 'xp';
+      liste[index] = { ...alt, level: (Number(alt.level) || 0) + stufen,
+        ...(mitEp && alt.source !== 'xp' ? { xpStufen: (alt.xpStufen ?? 0) + stufen } : {}) };
+      let newLog = state.advancementLog ?? [];
+      if (mitEp) {
+        const cost = stufen * (alt.pointCost ?? 1) * calculateItemCost('strength', 1);
+        newLog = [createLogEntry('resource', `Ressource gesteigert: ${alt.name}`, `Stufe ${alt.level} → ${liste[index].level}`, -cost), ...newLog];
+      }
+      return { ...state, resourcesList: liste, advancementLog: newLog };
     }
 
     case 'REMOVE_RESOURCE': {

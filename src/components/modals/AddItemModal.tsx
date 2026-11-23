@@ -25,6 +25,7 @@ interface StrengthData {
 interface ResourceData {
   name: string;
   maxStufe?: number;
+  mehrfach?: boolean;
   desc?: string;
   source?: string;
   page?: number;
@@ -55,6 +56,8 @@ interface AddItemModalProps {
     source: string,
     page: number | undefined,
     isFree: boolean,
+    /** Ressource: Index des vorhandenen Eintrags, dessen Stufe steigt (statt eines neuen Eintrags) */
+    zielIndex?: number,
   ) => void;
   mode: AppMode;
   type: 'strength' | 'resource' | 'weakness' | 'language';
@@ -162,7 +165,19 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
   }, [normalizedItems, selectedName]);
 
   const sperre = selectedName === 'custom' ? null : sperreFuer(currentItemData, selectedName);
-  const maxLevel = sperre ? Math.max(1, sperre.restStufen) : (isStrength ? 1 : 6);
+  // Ressource schon vorhanden: Stufe dieses Eintrags erhöhen; mehrfach erwerbbare (Paket) auch als neuer Eintrag
+  const [zielWahl, setZielWahl] = useState<string>('neu');
+  useEffect(() => { setZielWahl('neu'); }, [selectedName]);
+  const resMehrfach = isResource && !!(currentItemData as ResourceData | null)?.mehrfach;
+  const vorhandeneIdx = isResource && selectedName !== 'custom'
+    ? existingItems.map((e, i) => ({ e, i })).filter((x) => x.e.name === selectedName && !x.e.isFree) : [];
+  const zielIndex: number | undefined = !vorhandeneIdx.length ? undefined
+    : resMehrfach ? (zielWahl === 'neu' ? undefined : Number(zielWahl)) : vorhandeneIdx[0].i;
+  const resMax = (currentItemData as ResourceData | null)?.maxStufe ?? 6;
+  const maxLevel = zielIndex !== undefined
+    ? Math.max(1, Math.min(resMehrfach ? resMax : (sperre?.restStufen ?? resMax), resMax - (Number(existingItems[zielIndex]?.level) || 0)))
+    : sperre ? Math.max(1, sperre.restStufen) : (isStrength ? 1 : 6);
+  const zielVoll = zielIndex !== undefined && resMax - (Number(existingItems[zielIndex]?.level) || 0) <= 0;
   useEffect(() => { if (level > maxLevel) setLevel(maxLevel); }, [level, maxLevel]);
   const pointCost = isStrength ? ((currentItemData as StrengthData)?.cost ?? 1) : 1;
 
@@ -231,7 +246,8 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
       page = isCustom ? undefined : ((currentItemData as any)?.page ?? grwSchwaechenSeiten()[name] ?? 84);
     }
 
-    onAdd(name, level, finalDesc, pointCost, source, page, isFree);
+    if (zielVoll && !hausregeln) return;
+    onAdd(name, level, finalDesc, pointCost, source, page, isFree, zielIndex);
     onClose();
   };
 
@@ -364,6 +380,24 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
             </div>
           )}
 
+          {vorhandeneIdx.length > 0 && (
+            <div className="bg-flaeche p-2 rounded-knopf border border-rahmen text-sm" data-testid="ressource-ziel">
+              {resMehrfach ? (
+                <label className="block">
+                  <span className="block text-xs uppercase text-leise mb-1">Erwerb</span>
+                  <select value={zielWahl} onChange={(e) => setZielWahl(e.target.value)}
+                    className="w-full p-2 border border-rahmen rounded-knopf bg-flaeche text-schrift text-sm">
+                    <option value="neu">Neu: eigener Eintrag (mehrfach erwerbbar)</option>
+                    {vorhandeneIdx.map(({ e, i }) => <option key={i} value={String(i)}>Stufe erhöhen: {e.name} {e.desc ? `(${e.desc}) ` : ''}– jetzt Stufe {e.level}</option>)}
+                  </select>
+                </label>
+              ) : (
+                <span>Erhöht die vorhandene Ressource {selectedName} (jetzt Stufe {existingItems[vorhandeneIdx[0].i]?.level}).</span>
+              )}
+              {zielVoll && <span className="block text-schaden font-bold mt-1">Höchststufe {resMax} erreicht.</span>}
+            </div>
+          )}
+
           <div>
             <label className="block text-xs uppercase text-leise mb-1">
               Beschreibung / Notiz
@@ -477,7 +511,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
           </Knopf>
           <Knopf art="primaer"
             onClick={handleAdd}
-            disabled={(!isAffordable && !hausregeln) || !isSelectionValid || isLanguageLimitReached || (!!sperre?.grund && !hausregeln)}
+            disabled={(!isAffordable && !hausregeln) || !isSelectionValid || isLanguageLimitReached || (!!sperre?.grund && !hausregeln) || (zielVoll && !hausregeln)}
             className="text-sm disabled:cursor-not-allowed shrink-0"
           >
             Hinzufügen

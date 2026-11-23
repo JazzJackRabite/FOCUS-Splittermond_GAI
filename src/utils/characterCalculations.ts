@@ -124,8 +124,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     .filter((s) => s.source === 'xp')
     .reduce((a, b) => a + (Number(b.level) || 1) * (Number(b.pointCost) || 1), 0);
   const resourceXpPoints = resourcesList
-    .filter((r) => r.source === 'xp')
-    .reduce((a, b) => a + (Number(b.level) || 1), 0);
+    .reduce((a, b) => a + (b.source === 'xp' ? (Number(b.level) || 1) : (Number(b.xpStufen) || 0)), 0);
 
   xpSpent += strengthXpPoints * calculateItemCost('strength', 1) + resourceXpPoints * calculateItemCost('resource', 1);
 
@@ -300,7 +299,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     }, 0);
   const resourcePoints = resourcesList
     .filter((r) => r.source === 'creation')
-    .reduce((a, b) => a + (Number(b.level) || 1), 0);
+    .reduce((a, b) => a + (Number(b.level) || 1) - (Number(b.xpStufen) || 0), 0);
   const languagePoints = languagesList
     .filter((l) => l.source === 'creation' && !l.isFree)
     .reduce((a, b) => {

@@ -21,8 +21,9 @@ export function useSituativeBoni(art: WurfArtKontext, fertigkeit: string, aus = 
   const boni = useMemo(() => {
     const k = aktiverKatalog();
     const aus = k && liste ? situativeBoni(k, liste, art, fertigkeit, attribute) : [];
-    // Schwerpunkt-Boni aus Relikten (Verbesserung der Gegenstandsqualität) für Proben und Angriffe
-    const rel = k && relikte?.length && art !== 'zauber' ? reliktSchwerpunktBoni(relikte, inventar ?? [], bausteineAktiv(k), fertigkeit) : [];
+    // Schwerpunkt-Boni aus Relikten (Verbesserung der Gegenstandsqualität) für Proben, Angriffe und Zauberproben
+    // (Magieschulen haben Schwerpunkte wie andere Fertigkeiten; der Bonus erscheint, wenn die Schule im Schwerpunkt steht)
+    const rel = k && relikte?.length ? reliktSchwerpunktBoni(relikte, inventar ?? [], bausteineAktiv(k), fertigkeit) : [];
     return [...aus, ...rel] as SituativerBonus[];
   }, [liste, art, fertigkeit, attribute, relikte, inventar]);
   const [gewaehlt, setGewaehlt] = useState<Set<string>>(new Set());

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Plus, Minus } from 'lucide-react';
-import { allgemeineFertigkeiten, golemMeisterschaften, type GolemWahl } from '../../regelwerk/golem';
+import { allgemeineFertigkeiten, golemMeisterschaften, meisterschaftBraucht, type GolemWahl } from '../../regelwerk/golem';
 import type { Katalog } from '../../regelwerk/katalog';
 import type { Begleiter } from '../../types';
 import { Auswahl, Knopf, Marke } from '../../fundament';
@@ -30,7 +30,13 @@ export const Feinschliff: React.FC<{ k: Katalog; b: Begleiter; wahlen: GolemWahl
             <Auswahl key={w.schluessel} beschriftung={`${w.quelle}: freie Meisterschaft bis Schwelle ${w.schwelle}`} value={typeof v === 'string' ? v : ''} onChange={ev => setze(w.schluessel, ev.target.value)}>
               <option value="">Meisterschaft wählen …</option>
               {[...new Set(angebot.map(m => m.fertigkeit))].map(f => (
-                <optgroup key={f} label={f}>{angebot.filter(m => m.fertigkeit === f).map(m => <option key={m.id} value={m.id}>{m.name} (S{m.schwelle})</option>)}</optgroup>
+                <optgroup key={f} label={f}>{angebot.filter(m => m.fertigkeit === f).map(m => {
+                  // Voraussetzung „hat Meisterschaft X“ aus dem Paket: X muss im Feinschliff schon gewählt sein
+                  const braucht = meisterschaftBraucht(k, m.id);
+                  const gewaehlt = new Set(Object.entries(fs).filter(([s2]) => s2 !== w.schluessel).map(([, x]) => x).filter((x): x is string => typeof x === 'string'));
+                  const fehlt = !!braucht && !gewaehlt.has(braucht.id);
+                  return <option key={m.id} value={m.id} disabled={fehlt}>{m.name} (S{m.schwelle}){fehlt ? ` – setzt ${braucht!.text} voraus` : ''}</option>;
+                })}</optgroup>
               ))}
             </Auswahl>
           );

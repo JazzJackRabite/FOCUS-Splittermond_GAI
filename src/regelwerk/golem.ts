@@ -311,3 +311,11 @@ export function materialInfo(e: Eintrag): string {
 export function korpusGK(e: Eintrag): string {
   return String(e.daten.werte?.abgeleitete_werte?.GK ?? '?');
 }
+
+/** Voraussetzung „hat Meisterschaft X“ einer Meisterschaft (für die freie Meisterschaft im Feinschliff); sonst null */
+export function meisterschaftBraucht(k: Katalog, id: string): { id: string; text: string } | null {
+  const bed = k.get(id)?.daten.voraussetzungen as { bedingung?: { hat?: unknown; text?: string } } | undefined;
+  const hat = bed?.bedingung?.hat;
+  if (typeof hat !== 'string' || !/:meisterschaft:/.test(hat)) return null;
+  return { id: hat, text: bed?.bedingung?.text ?? k.get(hat)?.name ?? hat };
+}

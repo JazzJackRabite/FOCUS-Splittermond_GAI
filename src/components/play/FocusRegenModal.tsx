@@ -244,7 +244,7 @@ export const FocusRegenModal: React.FC<FocusRegenModalProps> = ({
             <label className="block text-[11px] font-bold text-leise uppercase tracking-wide mb-1">Notiz (optional)</label>
             <input
               type="text"
-              placeholder="z. B. Meditation im Versteck"
+              placeholder="z. B. ruhige Stunde am Abend"
               value={notiz}
               onChange={(e) => setNotiz(e.target.value)}
               className="w-full bg-seite border border-rahmen rounded-knopf px-2.5 py-1.5 text-xs text-schrift placeholder-leise focus:outline-none focus:border-unverletzt"

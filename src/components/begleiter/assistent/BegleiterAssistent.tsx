@@ -113,7 +113,8 @@ export const BegleiterAssistent: React.FC<{
   const neu = index === undefined;
   const [entwurf, setEntwurf] = useState<Begleiter | null>(neu ? null : { ...alle[index!] });
   const [stelle, setStelle] = useState(0);
-  const [weitest, setWeitest] = useState(0);
+  // beim Bearbeiten sind alle Schritte schon einmal durchlaufen: jeder ist direkt anwählbar (sofern die vorigen bereit sind)
+  const [weitest, setWeitest] = useState(neu ? 0 : 99);
 
   const artSchritt: Schritt = { id: 'art', titel: 'Art', inhalt: () => null, bereit: () => !!entwurf };
   const eigene = entwurf ? schritteFuer(k, entwurf).filter(s => neu || !s.nurNeu) : [];

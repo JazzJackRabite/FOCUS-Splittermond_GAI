@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { X, Sparkles, RotateCw, Zap, Check } from 'lucide-react';
 import DiceIcon from '../ui/DiceIcon';
 import { Dialog, Knopf, Wahlknopf } from '../../fundament';
+import { useHausregeln } from '../../fundament/hausregeln';
 import type { RollEntry } from './DiceLog';
 import { generateId } from '../../utils/id';
 import type { StatusCondition, ChanneledSpell } from '../../types';
@@ -191,6 +192,7 @@ export const RollModal: React.FC<RollModalProps> = ({
   const [isRolling, setIsRolling] = useState(false);
   const [splinterBonusSpent, setSplinterBonusSpent] = useState(false);
   const [splinterRerollCount, setSplinterRerollCount] = useState(0);
+  const hausregeln = useHausregeln();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Clean up timeout on unmount
@@ -324,7 +326,7 @@ export const RollModal: React.FC<RollModalProps> = ({
   };
 
   const handleSplinterReroll = () => {
-    if (splitterPoints < 1) return;
+    if (splitterPoints < 1 || !hausregeln) return;
     if (onSpendSplitterPoint) {
       onSpendSplitterPoint(`Neuwurf (${skillName})`);
     }
@@ -603,11 +605,13 @@ export const RollModal: React.FC<RollModalProps> = ({
                 </Knopf>
 
                 {/* Option 2: Wurf wiederholen */}
-                <Knopf onClick={handleSplinterReroll} disabled={splitterPoints < 1}
+                <Knopf onClick={handleSplinterReroll} disabled={splitterPoints < 1 || !hausregeln}
                   title={
-                    splitterPoints < 1
+                    !hausregeln
+                      ? 'Ein Neuwurf ist keine Splittergabe des GRW (Probenbonus, Widerstand, Schadensminderung, Mondzeichen, Resonanz) – nur mit Hausregeln'
+                      : splitterPoints < 1
                       ? 'Keine Splitterpunkte mehr verfügbar'
-                      : '1 SP einsetzen um den Wurf komplett neu zu würfeln'
+                      : 'Hausregel: 1 SP einsetzen um den Wurf komplett neu zu würfeln'
                   } className="flex-1 text-xs font-bold">
                   <RotateCw size={14} />
                   <span>Neuwurf (1 SP){splinterRerollCount > 0 ? ` (${splinterRerollCount}×)` : ''}</span>

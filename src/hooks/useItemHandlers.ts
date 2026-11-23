@@ -28,7 +28,7 @@ export function useItemHandlers({ state, calc, dispatch }: ItemHandlersParams) {
 
   const addListEntry = useCallback((
     type: string, name: string, level: number, desc: string,
-    pointCost: number, source: string, page: number | undefined, isFree = false,
+    pointCost: number, source: string, page: number | undefined, isFree = false, zielIndex?: number,
   ) => {
     const sourceMode = mode;
     if (type === 'weakness') {
@@ -42,7 +42,12 @@ export function useItemHandlers({ state, calc, dispatch }: ItemHandlersParams) {
         .find((d) => d.name === name) as ListenDaten | undefined;
       const sp = listenSperre(type as ListenArt, daten ?? null, name, mode, liste);
       if (sp.grund && regelverstoss(`${name}: ${sp.grund}`)) return;
-      if (!sp.grund && type !== 'language' && level > sp.restStufen && regelverstoss(`${name}: höchstens ${sp.restStufen} Stufe(n) mehr möglich`)) return;
+      if (zielIndex === undefined && !sp.grund && type !== 'language' && level > sp.restStufen && regelverstoss(`${name}: höchstens ${sp.restStufen} Stufe(n) mehr möglich`)) return;
+      if (zielIndex !== undefined) {
+        const hoechst = (daten as { maxStufe?: number } | undefined)?.maxStufe ?? 6;
+        const jetzt = Number(resourcesList[zielIndex]?.level) || 0;
+        if (jetzt + level > hoechst && regelverstoss(`${name}: höchstens Stufe ${hoechst}`)) return;
+      }
     }
     const multiplier = type === 'strength' || type === 'resource' ? 7 : 5;
     let cost = 0;
@@ -59,6 +64,7 @@ export function useItemHandlers({ state, calc, dispatch }: ItemHandlersParams) {
     }
     const newItem: ItemEntry = { name, level, source: sourceMode, desc, pointCost, isFree, sourceRef: source, page };
     if (type === 'strength') dispatch({ type: 'ADD_STRENGTH', payload: newItem });
+    else if (type === 'resource' && zielIndex !== undefined) dispatch({ type: 'RESOURCE_STEIGERN', payload: { index: zielIndex, stufen: level } });
     else if (type === 'resource') dispatch({ type: 'ADD_RESOURCE', payload: newItem });
     else if (type === 'language') dispatch({ type: 'ADD_LANGUAGE', payload: newItem });
     toast.success(`${name} hinzugefügt`);

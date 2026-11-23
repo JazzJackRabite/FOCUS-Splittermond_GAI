@@ -10,12 +10,13 @@ import { useRegelwerk } from '../../regelwerk/RegelwerkContext';
 import { alleAusruestung, findeAusruestung, type AusruestungsItem } from '../../regelwerk/ausruestung';
 import {
   AUSWAHL, GEGENSTANDSARTEN, artVon, auswahlAnzeige, kostenVon, passtZu, pruefeRelikt, reliktAlsInventar, reliktBaukasten, reliktBausteine,
-  reliktWerte, reliktWiderstand, veralteteReliktEintraege, ressourcePunkte, wahlText, zauberMitGrad, type BausteinInfo,
+  reliktFrei, reliktRessourcen, reliktWerte, reliktWiderstand, veralteteReliktEintraege, ressourcePunkte, wahlText, zauberMitGrad, type BausteinInfo,
   ANLASS_NAME, aktiveKraefte, beseelungQuelle, beseelungRegeln, domaenen, domaenenKraefte, pruefeChronik, wachsenQuelle, wachsenRegeln,
 } from '../../regelwerk/relikte';
 import type { Katalog } from '../../regelwerk/katalog';
 import type { Relikt, ReliktBaustein, ReliktBeseelung } from '../../types';
 import { generateId } from '../../utils/id';
+import { getResolvedResources } from '../../utils/gameResourceManager';
 import { Abschnittstitel, Auswahl, Dialog, Eingabe, Karte, Knopf, Marke, Rollbereich } from '../../fundament';
 import { regelverstoss, useHausregeln } from '../../fundament/hausregeln';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
@@ -54,7 +55,10 @@ const AuswahlFeld: React.FC<{ k: Katalog; b: BausteinInfo; w: ReliktBaustein; se
     );
   }
   const name = AUSWAHL[b.auswahl] ?? b.auswahl;
-  return <Eingabe beschriftung={name} beschriftungVerborgen value={w.auswahl ?? ''} onChange={e => setze({ auswahl: e.target.value })} placeholder={name} className="w-44" />;
+  // Schwerpunkt: der Bonus erscheint bei Proben der Fertigkeit, deren Name im Text steht („Feuermagie: Feuerbälle“)
+  const platzhalter = b.auswahl === 'schwerpunkt' ? 'Fertigkeit: Schwerpunkt' : name;
+  return <Eingabe beschriftung={name} beschriftungVerborgen value={w.auswahl ?? ''} onChange={e => setze({ auswahl: e.target.value })} placeholder={platzhalter}
+    title={b.auswahl === 'schwerpunkt' ? 'Mit Fertigkeit, z. B. „Stangenwaffen: Kampfstab“ – dann bietet die Probe dieser Fertigkeit den Bonus an.' : undefined} className="w-56" />;
 };
 
 /** Beseelter Gegenstand: Domäne, Heiliger, Gebote, Kräfte mit Questen (Regeln aus dem Paket) */
@@ -355,7 +359,11 @@ export const ReliktKarte: React.FC = () => {
   const ressource = ressourcePunkte(state.resourcesList);
   const vergeben = relikte.reduce((s, r) => s + (r.punkte || 0), 0);
   const nachId = new Map(bausteine.map(b => [b.id, b]));
-  const neu = (): Relikt => ({ id: generateId(), name: '', punkte: Math.max(1, ressource - vergeben), art: 'nahkampfwaffe', bausteine: [], inventarId: generateId() });
+  // Ressource Relikt mehrfach erwerbbar (Paket): je Relikt eine eigene Ressource, sonst die Summe
+  const stufen = reliktRessourcen(state.resourcesList);
+  const mehrfach = !!getResolvedResources().list.find(r => /^Relikt\b/i.test(r.name))?.mehrfach;
+  const freiFuer = (id?: string) => reliktFrei(stufen, mehrfach, relikte.filter(x => x.id !== id).map(x => x.punkte || 0));
+  const neu = (): Relikt => ({ id: generateId(), name: '', punkte: Math.max(1, freiFuer()), art: 'nahkampfwaffe', bausteine: [], inventarId: generateId() });
 
   return (
     <Karte data-testid="relikte">
@@ -364,7 +372,7 @@ export const ReliktKarte: React.FC = () => {
         <Knopf art="sekundaer" onClick={() => setBearbeiten(neu())}><Plus size={14} aria-hidden="true" />Relikt bauen</Knopf>
       </div>
       <p className="text-sm text-leise m-0 mb-2">
-        Ressource Relikt: {ressource} Punkte, davon in Relikten {vergeben}.
+        Ressource Relikt: {mehrfach && stufen.length > 1 ? `${stufen.join(' + ')} (je Relikt eine Ressource)` : `${ressource} Punkte`}, davon in Relikten {vergeben}.
         {vergeben > ressource && <span className="block text-schrift">Mehr Punkte in Relikten als in der Ressource Relikt.</span>}
         {ressource === 0 && <span className="block">Ohne die Ressource Relikt kann ein Relikt nur mit Zustimmung der Spielleitung entstehen.</span>}
       </p>
@@ -414,8 +422,8 @@ export const ReliktKarte: React.FC = () => {
           })}
         </ul>
       )}
-      {bearbeiten && <Werkstatt k={k} start={bearbeiten} frei={ressource - vergeben + ((state.relikte ?? []).find(x => x.id === bearbeiten.id)?.punkte ?? 0)} schliessen={() => setBearbeiten(null)} />}
-      {wachsen && <WachsenDialog k={k} r={wachsen} frei={ressource - vergeben + wachsen.punkte} schliessen={() => setWachsen(null)} weiter={neu => { setWachsen(null); setBearbeiten(neu); }} />}
+      {bearbeiten && <Werkstatt k={k} start={bearbeiten} frei={freiFuer(bearbeiten.id)} schliessen={() => setBearbeiten(null)} />}
+      {wachsen && <WachsenDialog k={k} r={wachsen} frei={freiFuer(wachsen.id)} schliessen={() => setWachsen(null)} weiter={neu => { setWachsen(null); setBearbeiten(neu); }} />}
       {loeschen && <ConfirmDialog title="Relikt löschen" message={`Relikt „${loeschen.name}“ und seinen Inventareintrag löschen?`}
         onCancel={() => setLoeschen(null)} onConfirm={() => { dispatch({ type: 'RELIKT_LOESCHEN', payload: { id: loeschen.id } }); setLoeschen(null); }} />}
     </Karte>
