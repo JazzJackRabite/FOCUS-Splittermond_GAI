@@ -1,3 +1,5 @@
+import { regelverstoss } from './fundament/hausregeln';
+import { pruefeErschaffungImEditor } from './regelwerk/erschaffungEditor';
 import { lpKaestchen } from './regelwerk/schadenUndHeilung';
 import { Knopf, Reiter } from './fundament';
 import React, { useState, useEffect } from 'react';
@@ -134,6 +136,9 @@ const App: React.FC = () => {
         toast.error('Die Charaktererschaffung ist noch nicht vollständig!');
         return;
       }
+      // Regelprüfung der Erschaffung (GRW S. 22–30): offene Fehler sperren den Abschluss (mit Hausregeln nur Warnung)
+      const offen = (pruefeErschaffungImEditor(state)?.befunde ?? []).filter((b) => b[0] === 'fehler');
+      if (offen.length && regelverstoss(`Die Regelprüfung der Erschaffung meldet noch ${offen.length} ${offen.length === 1 ? 'Punkt' : 'Punkte'}, z. B.: ${offen[0][1]}`)) return;
       setConfirmDialog({
         title: 'Charaktererschaffung abschließen?',
         message: 'Ist die Charaktererschaffung abgeschlossen? Sobald du dies bestätigst, darfst du deinen Charakter steigern und spielen.',

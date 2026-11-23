@@ -1,3 +1,4 @@
+import { pruefeErschaffungImEditor } from '../../regelwerk/erschaffungEditor';
 import { Knopf, Wahlknopf } from '../../fundament';
 import { regelverstoss, useHausregeln } from '../../fundament/hausregeln';
 import React, { useState, useCallback } from 'react';
@@ -193,6 +194,9 @@ export function CreationView() {
         toast.error('Die Charaktererschaffung ist noch nicht vollständig!');
         return;
       }
+      // Regelprüfung der Erschaffung (GRW S. 22–30): offene Fehler sperren den Abschluss (mit Hausregeln nur Warnung)
+      const offen = (pruefeErschaffungImEditor(state)?.befunde ?? []).filter((b) => b[0] === 'fehler');
+      if (offen.length && regelverstoss(`Die Regelprüfung der Erschaffung meldet noch ${offen.length} ${offen.length === 1 ? 'Punkt' : 'Punkte'}, z. B.: ${offen[0][1]}`)) return;
       setConfirmDialog({
         title: 'Charaktererschaffung abschließen?',
         message: 'Ist die Charaktererschaffung abgeschlossen? Sobald du dies bestätigst, darfst du deinen Charakter steigern und spielen.',
@@ -261,6 +265,7 @@ export function CreationView() {
           availableSpells={contextSpells} onClose={() => setShowSpellModal(false)}
           onAdd={addSpell} budget={spellBudget} freeSlots={detailedFreeSpellSlots}
           schoolName={activeSkillForSpell}
+          exakterGrad={mode === 'creation'}
         />
       )}
       {masteryModalOpen && activeSkillForMastery && (
@@ -424,7 +429,7 @@ export function CreationView() {
                     canDecrease={canDecrease}
                     cost={mode === 'xp' && currentInc < heldengrad.maxAttrMod ? nextCost : 0}
                     mode={mode}
-                    sperrgrund={mode === 'xp' ? (currentInc >= heldengrad.maxAttrMod ? `${heldengrad.name}: jedes Attribut höchstens um ${heldengrad.maxAttrMod} steigern` : `Nicht genug EP (${nextCost} nötig)`) : undefined}
+                    sperrgrund={mode === 'xp' ? (currentInc >= heldengrad.maxAttrMod ? `${heldengrad.name}: jedes Attribut höchstens um ${heldengrad.maxAttrMod} steigern` : `Nicht genug EP (${nextCost} nötig)`) : (base >= creationUsage.attrMax ? `Bei der Erschaffung höchstens ${creationUsage.attrMax} Punkte je Attribut` : `Alle ${creationUsage.attrLimit} Attributpunkte sind verteilt`)}
                   />
                 );
               })}
@@ -505,7 +510,7 @@ export function CreationView() {
                     canIncrease={hausregeln || (mode === 'creation' ? val < creationUsage.skillMax && creationUsage.skill < creationUsage.skillLimit : val < heldengrad.maxSkill && xpAvailable >= cost)}
                     canDecrease={mode === 'creation' ? (skillsBase[skill] ?? 0) > 0 : (skillsXp[skill] ?? 0) > 0}
                     cost={mode === 'xp' && val < heldengrad.maxSkill ? cost : 0}
-                    sperrgrund={mode === 'xp' ? (val >= heldengrad.maxSkill ? `${heldengrad.name}: höchstens ${heldengrad.maxSkill} Fertigkeitspunkte` : `Nicht genug EP (${cost} nötig)`) : undefined}
+                    sperrgrund={mode === 'xp' ? (val >= heldengrad.maxSkill ? `${heldengrad.name}: höchstens ${heldengrad.maxSkill} Fertigkeitspunkte` : `Nicht genug EP (${cost} nötig)`) : (val >= creationUsage.skillMax ? `Bei der Erschaffung höchstens ${creationUsage.skillMax} Punkte je Fertigkeit` : `Alle ${creationUsage.skillLimit} Fertigkeitspunkte sind verteilt`)}
                     masteries={currentMasteries}
                     onAddMastery={() => { setActiveSkillForMastery({ name: skill, val }); setMasteryModalOpen(true); }}
                     onRemoveMastery={(idx) => removeMastery(skill, idx)}

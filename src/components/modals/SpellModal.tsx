@@ -13,6 +13,8 @@ interface SpellModalProps {
   budget: number;
   freeSlots: Record<string, number[]>;
   schoolName: string | null;
+  /** bei der Erschaffung: freier Zauber genau des Grades seiner Stufe (GRW S. 25); danach auch niedriger (S. 223) */
+  exakterGrad?: boolean;
 }
 
 export const SpellModal: React.FC<SpellModalProps> = ({
@@ -22,6 +24,7 @@ export const SpellModal: React.FC<SpellModalProps> = ({
   budget,
   freeSlots,
   schoolName,
+  exakterGrad = false,
 }) => {
   const [search, setSearch] = useState('');
   const [selectedSpellName, setSelectedSpellName] = useState(
@@ -86,7 +89,7 @@ export const SpellModal: React.FC<SpellModalProps> = ({
     const school = selectedSpell.school || schoolName || ''; 
     const schoolSlots = freeSlots[school] ?? [];
     const validSlotIndex = schoolSlots.findIndex(
-      (slotGrade) => slotGrade >= selectedSpell.grade,
+      (slotGrade) => (exakterGrad ? slotGrade === selectedSpell.grade : slotGrade >= selectedSpell.grade),
     );
     if (validSlotIndex !== -1) {
       canBeFree = true;

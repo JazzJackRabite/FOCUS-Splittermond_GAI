@@ -1141,6 +1141,24 @@ Knöpfen, Tragkraft-Formel, freie Meisterschaft vorgewählt, Wolf mit Kreatur 2 
   waffenlosen Angriff, der Angriffswert steht unter AT.
 - Tests: 534 grün ohne Bücher; 596 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 50 (23.11.2026): Erschaffung im Browser durchgespielt
+
+Neuer Charakter (Mensch, Kultur Selenia, Abstammung Gelehrte, Magierin) in der veröffentlichten App erschaffen. Korrekt:
+Grenzen aus dem Paket (18/55/8/8/2/3), Sperren bei Attribut 4, Fertigkeit 7, 19. Attribut- und 56. Fertigkeitspunkt,
+9. Stärke- und Ressourcenpunkt; Modulwerte eintragen; alle abgeleiteten Werte nachgerechnet. Behoben:
+- Zauber, die bei der Erschaffung über die freien hinaus gewählt werden, kosteten keine EP (Kosten nur im Steigerungsmodus
+  gezählt). Jetzt Kosten des Grades aus dem Paket.
+- Freie Zauber: bei der Erschaffung genau ein Zauber des Grades 0/1/2 je Stufe (GRW S. 25, wie die Regelprüfung);
+  danach je neuer Schwelle einer dieses oder eines niedrigeren Grades (S. 223). Der Zauberdialog bot bei der Erschaffung
+  einen zweiten Zauber des Grades 0 frei an, die Regelprüfung meldete ihn dann als Fehler. Schwellen aus dem Paket
+  (`zauber_nach_grad`, `freieZauberGrade`) statt fester 1/3/6/9/12/15 im Code.
+- Meisterschaftsdialog bei der Erschaffung: „Als Start-Meisterschaft“ ist vorgewählt, solange Kultur/Ausbildung offen sind;
+  vorher wurde der freie Platz der Schwelle verbraucht und die Regelprüfung meldete „2 Meisterschaften wählen“.
+- „Erschaffung abschließen“ ging trotz offener Fehler der Regelprüfung; jetzt Sperre (mit Hausregeln Warnung) mit dem
+  ersten offenen Punkt.
+- Gesperrte Plus-Knöpfe nennen auch bei der Erschaffung den Grund (Höchstwert je Attribut/Fertigkeit, alle Punkte verteilt).
+- Tests: 535 grün ohne Bücher; 597 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

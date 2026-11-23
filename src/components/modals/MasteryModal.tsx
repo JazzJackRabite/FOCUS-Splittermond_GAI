@@ -205,8 +205,11 @@ export const MasteryModal: React.FC<MasteryModalProps> = ({
   // Ist eine freie Meisterschaft offen, ist „Gratis-Slot nutzen“ vorgewählt (wie beim Zauber); abwählen bleibt möglich
   const freiVorbelegt = useRef(false);
   useEffect(() => {
-    if (!freiVorbelegt.current && canBeFreeRank && !isCreationBonus) { freiVorbelegt.current = true; setIsFree(true); }
-  }, [canBeFreeRank, isCreationBonus]);
+    if (freiVorbelegt.current) return;
+    // bei der Erschaffung zuerst die Start-Meisterschaften (Kultur, Ausbildung), danach freie Meisterschaften der Schwelle
+    if (canBeCreationBonus) { freiVorbelegt.current = true; setIsCreationBonus(true); }
+    else if (canBeFreeRank && !isCreationBonus) { freiVorbelegt.current = true; setIsFree(true); }
+  }, [canBeFreeRank, canBeCreationBonus, isCreationBonus]);
 
   useEffect(() => {
     if (!canBeFreeRank && isFree) setIsFree(false);

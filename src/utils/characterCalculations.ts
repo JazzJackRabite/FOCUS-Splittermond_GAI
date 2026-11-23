@@ -1,3 +1,5 @@
+import { aktiverKatalog } from '../regelwerk/bruecke';
+import { freieZauberGrade } from '../regelwerk/abgeleitet';
 import { wundstufenVerschiebung } from '../regelwerk/zustaende';
 import type {
   CharacterState,
@@ -143,6 +145,9 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
       xpSpent += cost;
     } else if (typeof s.cost === 'number') {
       xpSpent += s.cost;
+    } else if (!s.isFree) {
+      // bei der Erschaffung über die freien Zauber hinaus gewählt: kostet Erfahrungspunkte (cost ist hier die Fokus-Angabe)
+      xpSpent += s.xpCost ?? calculateItemCost('spell', s.grade);
     }
   });
 
@@ -375,20 +380,18 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
   const detailedFreeSpellSlots: Record<string, number[]> = {};
   grwFertigkeitsKategorien().MAGIC.forEach((skill) => {
     const val = (skillsBase[skill] ?? 0) + (skillsXp[skill] ?? 0);
-    const earned: number[] = [];
-    if (val >= 1) earned.push(0);
-    if (val >= 3) earned.push(1);
-    if (val >= 6) earned.push(2);
-    if (val >= 9) earned.push(3);
-    if (val >= 12) earned.push(4);
-    if (val >= 15) earned.push(5);
+    // je erreichter Schwelle der Magieschule ein Zauber dieses oder eines niedrigeren Grades (GRW S. 25, S. 223);
+    // Schwellen aus dem Paket (Steigerungskosten: zauber_nach_grad)
+    const earned: number[] = freieZauberGrade(val, aktiverKatalog());
     const usedInSchool = spellsList
       .filter((s) => s.isFree && s.school === skill)
       .map((s) => s.grade)
       .sort((a, b) => a - b);
     earned.sort((a, b) => a - b);
+    // bei der Erschaffung genau der Grad der Stufe (GRW S. 25), danach auch ein niedrigerer (S. 223)
+    const exakt = state.mode === 'creation';
     usedInSchool.forEach((usedGrade) => {
-      const idx = earned.findIndex((slot) => slot >= usedGrade);
+      const idx = earned.findIndex((slot) => (exakt ? slot === usedGrade : slot >= usedGrade));
       if (idx !== -1) earned.splice(idx, 1);
     });
     detailedFreeSpellSlots[skill] = earned;
