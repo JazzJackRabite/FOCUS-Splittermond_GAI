@@ -1,6 +1,6 @@
 /**
  * Pausen nach dem Grundregelwerk: Zustände enden laut Paket (pause_ende, GRW S. 168–169), Betäubungsschaden heilt,
- * kanalisierter Schaden bleibt, bis sein Zustand aufgehoben ist (S. 173); kanalisierte Zauber enden erst in der Ruhephase (S. 196).
+ * kanalisierter Schaden bleibt, bis sein Zustand aufgehoben ist (S. 173); kanalisierter Fokus regeneriert in keiner Pause, kanalisierte Zauber laufen weiter (S. 195–196).
  */
 import { describe, expect, it } from 'vitest';
 import { nachPause, zustand } from '../zustaende';
@@ -38,11 +38,12 @@ describe('Spielstand bei Pausen und Heilung', () => {
     expect(s.playState.conditions).toEqual([z('Erschöpft', 1)]);
   });
 
-  it('Ruhephase: kanalisierter Schaden bleibt, kanalisierte Zauber enden', () => {
+  it('Ruhephase: kanalisierter Schaden, kanalisierter Fokus und kanalisierte Zauber bleiben', () => {
     const s = baseCharacterReducer(start(slots('consumed', 'exhausted', 'channeled', 'empty')), { type: 'PLAY_REST_HEAL', payload: { konAmount: 1, wilAmount: 1 } } as never);
     expect(s.playState.healthSlots.filter(x => x.type === 'channeled')).toHaveLength(1);
     expect(s.playState.healthSlots.filter(x => x.type === 'exhausted')).toHaveLength(0);
-    expect(s.playState.channeledSpells).toEqual([]);
+    expect(s.playState.focus).toEqual({ exhausted: 0, channeled: 3, consumed: 2 }); // WIL 1 × 2 = 2 verzehrte Punkte zurück
+    expect(s.playState.channeledSpells).toHaveLength(1);
     expect(s.playState.conditions).toEqual([]);
   });
 

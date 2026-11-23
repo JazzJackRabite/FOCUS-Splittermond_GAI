@@ -692,7 +692,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
     const consumedSlotsCount = healthSlots.filter((s) => s.type === 'consumed').length;
     const actualConsumedHealed = sperrt.length > 0 ? 0 : Math.min(konAmount, consumedSlotsCount);
 
-    const exhaustedChanneledFocus = focus.exhausted + focus.channeled;
+    const exhaustedChanneledFocus = focus.exhausted;
     const actualConsumedFocusHealed = Math.min(wilAmount, focus.consumed);
 
     const { aufgehoben: removedConds } = zustandsAenderung(conditions, nachPause(conditions, 'ruhephase'));
@@ -718,10 +718,11 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
         type: 'hp',
       },
       {
-        label: 'Erschöpfter Fokus, kanalisierte Zauber beendet',
+        label: 'Erschöpfter Fokus',
         value: exhaustedChanneledFocus > 0 ? `+${exhaustedChanneledFocus} FO (komplett)` : '0 FO',
         type: 'fo',
       },
+      ...(focus.channeled > 0 ? [{ label: 'Kanalisierter Fokus', value: `${focus.channeled} FO bleiben, solange die Zauber wirken (GRW S. 196)`, type: 'fo' as const }] : []),
       {
         label: 'Verzehrter Fokus geheilt (WIL)',
         value: actualConsumedFocusHealed > 0

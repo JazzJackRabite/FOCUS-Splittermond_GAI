@@ -14,11 +14,11 @@ const K = new Katalog(b.manifest, [b.basis]);
 const verletzt = { schaden: 9, betaeubung: 3, kanalisiert: 1, fokus: { erschoepft: 2, kanalisiert: 1, verzehrt: 5 }, zustaende: [{ id: 'z', key: 'Blutend', level: 1 }] };
 
 describe('Rast der Begleiter mit dem Grundregelwerk', () => {
-  it('Ruhephase: Betäubung ganz, LP = 2 × KON, Fokus erschöpft/kanalisiert ganz, verzehrt = 2 × WIL; kanalisierter Schaden und Zustände bleiben (GRW S. 173)', () => {
+  it('Ruhephase: Betäubung ganz, LP = 2 × KON, Fokus erschöpft ganz, verzehrt = 2 × WIL; kanalisierter Schaden, kanalisierter Fokus und Zustände bleiben (GRW S. 173, 196)', () => {
     const e = ruhephaseBegleiter(K, 'tier', verletzt, { KON: '3', WIL: '2' });
-    expect(e.zustand).toMatchObject({ schaden: 3, betaeubung: 0, kanalisiert: 1, fokus: { erschoepft: 0, kanalisiert: 0, verzehrt: 1 } });
+    expect(e.zustand).toMatchObject({ schaden: 3, betaeubung: 0, kanalisiert: 1, fokus: { erschoepft: 0, kanalisiert: 1, verzehrt: 1 } });
     expect(e.zustand.zustaende).toEqual(verletzt.zustaende);
-    expect(e.teile).toEqual(['3 Betäubung', '6 LP', '3 FO erschöpft/kanalisiert', '4 FO verzehrt']);
+    expect(e.teile).toEqual(['3 Betäubung', '6 LP', '2 FO erschöpft', '4 FO verzehrt']);
   });
 
   it('mindestens 1 LP und 1 Fokus, auch bei Konstitution 0; nie mehr als der Schaden', () => {

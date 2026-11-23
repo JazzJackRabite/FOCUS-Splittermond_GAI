@@ -283,7 +283,7 @@ export const RestSection: React.FC<RestSectionProps> = ({
 
             {/* Effect in 1 sentence */}
             <p className="text-xs text-schrift leading-relaxed min-h-[36px]">
-              Heilt zusätzlich echten Schaden &amp; verzehrten Fokus, beendet kanalisierte Zauber{pausenZustandstext('ruhephase') ? `, ${pausenZustandstext('ruhephase')}` : ''}.
+              Heilt zusätzlich echten Schaden &amp; verzehrten Fokus{pausenZustandstext('ruhephase') ? `, ${pausenZustandstext('ruhephase')}` : ''}.
             </p>
             {regeln.ruhephasenJeTag > 0 && (
               <div className="flex items-center justify-between gap-2 text-xs">

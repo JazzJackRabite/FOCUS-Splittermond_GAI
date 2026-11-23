@@ -946,7 +946,8 @@ export function baseCharacterReducer(
       }
       // Step 3: Re-sort using normalizeHealthSlots (consumed vorne, dann empty)
       const finalSlots = normalizeHealthSlots(slots);
-      // Step 4: Focus: erschöpften und kanalisierten Fokus regenerieren, consumed um foHealAmount (or WIL×2) heilen
+      // Step 4: Fokus: allen erschöpften regenerieren, verzehrten um foHealAmount (bzw. WIL × 2). Kanalisierter Fokus
+      // regeneriert auch in der Ruhephase nicht, kanalisierte Zauber laufen weiter (GRW S. 195–196)
       const focusHeal = foHealAmount !== undefined ? foHealAmount : Math.max(1, wilAmount * 2);
       const newConsumedFocus = Math.max(0, state.playState.focus.consumed - focusHeal);
       // Step 5: Zustände nach der Ruhephase laut Paket (pause_ende)
@@ -956,8 +957,7 @@ export function baseCharacterReducer(
         playState: {
           ...state.playState,
           healthSlots: finalSlots,
-          focus: { exhausted: 0, channeled: 0, consumed: newConsumedFocus },
-          channeledSpells: [],
+          focus: { ...state.playState.focus, exhausted: 0, consumed: newConsumedFocus },
           conditions: newConditions,
           dyingLevel: heilungGesperrt ? state.playState.dyingLevel : 0,
           ruhephasenTag: (state.playState.ruhephasenTag ?? 0) + 1,
