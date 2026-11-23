@@ -755,9 +755,10 @@ export function baseCharacterReducer(
         if (st.stufe > newDyingLevel) {
           newDyingLevel = st.stufe;
           for (const z of st.zustaende) {
-            if (!newConditions.some((c) => c.key === z.key && (z.level == null || c.level === z.level))) {
-              newConditions = [...newConditions, { id: generateId(), key: z.key, ...(z.level ? { level: z.level } : {}) }];
-            }
+            // ein Zustand je Name: höhere Stufe ersetzt die niedrigere (Sterbend 2 → Sterbend 3)
+            const da = newConditions.find((c) => c.key === z.key);
+            if (!da) newConditions = [...newConditions, { id: generateId(), key: z.key, ...(z.level ? { level: z.level } : {}) }];
+            else if (z.level && (da.level ?? 0) < z.level) newConditions = newConditions.map((c) => (c === da ? { ...c, level: z.level } : c));
           }
           if (st.stufe === 4 && !newConditions.some((c) => c.key === 'Tod')) newConditions = [...newConditions, { id: generateId(), key: 'Tod' }];
         }
@@ -827,7 +828,12 @@ export function baseCharacterReducer(
         const r = sterberegeln();
         const sterbeZustaende = [...(r?.beiErstemSchaden ?? []), ...(r?.beiAllenLp ?? [])].filter((z) => z.level);
         if (newDyingLevel < 4) newConditions = newConditions.filter((c) => c.key !== 'Tod');
-        newConditions = newConditions.filter((c) => !sterbeZustaende.some((z) => z.key === c.key && z.level === c.level && z.level! > newDyingLevel));
+        // höhere Sterbe-Stufe zurück auf die zum neuen Stand passende, ohne Stand ganz weg
+        newConditions = newConditions.flatMap((c) => {
+          if (!sterbeZustaende.some((z) => z.key === c.key && z.level === c.level && z.level! > newDyingLevel)) return [c];
+          const passend = sterbeZustaende.filter((z) => z.key === c.key && z.level! <= newDyingLevel).map((z) => z.level!).sort((x, y) => y - x)[0];
+          return passend ? [{ ...c, level: passend }] : [];
+        });
       }
 
       return {

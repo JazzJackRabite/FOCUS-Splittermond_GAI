@@ -517,7 +517,7 @@ export const CombatMagicTab: React.FC = () => {
                         <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                           <span className="font-bold text-base text-schrift truncate">{w.name}</span>
                           <span className="text-xs bg-erhoeht text-schrift font-semibold px-2 py-0.5 rounded-knopf border border-rahmen">
-                            {skillName} (FW {skillVal})
+                            {skillName} (FW {getSkillValue(skillName)})
                           </span>
                           {w.equipped ? (
                             <span className="text-[11px] bg-unverletzt-grund text-unverletzt font-bold px-1.5 py-0.5 rounded-knopf border border-unverletzt">

@@ -138,6 +138,8 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
     expect(result.current.state.playState.dyingLevel).toBe(3);
     // alle LP auf Todgeweiht verloren: zusätzlich bewusstlos (Paket: zustaende_bei_allen_lp)
     expect(result.current.state.playState.conditions.some((c) => c.key === 'Bewusstlos')).toBe(true);
+    // ein einziger Zustand Sterbend, auf Stufe 3 erhöht (nicht Sterbend 2 und Sterbend 3 nebeneinander)
+    expect(result.current.state.playState.conditions.filter((c) => c.key === 'Sterbend').map((c) => c.level)).toEqual([3]);
 
     // genau eine Stufe darunter (2 Punkte): noch nicht tot – erst MEHR als eine Stufe
     act(() => {
@@ -389,6 +391,16 @@ describe('Play Mode Rules & Health/Focus Engine (Splittermond GRW)', () => {
     expect(slots[1].type).toBe('exhausted');
     expect(slots[2].type).toBe('channeled');
     expect(slots[3].type).toBe('empty');
+  });
+
+  it('Sterbend 3 geht beim Zurücknehmen auf Sterbend 2 zurück (ein Zustand, Stufe angepasst)', () => {
+    const { result } = renderHook(() => useCharacterState());
+    act(() => { result.current.dispatch({ type: 'PLAY_RESET', payload: { maxLP: 2, maxFocus: 10, maxSplitter: 3 } }); });
+    act(() => { result.current.dispatch({ type: 'PLAY_TAKE_DAMAGE', payload: { kind: 'consumed', maxLP: 2, amount: 10 } }); });
+    expect(result.current.state.playState.conditions.filter((c) => c.key === 'Sterbend').map((c) => c.level)).toEqual([3]);
+    act(() => { result.current.dispatch({ type: 'PLAY_UNDO_DAMAGE', payload: { kind: 'consumed', amount: 1, maxLP: 2 } }); });
+    expect(result.current.state.playState.dyingLevel).toBe(2);
+    expect(result.current.state.playState.conditions.filter((c) => c.key === 'Sterbend').map((c) => c.level)).toEqual([2]);
   });
 
   it('recalculates dyingLevel and removes Sterbend condition when consumed damage in Todgeweiht is removed', () => {

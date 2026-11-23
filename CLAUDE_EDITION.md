@@ -1129,6 +1129,18 @@ die versehentlich im umbenannten FOKUS-1.2 (heute FOCUS-Splittermond) lief, und 
 - Offen: Merkmale der Rüstung des Ziels (z. B. halbierter Wuchtangriff, ignorierte Durchdringung) – der Editor kennt die
   Rüstung des Gegners nicht; Defensiv wirkt nur als Hinweis, weil es keinen eigenen Dialog für die Aktive Abwehr gibt.
 
+## Stand 49 (23.11.2026): Browser-Prüfung nach der Veröffentlichung
+
+Die veröffentlichte App mit Stand 48 durchgeklickt (Arrou): Angriffswerte (Waffenlos 12, Langbogen 14, Speer 13),
+Kampfpositionen im Fernkampf, Merkmale im Angriffsdialog, Nachfrage zu übrigen EG, LP 42 / 50 mit 61 Kästchen, Verwundet
+nur im Wundabzug („Wundabzug (Unverletzt, Verwundet 1)“), Sterben mit Hinweis auf die Zähigkeitsprobe, Gründe an gesperrten
+Knöpfen, Tragkraft-Formel, freie Meisterschaft vorgewählt, Wolf mit Kreatur 2 gesperrt. Behoben:
+- Sterben: Sterbend 2 und Sterbend 3 standen nebeneinander. Jetzt ein Zustand, dessen Stufe steigt; beim Zurücknehmen
+  von Schaden sinkt sie wieder (3 → 2) oder entfällt.
+- Kampf-Tab: „Schusswaffen (FW 14)“ zeigte den Angriffswert als Fertigkeitswert; jetzt die Fertigkeitspunkte wie beim
+  waffenlosen Angriff, der Angriffswert steht unter AT.
+- Tests: 534 grün ohne Bücher; 596 mit Grimoires, Falldatei und Volltest; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
