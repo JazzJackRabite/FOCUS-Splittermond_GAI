@@ -1,6 +1,6 @@
 import { mitZustaenden, zustandsErklaerung, zustandswerte } from '../../regelwerk/zustandswerte';
 import { Dialog, Dialogfenster, Dialoghintergrund, Dialogkopf, Knopf, Wahlknopf } from '../../fundament';
-import React, { useState, useMemo, useRef, useLayoutEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Swords,
   Shield,
@@ -58,29 +58,6 @@ interface QuickSpellCardProps {
 
 const QuickSpellCard: React.FC<QuickSpellCardProps> = ({ spell, session }) => {
   const info = useMemo(() => getFullSpellInfo(spell), [spell]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const textMeasureRef = useRef<HTMLSpanElement>(null);
-  const buttonsRef = useRef<HTMLDivElement>(null);
-  const [shouldWrap, setShouldWrap] = useState(false);
-
-  useLayoutEffect(() => {
-    const checkWrap = () => {
-      if (!containerRef.current || !textMeasureRef.current) return;
-      const containerWidth = containerRef.current.clientWidth;
-      const textWidth = textMeasureRef.current.scrollWidth;
-      const buttonsWidth = buttonsRef.current?.offsetWidth || 120;
-      const gap = 16;
-      // Zeilenumbruch nur genau dann, wenn der Name sonst abgeschnitten oder nicht mehr lesbar wäre
-      setShouldWrap(containerWidth < textWidth + buttonsWidth + gap);
-    };
-
-    checkWrap();
-    if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
-      const ro = new ResizeObserver(checkWrap);
-      ro.observe(containerRef.current);
-      return () => ro.disconnect();
-    }
-  }, [spell.name, spell.grade]);
 
   const stats = useMemo(() => {
     return [
@@ -93,89 +70,26 @@ const QuickSpellCard: React.FC<QuickSpellCardProps> = ({ spell, session }) => {
     ].filter((stat) => stat.value);
   }, [info]);
 
+  // Ein Klick auf die Zeile öffnet das Zaubern – gleich groß wie die Knöpfe der Fertigkeiten und Magieschulen
   return (
-    <div
-      ref={containerRef}
-      className="bg-erhoeht hover:bg-rahmen rounded-karte p-3 text-sm border border-rahmen hover:border-gold transition-all relative"
+    <Knopf
+      onClick={() => session.handleOpenCastSpell(spell)}
+      className="w-full justify-between text-sm group"
+      title={`${spell.name} (Grad ${spell.grade}) zaubern`}
     >
-      {/* Unsichtbares Messelement für die unbeschränkte Breite von Name + Grad */}
-      <span
-        ref={textMeasureRef}
-        aria-hidden="true"
-        className="absolute invisible pointer-events-none whitespace-nowrap text-base font-bold pr-6"
-      >
-        {spell.name} (Grad {spell.grade})
+      <span className="flex items-center gap-1.5 min-w-0">
+        <Wand2 size={14} className="text-gold shrink-0" />
+        <span className="truncate group-hover:text-gold-hell">{spell.name}</span>
+        <span className="text-[11px] text-leise shrink-0">(Grad {spell.grade})</span>
       </span>
-
-      {shouldWrap ? (
-        /* Umgebrochenes Layout: Name oben über die volle Breite, Buttons rechtsbündig darunter */
-        <div className="flex flex-col gap-2">
-          <div
-            onClick={() => session.handleOpenCastSpell(spell)}
-            className="cursor-pointer flex items-center gap-1.5 w-full min-w-0"
-            title={`${spell.name} (Grad ${spell.grade}) – Zaubern öffnen`}
-          >
-            <Wand2 size={15} className="text-gold shrink-0" />
-            <span className="font-bold text-base text-schrift hover:text-leise leading-snug truncate">
-              {spell.name}
-            </span>
-            <span className="text-[11px] font-semibold text-leise shrink-0">
-              (Grad {spell.grade})
-            </span>
-          </div>
-
-          <div
-            ref={buttonsRef}
-            className="flex items-center justify-end gap-1.5 shrink-0 pt-1 border-t border-rahmen"
-          >
-            <Knopf
-              onClick={() => session.handleOpenCastSpell(spell)}
-              className="bg-erhoeht hover:bg-rahmen text-schrift text-xs px-2.5 py-1 rounded-knopf font-bold transition-all flex items-center gap-1 border border-rahmen cursor-pointer whitespace-nowrap active:scale-95"
-            >
-              <Sparkles size={12} className="text-magie" />
-              <span>Zaubern</span>
-            </Knopf>
-            <SourceBadge
-              source={info.source || 'GRW'}
-              page={info.page}
-              tooltipData={{ title: info.name, description: info.description, stats }}
-            />
-          </div>
-        </div>
-      ) : (
-        /* Einzeiliges Layout: Name links, Buttons rechts */
-        <div className="flex items-center justify-between gap-3">
-          <div
-            onClick={() => session.handleOpenCastSpell(spell)}
-            className="cursor-pointer flex items-center gap-1.5 min-w-0 flex-1"
-            title={`${spell.name} (Grad ${spell.grade}) – Zaubern öffnen`}
-          >
-            <Wand2 size={15} className="text-gold shrink-0" />
-            <span className="font-bold text-base text-schrift hover:text-leise leading-snug truncate">
-              {spell.name}
-            </span>
-            <span className="text-[11px] font-semibold text-leise shrink-0">
-              (Grad {spell.grade})
-            </span>
-          </div>
-
-          <div ref={buttonsRef} className="flex items-center gap-1.5 shrink-0 ml-auto">
-            <Knopf
-              onClick={() => session.handleOpenCastSpell(spell)}
-              className="bg-erhoeht hover:bg-rahmen text-schrift text-xs px-2.5 py-1 rounded-knopf font-bold transition-all flex items-center gap-1 border border-rahmen cursor-pointer whitespace-nowrap active:scale-95"
-            >
-              <Sparkles size={12} className="text-magie" />
-              <span>Zaubern</span>
-            </Knopf>
-            <SourceBadge
-              source={info.source || 'GRW'}
-              page={info.page}
-              tooltipData={{ title: info.name, description: info.description, stats }}
-            />
-          </div>
-        </div>
-      )}
-    </div>
+      <span className="shrink-0 flex items-center" onClick={(e) => e.stopPropagation()}>
+        <SourceBadge
+          source={info.source || 'GRW'}
+          page={info.page}
+          tooltipData={{ title: info.name, description: info.description, stats }}
+        />
+      </span>
+    </Knopf>
   );
 };
 

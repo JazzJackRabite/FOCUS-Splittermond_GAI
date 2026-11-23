@@ -31,13 +31,21 @@ export interface KnopfProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   eng?: boolean;
 }
 
+/**
+ * Gibt die Ansicht selbst eine Ausrichtung vor (z. B. `justify-between` für „Name links, Wert rechts“), darf die
+ * mittige Grundausrichtung nicht mehr greifen: Tailwind entscheidet bei zwei `justify-*`-Klassen nach der Reihenfolge
+ * im Stylesheet, nicht im className – dort gewinnt sonst `justify-center`. Text steht in diesem Fall linksbündig.
+ */
+const eigeneAusrichtung = (className?: string) => /(^|\s)justify-(start|between|end|around|evenly)(\s|$)/.test(className ?? '');
+
 /** Schaltfläche. Mindestens 44 px hoch, damit sie auch am Handy sicher zu treffen ist. */
 export const Knopf = React.forwardRef<HTMLButtonElement, KnopfProps>(({ art = 'neutral', nurSymbol, eng, className, type = 'button', ...rest }, ref) => (
   <button
     ref={ref}
     type={type}
     className={zusammen(
-      'inline-flex items-center justify-center gap-2 min-h-11 rounded-knopf border font-text text-[13px] cursor-pointer transition-colors',
+      'inline-flex items-center gap-2 min-h-11 rounded-knopf border font-text text-[13px] cursor-pointer transition-colors',
+      eigeneAusrichtung(className) ? 'text-left' : 'justify-center',
       'disabled:cursor-not-allowed disabled:bg-flaeche disabled:border-rahmen disabled:text-leise disabled:font-normal',
       'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-hell',
       nurSymbol ? 'w-11 px-0' : eng ? 'px-2' : 'px-[18px]',

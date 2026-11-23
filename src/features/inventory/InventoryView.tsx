@@ -6,8 +6,6 @@ import {
   Weight,
   Plus,
   Minus,
-  ChevronUp,
-  ChevronDown,
   Trash2,
   Edit2,
   Search,
@@ -29,6 +27,13 @@ import type { InventoryItem } from '../../types';
 import { toast } from 'react-hot-toast';
 import { ReliktKarte } from '../../components/relikte/ReliktKarte';
 import { erschaffungsVermoegen, startvermoegen } from '../../regelwerk/grwListen';
+
+/** Münzen des Geldbeutels: je ein Feld mit − / Wert / + nebeneinander */
+const MUENZEN = [
+  { feld: 'solare', kurz: 'S', einzahl: 'Solar', titel: 'Solare (Goldmünzen, 1 S = 100 L)', punkt: 'bg-erschoepft border-erschoepft', farbe: 'text-gold' },
+  { feld: 'lunare', kurz: 'L', einzahl: 'Lunar', titel: 'Lunare (Silbermünzen, 1 L = 100 T)', punkt: 'bg-erhoeht border-rahmen', farbe: 'text-schrift' },
+  { feld: 'telare', kurz: 'T', einzahl: 'Telar', titel: 'Telare (Kupfermünzen)', punkt: 'bg-gold-hell border-erschoepft', farbe: 'text-erschoepft' },
+] as const;
 
 export const InventoryView: React.FC = () => {
   const { state, dispatch, calc } = useCharacter();
@@ -247,107 +252,38 @@ export const InventoryView: React.FC = () => {
             <span className="font-bold uppercase tracking-wider text-schrift">Geld:</span>
           </div>
 
-          {/* Solare (Gold) */}
-          <div
-            className="flex items-center bg-flaeche hover:border-gold border border-gold rounded-knopf px-2 py-1 gap-1.5 transition-colors"
-            title="Solare (Goldmünzen, 1 S = 100 L) · Klick auf ▲/▼ zum Anpassen (Shift+Klick: 10er-Schritte)"
-          >
-            <span className="flex items-center gap-1 select-none shrink-0 tabular-nums text-xs font-bold" title="Solare (Goldmünzen, 1 S = 100 L)">
-              <span className="w-3 h-3 rounded-full bg-erschoepft border border-erschoepft inline-block shrink-0" />
-              <span className="text-gold">S</span>
-            </span>
-            <input
-              type="number"
-              min={0}
-              value={money.solare ?? 0}
-              onFocus={(e) => e.target.select()}
-              onChange={(e) => handleSetMoney('solare', parseInt(e.target.value, 10) || 0)}
-              className="w-7 sm:w-8 text-center tabular-nums font-bold text-xs bg-transparent text-schrift focus:outline-none p-0"
-              title="Solare (Goldmünzen, 1 S = 100 L)"
-            />
-            <div className="flex flex-col -my-1 -mr-1 pl-1 border-l border-rahmen shrink-0">
-              <Knopf nurSymbol onClick={(e) => {
-                  const delta = e.shiftKey ? 10 : 1;
-                  handleModifyMoney('solare', delta);
-                }} title="+1 Solar (Shift+Klick: +10)" aria-label="+1 Solar">
-                <ChevronUp size={11} strokeWidth={2.5} />
-              </Knopf>
-              <Knopf nurSymbol onClick={(e) => {
-                  const delta = e.shiftKey ? -10 : -1;
-                  handleModifyMoney('solare', delta);
-                }} disabled={(money.solare ?? 0) <= 0} title="-1 Solar (Shift+Klick: -10)" aria-label="-1 Solar">
-                <ChevronDown size={11} strokeWidth={2.5} />
-              </Knopf>
-            </div>
-          </div>
-
-          {/* Lunare (Silber) */}
-          <div
-            className="flex items-center bg-flaeche hover:border-gold border border-gold rounded-knopf px-2 py-1 gap-1.5 transition-colors"
-            title="Lunare (Silbermünzen, 1 L = 100 T) · Klick auf ▲/▼ zum Anpassen (Shift+Klick: 10er-Schritte)"
-          >
-            <span className="flex items-center gap-1 select-none shrink-0 tabular-nums text-xs font-bold" title="Lunare (Silbermünzen, 1 L = 100 T)">
-              <span className="w-3 h-3 rounded-full bg-erhoeht border border-rahmen inline-block shrink-0" />
-              <span className="text-schrift">L</span>
-            </span>
-            <input
-              type="number"
-              min={0}
-              value={money.lunare ?? 0}
-              onFocus={(e) => e.target.select()}
-              onChange={(e) => handleSetMoney('lunare', parseInt(e.target.value, 10) || 0)}
-              className="w-7 sm:w-8 text-center tabular-nums font-bold text-xs bg-transparent text-schrift focus:outline-none p-0"
-              title="Lunare (Silbermünzen, 1 L = 100 T)"
-            />
-            <div className="flex flex-col -my-1 -mr-1 pl-1 border-l border-rahmen shrink-0">
-              <Knopf nurSymbol onClick={(e) => {
-                  const delta = e.shiftKey ? 10 : 1;
-                  handleModifyMoney('lunare', delta);
-                }} title="+1 Lunar (Shift+Klick: +10)" aria-label="+1 Lunar">
-                <ChevronUp size={11} strokeWidth={2.5} />
-              </Knopf>
-              <Knopf nurSymbol onClick={(e) => {
-                  const delta = e.shiftKey ? -10 : -1;
-                  handleModifyMoney('lunare', delta);
-                }} disabled={(money.lunare ?? 0) <= 0} title="-1 Lunar (Shift+Klick: -10)" aria-label="-1 Lunar">
-                <ChevronDown size={11} strokeWidth={2.5} />
-              </Knopf>
-            </div>
-          </div>
-
-          {/* Telare (Kupfer) */}
-          <div
-            className="flex items-center bg-flaeche hover:border-gold border border-gold rounded-knopf px-2 py-1 gap-1.5 transition-colors"
-            title="Telare (Kupfermünzen) · Klick auf ▲/▼ zum Anpassen (Shift+Klick: 10er-Schritte)"
-          >
-            <span className="flex items-center gap-1 select-none shrink-0 tabular-nums text-xs font-bold" title="Telare (Kupfermünzen)">
-              <span className="w-3 h-3 rounded-full bg-gold-hell border border-erschoepft inline-block shrink-0" />
-              <span className="text-erschoepft">T</span>
-            </span>
-            <input
-              type="number"
-              min={0}
-              value={money.telare ?? 0}
-              onFocus={(e) => e.target.select()}
-              onChange={(e) => handleSetMoney('telare', parseInt(e.target.value, 10) || 0)}
-              className="w-7 sm:w-8 text-center tabular-nums font-bold text-xs bg-transparent text-schrift focus:outline-none p-0"
-              title="Telare (Kupfermünzen)"
-            />
-            <div className="flex flex-col -my-1 -mr-1 pl-1 border-l border-rahmen shrink-0">
-              <Knopf nurSymbol onClick={(e) => {
-                  const delta = e.shiftKey ? 10 : 1;
-                  handleModifyMoney('telare', delta);
-                }} title="+1 Telar (Shift+Klick: +10)" aria-label="+1 Telar">
-                <ChevronUp size={11} strokeWidth={2.5} />
-              </Knopf>
-              <Knopf nurSymbol onClick={(e) => {
-                  const delta = e.shiftKey ? -10 : -1;
-                  handleModifyMoney('telare', delta);
-                }} disabled={(money.telare ?? 0) <= 0} title="-1 Telar (Shift+Klick: -10)" aria-label="-1 Telar">
-                <ChevronDown size={11} strokeWidth={2.5} />
-              </Knopf>
-            </div>
-          </div>
+          {MUENZEN.map((m) => {
+            const wert = money[m.feld] ?? 0;
+            return (
+              <div
+                key={m.feld}
+                className="flex items-center gap-1.5 bg-flaeche border border-gold rounded-knopf p-1"
+                title={`${m.titel} · Shift+Klick auf − / +: 10er-Schritte`}
+              >
+                <Knopf nurSymbol onClick={(e) => handleModifyMoney(m.feld, e.shiftKey ? -10 : -1)}
+                  disabled={wert <= 0} title={`−1 ${m.einzahl} (Shift+Klick: −10)`} aria-label={`1 ${m.einzahl} weniger`}>
+                  <Minus size={14} aria-hidden="true" />
+                </Knopf>
+                <span className="flex items-center gap-1 select-none shrink-0 text-xs font-bold">
+                  <span className={`w-3 h-3 rounded-full border inline-block shrink-0 ${m.punkt}`} />
+                  <span className={m.farbe}>{m.kurz}</span>
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  value={wert}
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => handleSetMoney(m.feld, parseInt(e.target.value, 10) || 0)}
+                  className="w-9 text-center tabular-nums font-bold text-sm bg-transparent text-schrift focus:outline-none p-0"
+                  aria-label={m.titel}
+                />
+                <Knopf nurSymbol onClick={(e) => handleModifyMoney(m.feld, e.shiftKey ? 10 : 1)}
+                  title={`+1 ${m.einzahl} (Shift+Klick: +10)`} aria-label={`1 ${m.einzahl} mehr`}>
+                  <Plus size={14} aria-hidden="true" />
+                </Knopf>
+              </div>
+            );
+          })}
         </div>
       </div>
 

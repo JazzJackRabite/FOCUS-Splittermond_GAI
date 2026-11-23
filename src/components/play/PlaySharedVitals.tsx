@@ -175,8 +175,6 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
   const [consumedFocusAmount, setConsumedFocusAmount] = useState<number>(1);
 
   // Condition dropdown state
-  const [selectedCondition, setSelectedCondition] = useState<string>('Benommen');
-  const [conditionLevel, setConditionLevel] = useState<number>(1);
 
   // Minimal condition quick-picker state (Tab Spielen)
   const [showMinimalConditionPicker, setShowMinimalConditionPicker] = useState<boolean>(false);
@@ -399,6 +397,148 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
     toast.success(titles[kind]);
   };
 
+  // Zustände: ein gemeinsamer Bereich für die Reiter „Spielen“ und „Kampf & Magie“
+  const zustandsbereich = (
+    <div className="pt-1.5 border-t border-rahmen space-y-1.5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <Wahlknopf
+            gewaehlt={showMinimalConditionPicker}
+            mittig
+            onClick={() => setShowMinimalConditionPicker((prev) => !prev)}
+            className="px-3 text-xs uppercase tracking-wider fantasy-font gap-1.5"
+            title={showMinimalConditionPicker ? 'Zustandsauswahl schließen' : 'Zustand hinzufügen'}
+            aria-expanded={showMinimalConditionPicker}
+          >
+            <span aria-hidden="true">{showMinimalConditionPicker ? '✕' : '+'}</span>
+            <span>Zustände</span>
+          </Wahlknopf>
+        </div>
+        <span className="text-[11px] text-leise font-semibold">
+          {conditions.length} aktiv
+        </span>
+      </div>
+
+      {/* Dezente Schnellauswahl */}
+      {showMinimalConditionPicker && (
+        <div className="bg-erhoeht border border-rahmen rounded-knopf p-2 sm:p-2.5 space-y-2 text-xs">
+          <div className="flex items-center justify-between text-[11px] text-leise">
+            <span className="font-semibold text-schrift">Schnellauswahl (1 Klick):</span>
+            <Knopf
+              onClick={() => setShowMinimalConditionPicker(false)}
+              className="text-xs"
+              title="Schließen"
+            >
+              ✕
+            </Knopf>
+          </div>
+
+          {/* Häufigste Zustände als Schnell-Chips */}
+          <div className="flex flex-wrap gap-1">
+            {['Liegend', 'Benommen', 'Erschöpft', 'Blutend', 'Brennend', 'Geblendet', 'Bewusstlos'].map((key) => {
+              const existing = conditions.find((c) => c.key === key);
+              return (
+                <Wahlknopf gewaehlt={!!existing} mittig key={key} onClick={() => handleAddQuickCondition(key)} title={`${existing ? `${key} aktiv (Klick erhöht Stufe)` : `${key} hinzufügen`}\nQuelle: ${zustandQuelle(key)}`} className="rounded-full text-[11px] font-medium">
+                  <span>{key}</span>
+                  {existing && existing.level && (
+                    <span className="text-gold tabular-nums font-bold text-[11px]">
+                      {existing.level}
+                    </span>
+                  )}
+                  <span className="text-gold text-[11px] font-bold">+</span>
+                </Wahlknopf>
+              );
+            })}
+          </div>
+
+          {/* Auswahlliste für alle Splittermond-Zustände */}
+          <div className="flex items-center gap-1.5 pt-1.5 border-t border-rahmen">
+            <select
+              value={selectedMinimalCondition}
+              onChange={(e) => setSelectedMinimalCondition(e.target.value)}
+              className="bg-erhoeht border border-rahmen rounded-knopf px-2 py-1 text-xs text-schrift font-medium focus:outline-none focus:border-gold cursor-pointer flex-1 min-w-[110px]"
+            >
+              {alleZustaende().map((cond: string) => (
+                <option key={cond} value={cond} className="bg-erhoeht text-schrift" title={`Quelle: ${zustandQuelle(cond)}`}>
+                  {cond}
+                </option>
+              ))}
+            </select>
+
+            {zustandHatStufe(selectedMinimalCondition) && (
+              <div className="flex items-center gap-1">
+                <span className="text-[11px] text-leise">Stufe:</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={6}
+                  value={minimalConditionLevel}
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => setMinimalConditionLevel(parseInt(e.target.value, 10) || 1)}
+                  className="w-10 bg-erhoeht border border-rahmen rounded-knopf px-1 py-1 text-center text-xs tabular-nums font-bold text-schrift focus:outline-none focus:border-gold"
+                />
+              </div>
+            )}
+
+            <Knopf art="primaer"
+              onClick={() => handleAddQuickCondition(selectedMinimalCondition, minimalConditionLevel)}
+              className="text-xs shrink-0"
+              title="Ausgewählten Zustand hinzufügen"
+            >
+              + Hinzufügen
+            </Knopf>
+          </div>
+        </div>
+      )}
+
+      {/* Aktive Zustände Badges */}
+      {conditions.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {conditions.map((c) => (
+            <Knopf
+              key={c.id}
+              onClick={() => {
+                session.logAndDispatch(
+                  { type: 'PLAY_REMOVE_CONDITION', payload: { id: c.id } },
+                  {
+                    category: 'condition',
+                    title: 'Zustand entfernt',
+                    description: `${formatConditionLabel(c)} aufgehoben`,
+                    badge: { text: `${c.key} weg`, variant: 'success' },
+                  }
+                );
+              }}
+              title={`${zustandTooltip(c)}\n\nKlick: Zustand entfernen`}
+              aria-label={`${formatConditionLabel(c)} entfernen`}
+              className="rounded-full! px-3! gap-1.5 text-xs font-medium hover:bg-rahmen hover:border-gold"
+            >
+              <span>{c.key}</span>
+              {c.level && c.level > 1 && (
+                <span className="text-gold tabular-nums font-bold text-[11px]">
+                  {c.level}
+                </span>
+              )}
+              {c.note && (
+                <span className="text-leise text-[11px] font-normal">
+                  ({c.note})
+                </span>
+              )}
+              <span aria-hidden="true" className="text-leise text-sm leading-none">×</span>
+            </Knopf>
+          ))}
+        </div>
+      ) : (
+        <div
+          onClick={() => setShowMinimalConditionPicker((prev) => !prev)}
+          className="text-[11px] text-leise hover:text-leise italic cursor-pointer transition-colors"
+          title="Klicken, um Zustand-Schnellauswahl zu öffnen"
+        >
+          Keine aktiven Zustände
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-5">
       {/* ── 2-Column Grid: LEBENSPUNKTE (Links) & FOKUS (Rechts) nebeneinander ── */}
@@ -528,149 +668,8 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
                 </div>
               </div>
 
-              {/* 2. Zustände mit dezenter Schnellauswahl */}
-              <div className="pt-1.5 border-t border-rahmen space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Knopf
-                      onClick={() => setShowMinimalConditionPicker((prev) => !prev)}
-                      className="text-xs uppercase tracking-wider fantasy-font gap-1.5"
-                      title="Zustand-Schnellauswahl öffnen/schließen"
-                    >
-                      <span>Zustände</span>
-                    </Knopf>
-                    <Wahlknopf gewaehlt={showMinimalConditionPicker} mittig className="w-11" onClick={() => setShowMinimalConditionPicker((prev) => !prev)} title={showMinimalConditionPicker ? 'Schnellmenü schließen' : 'Zustand schnell hinzufügen'}
-                      aria-label="Zustand hinzufügen">
-                      {showMinimalConditionPicker ? '✕' : '+'}
-                    </Wahlknopf>
-                  </div>
-                  <span className="text-[11px] text-leise font-semibold">
-                    {conditions.length} aktiv
-                  </span>
-                </div>
-
-                {/* Dezente Schnellauswahl */}
-                {showMinimalConditionPicker && (
-                  <div className="bg-erhoeht border border-rahmen rounded-knopf p-2 sm:p-2.5 space-y-2 text-xs">
-                    <div className="flex items-center justify-between text-[11px] text-leise">
-                      <span className="font-semibold text-schrift">Schnellauswahl (1 Klick):</span>
-                      <Knopf
-                        onClick={() => setShowMinimalConditionPicker(false)}
-                        className="text-xs"
-                        title="Schließen"
-                      >
-                        ✕
-                      </Knopf>
-                    </div>
-
-                    {/* Häufigste Zustände als Schnell-Chips */}
-                    <div className="flex flex-wrap gap-1">
-                      {['Liegend', 'Benommen', 'Erschöpft', 'Blutend', 'Brennend', 'Geblendet', 'Bewusstlos'].map((key) => {
-                        const existing = conditions.find((c) => c.key === key);
-                        return (
-                          <Wahlknopf gewaehlt={!!existing} mittig key={key} onClick={() => handleAddQuickCondition(key)} title={`${existing ? `${key} aktiv (Klick erhöht Stufe)` : `${key} hinzufügen`}\nQuelle: ${zustandQuelle(key)}`} className="rounded-full text-[11px] font-medium">
-                            <span>{key}</span>
-                            {existing && existing.level && (
-                              <span className="text-gold tabular-nums font-bold text-[11px]">
-                                {existing.level}
-                              </span>
-                            )}
-                            <span className="text-gold text-[11px] font-bold">+</span>
-                          </Wahlknopf>
-                        );
-                      })}
-                    </div>
-
-                    {/* Auswahlliste für alle Splittermond-Zustände */}
-                    <div className="flex items-center gap-1.5 pt-1.5 border-t border-rahmen">
-                      <select
-                        value={selectedMinimalCondition}
-                        onChange={(e) => setSelectedMinimalCondition(e.target.value)}
-                        className="bg-erhoeht border border-rahmen rounded-knopf px-2 py-1 text-xs text-schrift font-medium focus:outline-none focus:border-gold cursor-pointer flex-1 min-w-[110px]"
-                      >
-                        {alleZustaende().map((cond: string) => (
-                          <option key={cond} value={cond} className="bg-erhoeht text-schrift" title={`Quelle: ${zustandQuelle(cond)}`}>
-                            {cond}
-                          </option>
-                        ))}
-                      </select>
-
-                      {zustandHatStufe(selectedMinimalCondition) && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-[11px] text-leise">Stufe:</span>
-                          <input
-                            type="number"
-                            min={1}
-                            max={6}
-                            value={minimalConditionLevel}
-                            onFocus={(e) => e.target.select()}
-                            onChange={(e) => setMinimalConditionLevel(parseInt(e.target.value, 10) || 1)}
-                            className="w-10 bg-erhoeht border border-rahmen rounded-knopf px-1 py-1 text-center text-xs tabular-nums font-bold text-schrift focus:outline-none focus:border-gold"
-                          />
-                        </div>
-                      )}
-
-                      <Knopf art="primaer"
-                        onClick={() => handleAddQuickCondition(selectedMinimalCondition, minimalConditionLevel)}
-                        className="text-xs shrink-0"
-                        title="Ausgewählten Zustand hinzufügen"
-                      >
-                        + Hinzufügen
-                      </Knopf>
-                    </div>
-                  </div>
-                )}
-
-                {/* Aktive Zustände Badges */}
-                {conditions.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {conditions.map((c) => (
-                      <span
-                        key={c.id}
-                        title={zustandTooltip(c)}
-                        className="inline-flex items-center gap-1.5 bg-erhoeht hover:bg-rahmen text-schrift border border-rahmen hover:border-gold rounded-full px-2 py-0.5 text-xs font-medium transition-colors"
-                      >
-                        <span>{c.key}</span>
-                        {c.level && c.level > 1 && (
-                          <span className="text-gold tabular-nums font-bold text-[11px]">
-                            {c.level}
-                          </span>
-                        )}
-                        {c.note && (
-                          <span className="text-leise text-[11px] font-normal">
-                            ({c.note})
-                          </span>
-                        )}
-                        <Knopf
-                          onClick={() => {
-                            session.logAndDispatch(
-                              { type: 'PLAY_REMOVE_CONDITION', payload: { id: c.id } },
-                              {
-                                category: 'condition',
-                                title: 'Zustand entfernt',
-                                description: `${formatConditionLabel(c)} aufgehoben`,
-                                badge: { text: `${c.key} weg`, variant: 'success' },
-                              }
-                            );
-                          }}
-                          className="ml-0.5 text-xs leading-none"
-                          title="Zustand entfernen"
-                        >
-                          ×
-                        </Knopf>
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <div
-                    onClick={() => setShowMinimalConditionPicker((prev) => !prev)}
-                    className="text-[11px] text-leise hover:text-leise italic cursor-pointer transition-colors"
-                    title="Klicken, um Zustand-Schnellauswahl zu öffnen"
-                  >
-                    Keine aktiven Zustände
-                  </div>
-                )}
-              </div>
+              {/* 2. Zustände */}
+              {zustandsbereich}
             </div>
           ) : (
             /* ── Volle Ansicht für Tab Kampf & Magie ── */
@@ -807,115 +806,8 @@ export const PlaySharedVitals: React.FC<PlaySharedVitalsProps> = ({ isMinimal = 
                 </div>
               </div>
 
-              {/* ── ZUSTÄNDE (Inside LP window, compact full interactive) ── */}
-              <div className="border border-rahmen bg-erhoeht rounded-knopf p-2.5 space-y-2 mt-2">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-bold text-xs uppercase tracking-wider text-gold-hell fantasy-font">
-                    ZUSTÄNDE
-                  </h4>
-                  {conditions.length > 0 ? (
-                    <span className="text-[11px] text-gold font-semibold">
-                      {conditions.length} aktiv
-                    </span>
-                  ) : (
-                    <span className="text-[11px] text-leise font-medium">0 aktiv</span>
-                  )}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <select
-                    value={selectedCondition}
-                    onChange={(e) => setSelectedCondition(e.target.value)}
-                    className="bg-erhoeht border border-rahmen rounded-knopf px-2 py-1 text-xs text-schrift font-medium focus:outline-none focus:border-gold cursor-pointer flex-1 min-w-[120px]"
-                  >
-                    {alleZustaende().map((cond: string) => (
-                      <option key={cond} value={cond} className="bg-erhoeht text-schrift" title={`Quelle: ${zustandQuelle(cond)}`}>
-                        {cond}
-                      </option>
-                    ))}
-                  </select>
-                  {zustandHatStufe(selectedCondition) && (
-                    <input
-                      type="number"
-                      min={1}
-                      max={6}
-                      value={conditionLevel}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => setConditionLevel(parseInt(e.target.value, 10) || 1)}
-                      className="w-10 bg-erhoeht border border-rahmen rounded-knopf px-1.5 py-1 text-center text-xs tabular-nums font-bold text-schrift focus:outline-none focus:border-gold"
-                    />
-                  )}
-                  <Knopf
-                    onClick={() => {
-                      const newCondition: StatusCondition = {
-                        id: generateId(),
-                        key: selectedCondition,
-                        level: zustandHatStufe(selectedCondition) ? conditionLevel : undefined,
-                      };
-                      session.logAndDispatch(
-                        { type: 'PLAY_ADD_CONDITION', payload: newCondition },
-                        {
-                          category: 'condition',
-                          title: `Zustand erhalten: ${selectedCondition}`,
-                          description: formatConditionLabel(newCondition),
-                          badge: { text: selectedCondition, variant: 'warning' },
-                        }
-                      );
-                      toast.success(`Zustand ${selectedCondition} hinzugefügt`);
-                    }}
-                    className="text-xs shrink-0"
-                    title="Zustand hinzufügen"
-                  >
-                    +
-                  </Knopf>
-                </div>
-
-                {/* Active conditions chips if any */}
-                {conditions.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5 pt-1.5 border-t border-rahmen">
-                    {conditions.map((c) => (
-                      <span
-                        key={c.id}
-                        title={zustandTooltip(c)}
-                        className="inline-flex items-center gap-1.5 bg-erhoeht hover:bg-rahmen text-schrift border border-rahmen hover:border-gold rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors"
-                      >
-                        <span>{c.key}</span>
-                        {c.level && c.level > 1 && (
-                          <span className="text-gold tabular-nums font-bold text-[11px]">
-                            {c.level}
-                          </span>
-                        )}
-                        {c.note && (
-                          <span className="text-leise text-[11px] font-normal">
-                            ({c.note})
-                          </span>
-                        )}
-                        <Knopf
-                          onClick={() => {
-                            session.logAndDispatch(
-                              { type: 'PLAY_REMOVE_CONDITION', payload: { id: c.id } },
-                              {
-                                category: 'condition',
-                                title: 'Zustand entfernt',
-                                description: `${formatConditionLabel(c)} aufgehoben`,
-                                badge: { text: `${c.key} weg`, variant: 'success' },
-                              }
-                            );
-                          }}
-                          className="ml-0.5 text-sm leading-none"
-                          title="Zustand entfernen"
-                        >
-                          ×
-                        </Knopf>
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-[11px] text-leise italic py-0.5 border-t border-rahmen">
-                    Keine aktiven Zustände
-                  </div>
-                )}
-              </div>
+              {/* ── ZUSTÄNDE: derselbe Bereich wie im Reiter „Spielen“ ── */}
+              <div className="mt-2">{zustandsbereich}</div>
             </>
           )}
         </div>
