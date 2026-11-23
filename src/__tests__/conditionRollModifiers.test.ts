@@ -26,7 +26,7 @@ describe('Condition Modifiers & Roll Integration (Splittermond GRW)', () => {
     expect(getConditionMalus(liegend)).toBeNull();
     expect(getConditionMalus(liegend, { bereich: 'magie' })).toBeNull();
     expect(positionsModifikator('Liegend', 'nahkampf', 'eigene')).toBe(-6);
-    expect(getConditionDescription(liegend)).toContain('eigene Angriffe Nahkampf −6');
+    expect(getConditionDescription(liegend)).toContain('eigene Angriffe: Nahkampf −6');
   });
 
   it('Zustände nach GRW S. 168–169: nur Erschöpft, Geblendet, Ringend, Glaubenskrise ändern den Probenwert (Verwundet über den Wundabzug)', () => {

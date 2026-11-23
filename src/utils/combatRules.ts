@@ -521,21 +521,27 @@ export function executeAttackDamageRoll(input: DamageRollInput): DamageRollResul
   }
   // Scharf: jeder Schadenswürfel der Waffe zählt mindestens die Stufe (nicht für Würfel aus Manövern, GRW S. 186)
   const baseDice: number[] = gewertet.map((w) => (mk?.wuerfelMindestens ? Math.max(w, Math.min(mk.wuerfelMindestens, parsed.sides)) : w));
-  // Merkmal mit Zusatz je Höchstwurf: je Würfel mit Höchstzahl so viel Schaden mehr
-  const kritischBonus = mk?.jeHoechstwurf ? gewertet.filter((w) => w === parsed.sides).length * mk.jeHoechstwurf : 0;
+  // Merkmal mit Zusatz je Höchstwurf: je Schadenswürfel mit Höchstzahl so viel Schaden mehr – auch Würfel aus Manövern
+  // (Auslegung nach dem Wortlaut „jeder Schadenswürfel“: anders als beim Mindestwert der Würfel nennt das Merkmal keine
+  // Ausnahme für Manöver; Entscheidung des Projektinhabers 23.11.2026). Gezählt wird unten nach den Manöverwürfeln.
+  const hoechstwuerfeWaffe = gewertet.filter((w) => w === parsed.sides).length;
   const baseDiceSum = baseDice.reduce((a, b) => a + b, 0);
 
   // Roll maneuver extra dice (if applicable, e.g. Hammerschlag +1W6)
   const maneuverDice: number[] = [];
+  let hoechstwuerfeManoever = 0;
   let maneuverBonus = 0;
   for (const f of [...(input.maneuverExtraFormula ? [input.maneuverExtraFormula] : []), ...(input.maneuverExtraFormulas ?? [])]) {
     const parsedM = parseWeaponDamage(f);
     for (let i = 0; i < parsedM.count; i++) {
-      maneuverDice.push(Math.floor(zufall() * parsedM.sides) + 1);
+      const w = Math.floor(zufall() * parsedM.sides) + 1;
+      maneuverDice.push(w);
+      if (w === parsedM.sides) hoechstwuerfeManoever++;
     }
     maneuverBonus += parsedM.bonus;
   }
   const maneuverDiceSum = maneuverDice.reduce((a, b) => a + b, 0) + maneuverBonus;
+  const kritischBonus = mk?.jeHoechstwurf ? (hoechstwuerfeWaffe + hoechstwuerfeManoever) * mk.jeHoechstwurf : 0;
 
   // Sum before multiplier
   const fest = input.maneuverFixedDamage ?? 0;

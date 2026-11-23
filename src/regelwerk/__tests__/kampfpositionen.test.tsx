@@ -59,7 +59,7 @@ describe('Kampfposition Liegend aus den Zuständen', () => {
   });
 
   it('Beschreibung und Hinweis nennen die Zahlen der Tabelle', () => {
-    expect(getConditionDescription(liegend)).toBe('Kampfposition: eigene Angriffe Nahkampf −6, Fernkampf −6, mit Armbrust ±0; Angriffe gegen Liegende Nahkampf +6, Fernkampf −6, mit Armbrust −6. Im Angriffsdialog als eigene Position vorausgewählt (GRW S. 170).');
+    expect(getConditionDescription(liegend)).toBe('Kampfposition – eigene Angriffe: Nahkampf −6, Fernkampf −6 (Armbrust ±0); Angriffe gegen ihn: Nahkampf +6, Fernkampf −6. Im Angriffsdialog als eigene Position vorausgewählt (GRW S. 170).');
     expect(zustandswerte([liegend], K).hinweise[0]).toBe('Liegend: gilt als liegend – Angriffe gegen den Charakter Nahkampf +6, Fernkampf −6, mit Armbrust −6 (GRW S. 170)');
   });
 

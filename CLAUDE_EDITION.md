@@ -1075,7 +1075,17 @@ Relikt-Werkstatt, Handy-Breite). Behoben:
 - Vorlage Arrou: Wildnisläufer ist eine der drei freien Start-Meisterschaften (kostete 5 EP).
 - Tests: 506 grün ohne Bücher; 567 mit Grimoires, Falldatei und Volltest; Praxistest 109 ok; Build.
 
-## Stand 41 (22.11.2026): Kampfpositionen vollständig nach GRW S. 170 (Idee #16)
+## Stand 46 (23.11.2026): Aufräumen – Favicon, Umgebungsvariablen, unbenutzte Dateien
+
+Übertragen aus FOCUS-Splittermond (dort Stand 40, 22.11.2026); die Stände 46–48 sind die Arbeit einer zweiten Sitzung,
+die versehentlich im umbenannten FOKUS-1.2 (heute FOCUS-Splittermond) lief, und hier zusammengeführt.
+- **Favicon:** vorher ein PNG mit 1000 × 1000 Pixeln (610 KB) unter dem Namen `favicon.ico`, doppelt im Wurzelordner und
+  in `public/`. Jetzt nur `public/favicon.ico` als echte ICO-Datei (16–64 px, 18 KB) und `public/apple-touch-icon.png`
+  (180 px); beide in `index.html` verlinkt (auch unter einem Unterpfad).
+- **`.env.example`:** nennt `FOKUS_GRIMOIRES`, `FOKUS_BUCHFAELLE`, `FOKUS_REFERENZ_VOLL` statt des alten `FOKUS_BUECHER`.
+- **Entfernt:** `public/sql-wasm.wasm` (seit Stand 8 unbenutzt) und `public/dice-icon.svg` (nirgends eingebunden).
+
+## Stand 47 (23.11.2026): Kampfpositionen vollständig nach GRW S. 170 (Idee #16)
 
 - **Geprüft:** Die Tabelle im GRW-Paket stimmt in allen sieben Zeilen mit S. 170 überein (neuer Test schreibt sie ab).
 - **Doppelter Abzug behoben:** „Liegend“ aus den Zuständen zog im Angriffsdialog −6 als Zustand ab, und die eigene
@@ -1086,13 +1096,14 @@ Relikt-Werkstatt, Handy-Breite). Behoben:
   Angriffe. `getConditionMalus` liefert für „Liegend“ keinen Abzug mehr.
 - **Zauber gegen die Verteidigung:** Im Zauberdialog gibt es „Position des Ziels“; die Modifikatoren gegnerischer
   Fernkampfangriffe gelten auch für diese Zauber (S. 170). Steht im Würfelprotokoll.
+- **Zusammengeführt** mit `positionsText` aus Stand 43 (Beschreibung des Zustands „Liegend“ nutzt jetzt diesen Text).
 - **Keine Zahlen im Code:** eingebaute −6 und das Lesen der Tabelle über ihren Zeilentext entfernt; Beschreibung und Hinweis
   („Angriffe gegen den Charakter Nahkampf +6, Fernkampf −6, mit Armbrust −6“) entstehen aus der Tabelle
   (`positionsBeschreibung`, `positionsQuelle` in `regelwerk/kampflage.ts`, `liegtLautZustaenden` in `regelwerk/zustandswerte.ts`).
 - Tests: neu `kampfpositionen.test.tsx` (Tabelle, Armbrust, Beschreibung, Angriffsdialog mit und ohne Zustand, Zauberdialog);
   drei ältere Tests auf die neue Regel umgestellt. 470 grün ohne Bücher; Build.
 
-## Stand 42 (22.11.2026): Waffenmerkmale wirken (Idee #14)
+## Stand 48 (23.11.2026): Waffenmerkmale wirken (Idee #14)
 
 - **Datenseite:** `merkmal_werte.json` + `merkmal_werte.py` schreiben `daten.merkmal_wirkung` an die Merkmale des GRW
   (S. 186) und die gleichnamigen der Grimoires (12 Merkmale, 41 Einträge). Jede Zahl wird gegen den Text des Eintrags
@@ -1108,9 +1119,13 @@ Relikt-Werkstatt, Handy-Breite). Behoben:
 - **Code:** neu `regelwerk/merkmale.ts` (Auswertung); gelesen wird `merkmal_wirkung` in `utils/combatRules.ts`
   (`merkmaleMitSpielwerten`). Tabelle „Regelquellen“ in FUNDAMENT.md nach Freigabe des Projektinhabers (23.11.) ergänzt:
   Spielwerte der Merkmale, Feld `merkmal_wirkung`, Datei `regelwerk/merkmale.ts`.
-- Das GRW-Paket im Editor war hinter dem auf D: (Verstärkungen mit Zuständen vom 22.11.); jetzt gleich.
 - Tests: neu `merkmale.test.tsx` (Werte, Bedingungen, Schadenswurf mit festen Würfeln inkl. Beispiel S. 186, Dialog;
-  Grimoire-Merkmale nur über ihre Werte). 485 grün ohne Bücher, 542 mit allen Grimoires und Buchfällen; Build.
+  Grimoire-Merkmale nur über ihre Werte). Nach dem Zusammenführen 533 grün ohne Bücher, 590 mit allen Grimoires und
+  Buchfällen; Build.
+- **Zusatz je Höchstwurf zählt auch Manöverwürfel** (z. B. der W6 aus Hammerschlag oder Zielschuss): Auslegung nach dem
+  Wortlaut „jeder Schadenswürfel“ – anders als beim Mindestwert der Würfel nennt das Merkmal keine Ausnahme für Manöver.
+  Entscheidung des Projektinhabers am 23.11.2026; Test dazu.
+- Das GRW-Paket dieses Repositorys (Stand 17ad2ce, mit Sterbe-Feldern) enthält die Spielwerte der Merkmale bereits.
 - Offen: Merkmale der Rüstung des Ziels (z. B. halbierter Wuchtangriff, ignorierte Durchdringung) – der Editor kennt die
   Rüstung des Gegners nicht; Defensiv wirkt nur als Hinweis, weil es keinen eigenen Dialog für die Aktive Abwehr gibt.
 

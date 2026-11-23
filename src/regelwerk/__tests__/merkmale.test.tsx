@@ -102,6 +102,13 @@ describe('Schadenswurf mit Merkmalen', () => {
     expect(r.grossDamage).toBe(22);
   });
 
+  it('Zusatz je Höchstwurf zählt auch Würfel aus Manövern (Auslegung nach dem Wortlaut, 23.11.2026)', () => {
+    const r = executeAttackDamageRoll({ baseFormula: '1W10+2', maneuverExtraFormulas: ['1W6'], egBonusDamage: 0, merkmale: { ...leer, jeHoechstwurf: 2 }, zufall: ((f) => () => f.shift()!)([3.5 / 10, 5.5 / 6]) });
+    // Waffe 4 (kein Höchstwurf auf W10), Manöver-W6 zeigt 6 → +2
+    expect(r.maneuverDice).toEqual([6]);
+    expect(r.grossDamage).toBe(4 + 2 + 6 + 2);
+  });
+
   it('Zusatzwürfel: es werden mehr Würfel geworfen, die höchsten zählen', () => {
     const r = executeAttackDamageRoll({ baseFormula: '1W6+3', egBonusDamage: 0, merkmale: { ...leer, zusatzwuerfel: 2 }, zufall: wuerfel(6, 2, 5, 3) });
     expect(r.baseDice).toEqual([5]);
