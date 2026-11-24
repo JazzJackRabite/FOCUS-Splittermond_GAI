@@ -50,7 +50,7 @@ import {
 import { generateId } from '../../utils/id';
 import type { RollEntry } from './DiceLog';
 import { getActiveRollModifiers } from '../../utils/conditionModifiers';
-import { verstaerkungsZustandText } from '../../regelwerk/zauberEg';
+import { verstaerkungsZustandText, zauberEgRegeln } from '../../regelwerk/zauberEg';
 import { wuerfeln } from '../../utils/wuerfeln';
 import { SituativeBoni, useSituativeBoni, useZauberAnpassungen, ZauberAnpassungen } from './SituativeBoni';
 import { kostenAnwenden, zauberdauerAnpassen } from '../../regelwerk/wirkungen';
@@ -285,6 +285,8 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
     [allocations, permissibleMods.specificEnhancements]
   );
   const remainingEG = Math.max(0, totalEarnedEG - spentEG);
+  // EG-Kosten, Höchstzahl und Grund-Auslösezeit aus dem Paket (Kernregel „Zauber durch Erfolgsgrade verbessern“)
+  const egR = zauberEgRegeln();
   // Nachfrage bei unverteilten Erfolgsgraden: erster Klick auf „vollenden“ weist darauf hin, der zweite vollendet
   const [egNachfrage, setEgNachfrage] = useState(false);
   useEffect(() => { setEgNachfrage(false); }, [remainingEG]);
@@ -667,10 +669,10 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
               <p className="font-bold text-schrift mt-0.5 text-sm sm:text-base">
                 {allocations.reduceCastTime > 0 ? (
                   <span>
-                    {finalCosts.effectiveCastTicks} Ticks <span className="line-through text-xs text-leise font-normal">3 Ticks</span>
+                    {finalCosts.effectiveCastTicks} Ticks <span className="line-through text-xs text-leise font-normal">{egR.grundAusloesezeit} Ticks</span>
                   </span>
                 ) : (
-                  '3 Ticks'
+                  `${egR.grundAusloesezeit} Ticks`
                 )}
               </p>
             </div>
@@ -1295,7 +1297,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Fokus einsparen (Erschöpft)</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-rahmen font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 1 EG = -1 FO
+                          je {egR.erschoepft.eg} EG = -1 FO
                         </span>
                       </div>
                       <p className="text-xs text-leise">
@@ -1305,7 +1307,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('saveExhaustedFocus', 1, -1)}
+                        onClick={() => handleModifyAllocation('saveExhaustedFocus', egR.erschoepft.eg, -1)}
                         disabled={allocations.saveExhaustedFocus <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
@@ -1315,9 +1317,9 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       </span>
                       <Knopf nurSymbol
                         onClick={() =>
-                          handleModifyAllocation('saveExhaustedFocus', 1, 1, Math.max(0, baseCost.exhausted - 1))
+                          handleModifyAllocation('saveExhaustedFocus', egR.erschoepft.eg, 1, Math.max(0, baseCost.exhausted - 1))
                         }
-                        disabled={remainingEG < 1 || allocations.saveExhaustedFocus >= Math.max(0, baseCost.exhausted - 1)}
+                        disabled={remainingEG < egR.erschoepft.eg || allocations.saveExhaustedFocus >= Math.max(0, baseCost.exhausted - 1)}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1333,7 +1335,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Fokus einsparen (Kanalisiert)</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-rahmen font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 2 EG = -1 FO
+                          je {egR.kanalisiert.eg} EG = -1 FO
                         </span>
                       </div>
                       <p className="text-xs text-leise">
@@ -1342,7 +1344,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('saveChanneledFocus', 2, -1)}
+                        onClick={() => handleModifyAllocation('saveChanneledFocus', egR.kanalisiert.eg, -1)}
                         disabled={allocations.saveChanneledFocus <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
@@ -1352,9 +1354,9 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       </span>
                       <Knopf nurSymbol
                         onClick={() =>
-                          handleModifyAllocation('saveChanneledFocus', 2, 1, Math.max(0, baseCost.channeled - 1))
+                          handleModifyAllocation('saveChanneledFocus', egR.kanalisiert.eg, 1, Math.max(0, baseCost.channeled - 1))
                         }
-                        disabled={remainingEG < 2 || allocations.saveChanneledFocus >= Math.max(0, baseCost.channeled - 1)}
+                        disabled={remainingEG < egR.kanalisiert.eg || allocations.saveChanneledFocus >= Math.max(0, baseCost.channeled - 1)}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1370,7 +1372,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Fokus einsparen (Verzehrt)</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-magie font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 3 EG = -1 FO
+                          je {egR.verzehrt.eg} EG = -1 FO
                         </span>
                       </div>
                       <p className="text-xs text-leise">
@@ -1379,7 +1381,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('saveConsumedFocus', 3, -1)}
+                        onClick={() => handleModifyAllocation('saveConsumedFocus', egR.verzehrt.eg, -1)}
                         disabled={allocations.saveConsumedFocus <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
@@ -1389,9 +1391,9 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       </span>
                       <Knopf nurSymbol
                         onClick={() =>
-                          handleModifyAllocation('saveConsumedFocus', 3, 1, maxVerzehrtSparen)
+                          handleModifyAllocation('saveConsumedFocus', egR.verzehrt.eg, 1, maxVerzehrtSparen)
                         }
-                        disabled={remainingEG < 3 || allocations.saveConsumedFocus >= maxVerzehrtSparen}
+                        disabled={remainingEG < egR.verzehrt.eg || allocations.saveConsumedFocus >= maxVerzehrtSparen}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1407,7 +1409,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Schaden erhöhen</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-magie font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 1 EG = +1 Schaden
+                          je {egR.schaden.eg} EG = +1 Schaden
                         </span>
                       </div>
                       <p className="text-xs text-leise">
@@ -1416,15 +1418,15 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('increaseDamage', 1, -1)}
+                        onClick={() => handleModifyAllocation('increaseDamage', egR.schaden.eg, -1)}
                         disabled={allocations.increaseDamage <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </Knopf>
                       <span className="font-bold tabular-nums text-sm w-5 text-center">{allocations.increaseDamage}</span>
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('increaseDamage', 1, 1)}
-                        disabled={remainingEG < 1}
+                        onClick={() => handleModifyAllocation('increaseDamage', egR.schaden.eg, 1)}
+                        disabled={remainingEG < egR.schaden.eg}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1440,7 +1442,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Reichweite erhöhen</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-rahmen font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 1 EG = +Grundwert
+                          je {egR.reichweite.eg} EG = +Grundwert
                         </span>
                       </div>
                       <p className="text-xs text-leise">
@@ -1449,15 +1451,15 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('increaseRange', 1, -1)}
+                        onClick={() => handleModifyAllocation('increaseRange', egR.reichweite.eg, -1)}
                         disabled={allocations.increaseRange <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </Knopf>
                       <span className="font-bold tabular-nums text-sm w-5 text-center">{allocations.increaseRange}</span>
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('increaseRange', 1, 1)}
-                        disabled={remainingEG < 1}
+                        onClick={() => handleModifyAllocation('increaseRange', egR.reichweite.eg, 1)}
+                        disabled={remainingEG < egR.reichweite.eg}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1473,7 +1475,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Wirkungsdauer verlängern</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-rahmen font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 2 EG = +Grundwert
+                          je {egR.wirkungsdauer.eg} EG = +Grundwert
                         </span>
                       </div>
                       <p className="text-xs text-leise">
@@ -1482,15 +1484,15 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('increaseDuration', 2, -1)}
+                        onClick={() => handleModifyAllocation('increaseDuration', egR.wirkungsdauer.eg, -1)}
                         disabled={allocations.increaseDuration <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </Knopf>
                       <span className="font-bold tabular-nums text-sm w-5 text-center">{allocations.increaseDuration}</span>
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('increaseDuration', 2, 1)}
-                        disabled={remainingEG < 2}
+                        onClick={() => handleModifyAllocation('increaseDuration', egR.wirkungsdauer.eg, 1)}
+                        disabled={remainingEG < egR.wirkungsdauer.eg}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1506,24 +1508,26 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Auslösezeit verkürzen</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-rahmen font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 3 EG = -1 Tick (max 2)
+                          je {egR.ausloesezeit.eg} EG = -1 Tick{egR.ausloesezeit.hoechstens !== null ? ` (max ${egR.ausloesezeit.hoechstens})` : ''}
                         </span>
                       </div>
                       <p className="text-xs text-leise">
-                        Auslösezeit sinkt von 3 Ticks auf {finalCosts.effectiveCastTicks} Ticks.
+                        {allocations.reduceCastTime > 0
+                          ? `Auslösezeit sinkt von ${egR.grundAusloesezeit} auf ${finalCosts.effectiveCastTicks} Ticks.`
+                          : `Auslösezeit ${egR.grundAusloesezeit} Ticks.`}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('reduceCastTime', 3, -1)}
+                        onClick={() => handleModifyAllocation('reduceCastTime', egR.ausloesezeit.eg, -1)}
                         disabled={allocations.reduceCastTime <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </Knopf>
                       <span className="font-bold tabular-nums text-sm w-5 text-center">{allocations.reduceCastTime}</span>
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('reduceCastTime', 3, 1, 2)}
-                        disabled={remainingEG < 3 || allocations.reduceCastTime >= 2}
+                        onClick={() => handleModifyAllocation('reduceCastTime', egR.ausloesezeit.eg, 1, egR.ausloesezeit.hoechstens ?? undefined)}
+                        disabled={remainingEG < egR.ausloesezeit.eg || (egR.ausloesezeit.hoechstens !== null && allocations.reduceCastTime >= egR.ausloesezeit.hoechstens)}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1539,7 +1543,7 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                       <div className="font-bold text-sm text-schrift flex items-center gap-1.5">
                         <span>Wirkungsbereich erweitern</span>
                         <span className="text-[11px] bg-erhoeht text-schrift border border-rahmen font-semibold px-1.5 py-0.5 rounded-knopf">
-                          je 3 EG = +Grundbereich
+                          je {egR.wirkungsbereich.eg} EG = +Grundbereich
                         </span>
                       </div>
                       <p className="text-xs text-leise">
@@ -1548,15 +1552,15 @@ export const CastSpellModal: React.FC<CastSpellModalProps> = ({
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('expandArea', 3, -1)}
+                        onClick={() => handleModifyAllocation('expandArea', egR.wirkungsbereich.eg, -1)}
                         disabled={allocations.expandArea <= 0}
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </Knopf>
                       <span className="font-bold tabular-nums text-sm w-5 text-center">{allocations.expandArea}</span>
                       <Knopf nurSymbol
-                        onClick={() => handleModifyAllocation('expandArea', 3, 1)}
-                        disabled={remainingEG < 3}
+                        onClick={() => handleModifyAllocation('expandArea', egR.wirkungsbereich.eg, 1)}
+                        disabled={remainingEG < egR.wirkungsbereich.eg}
                         className="hover:brightness-110"
                       >
                         <Plus className="w-3.5 h-3.5" />

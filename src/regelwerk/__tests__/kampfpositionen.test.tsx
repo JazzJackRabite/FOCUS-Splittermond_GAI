@@ -142,6 +142,9 @@ describe('Zauber gegen die Verteidigung (GRW S. 170)', () => {
     fireEvent.click(screen.getByRole('button', { name: /echten Würfeln/ }));
     fireEvent.change(screen.getByPlaceholderText('z. B. 15'), { target: { value: '18' } });
     fireEvent.click(screen.getByRole('button', { name: 'Übernehmen' }));
+    // Auslösezeit ohne eingesetzte EG: nur der Grundwert aus dem Paket, kein „sinkt von … auf …“
+    expect(screen.queryByText(/Auslösezeit sinkt/)).toBeNull();
+    expect(screen.getByText(/^Auslösezeit \d+ Ticks\.$/)).toBeTruthy();
     const vollenden = () => screen.getByRole('button', { name: /Zauber vollenden/ });
     fireEvent.click(vollenden());
     expect(erfolg).not.toHaveBeenCalled();
