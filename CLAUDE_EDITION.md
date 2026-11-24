@@ -1301,6 +1301,16 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
   über `kosten_gesenkt_durch`. Editor unverändert (der Bezug gehört nicht zu den Zauberbezügen).
 - Tests: 646 mit Grimoires, Falldatei und Volltest.
 
+## Stand 58 (24.11.2026): Basisdienst des Felslings, EG-Werte im Zauberdialog aus dem Paket
+
+- Felsling (Die Magie S. 191): Basisdienst „Bewache“ steht so im Buch, gemeint ist der Dienst Wache (Buchfehler). Datenseite:
+  Alias in `extraktion/magie_begleiter.py`, Zuordnung zusätzlich in `wirkungen.py`; der Praxistest erwartet jetzt, dass jeder
+  Dienst eine ID hat.
+- Zauberdialog, Erfolgsgrade: EG je Option, Höchstzahl der Auslösezeit-Senkung und Grund-Auslösezeit kommen aus
+  `zauberEgRegeln()` (Kernregeln, GRW S. 221–222) statt aus festen Zahlen. Ohne eingesetzte EG steht „Auslösezeit 3 Ticks.“
+  statt „sinkt von 3 Ticks auf 3 Ticks“.
+- Tests: 646 lokal mit Büchern; Build.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
