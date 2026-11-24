@@ -1289,6 +1289,18 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
 - FUNDAMENT Regelquellen: neue Felder eingetragen.
 - Tests: 584 grün ohne Bücher; 646 mit Grimoires, Falldatei und Volltest; Build.
 
+## Stand 57 (24.11.2026): Browsertest Stand 56, Dienstexperte nicht mehr im Zauberdialog
+
+- Im Browser geprüft (Kael, mit allen Grimoires): Schwerpunkt wählen (Vorschläge, GRW S. 92, „bereits 1× – höchstens 4× bei
+  Heldengrad 4“) und Bonus +1 in der Probe; Heiltränke (4/8 LP GRW, 12 LP Mondstahlklingen) setzen Heilung und Notiz;
+  unverteilte EG (7) – erster Klick Hinweis, zweiter vollendet (4 FO abgezogen); Golem: zu wenig Geld → Sperre mit Meldung,
+  mit Geld 50 L abgezogen; beschworenes Wesen Stufe 11: gesperrte erweiterte Dienste mit fehlender Meisterschaft und
+  Stufengrenze; Untoter per Klick gesteigert (Athletik +2, STÄ +1, 16/50 EP) und gespeichert.
+- Befund: Die Meisterschaft „Dienstexperte“ erschien im Zauberdialog als Kostensenkung für jeden Zauber. Datenseite
+  (`wirkungen.py`, `wirkungen_vokabular.py`): neuer Bezug `dienstkosten`; die Dienstkosten rechnet weiter `dienste.ts`
+  über `kosten_gesenkt_durch`. Editor unverändert (der Bezug gehört nicht zu den Zauberbezügen).
+- Tests: 646 mit Grimoires, Falldatei und Volltest.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
