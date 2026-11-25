@@ -161,10 +161,8 @@ export interface GearItem {
 }
 
 /**
- * Rückfall für die Zustände des Grundregelwerks (GRW S. 168–169), solange kein Regelpaket geladen ist.
- * Maßgeblich sind die Einträge vom Typ `zustand` im Grundregelwerk-Paket (Feld `daten.zustandswirkung`);
- * Zustände aus anderen Bänden kommen ausschließlich aus den hochgeladenen Grimoires und stehen nicht im Code.
- * Ein Test hält diese Tabelle mit dem Paket gleich (FUNDAMENT.md, Altlasten).
+ * Form der Zustandswirkungen. Die Werte stehen nur in den Paketen: Einträge vom Typ `zustand` (Feld `daten.zustandswirkung`),
+ * das Grundregelwerk im GRW-Paket, alle anderen in den Grimoires.
  */
 export type Probenbereich = 'allgemein' | 'kampf' | 'magie';
 

@@ -65,7 +65,7 @@ export function getConditionMalus(condition: StatusCondition, kontext: Zustandsk
   // nicht als Abzug auf Proben – sonst zählte sie doppelt und träfe auch Proben, die kein Angriff sind (GRW S. 170)
   if (condition.key === KAMPFPOSITION_LIEGEND) return null;
 
-  // Zahlen aus dem Regelpaket (daten.zustandswirkung); ohne Paket der Grundregelwerk-Rückfall
+  // Zahlen aus dem Regelpaket (daten.zustandswirkung); ohne Paket kein Abzug
   const z = zustand(condition.key);
   const p = z?.wirkung?.probe;
   if (!z || !p) return null;

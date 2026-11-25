@@ -1311,6 +1311,16 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
   statt „sinkt von 3 Ticks auf 3 Ticks“.
 - Tests: 646 lokal mit Büchern; Build.
 
+## Stand 59 (25.11.2026): Browsertest Steigerungsmodus; Rückfall-Zahlen entfernt
+
+- Im Browser geprüft (Kopie von Kael im Steigerungsmodus): Fertigkeitspunkt 9 → 10 kostet 7 EP; Fertigkeit bei 15 FP und
+  Attribut nach vier Steigerungen bei Heldengrad 4 gesperrt (mit Begründung); Attribut +1 10 EP, +2 15 EP; Ressource +1 7 EP;
+  Sprache 5 EP; Stärke mit 2 Punkten 14 EP (Fokus +5); Zauber Grad 4 12 EP, Grad 5 bei 12 FP ausgeblendet. Zustände
+  (Erschöpft: GSW −1, INI +1, Proben −1), Verschnaufpause (Erschöpft −1, Fokus), Schaden mit SR und Wundstufe,
+  Ruhephase (KON × 2 LP, WIL × 2 FO), Handy-Ansicht ohne Überlauf.
+- `useSpellHandlers.ts`: Rückfall-Liste der Mindest-Fertigkeitspunkte je Zaubergrad entfernt; die Werte kommen nur aus dem
+  Paket (`zauber_nach_grad`), ohne Angabe keine Grenze. Veraltete Kommentare über eine Zustands-Rückfalltabelle bereinigt.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
