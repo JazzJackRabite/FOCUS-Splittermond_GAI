@@ -70537,6 +70537,176 @@
      "gesamt": 15,
      "eingesetzt": 15
     },
+    "erschaffung": {
+     "rasse": "grw:rasse:varge",
+     "rasse_frei": [
+      "Intuition"
+     ],
+     "attribute": {
+      "Ausstrahlung": 1,
+      "Beweglichkeit": 3,
+      "Intuition": 3,
+      "Konstitution": 2,
+      "Mystik": 2,
+      "Stärke": 3,
+      "Verstand": 2,
+      "Willenskraft": 2
+     },
+     "kultur": {
+      "modul": "grw:kultur:tarr",
+      "wahl": {
+       "meisterschaft": 1,
+       "fertigkeiten": {
+        "1": "grw:fertigkeit:stangenwaffen",
+        "2": "grw:fertigkeit:schusswaffen",
+        "3": "grw:fertigkeit:athletik",
+        "4": "grw:fertigkeit:tierfuehrung"
+       }
+      }
+     },
+     "abstammung": {
+      "modul": "grw:abstammung:reisende",
+      "wahl": {
+       "ressourcen": {
+        "0": "grw:ressource:mentor",
+        "1": "grw:ressource:kontakte"
+       },
+       "fertigkeiten": {
+        "2": "grw:fertigkeit:naturkunde",
+        "3": "grw:fertigkeit:ueberleben"
+       }
+      }
+     },
+     "ausbildung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:akrobatik": 2,
+        "grw:fertigkeit:athletik": 3,
+        "grw:fertigkeit:entschlossenheit": 1,
+        "grw:fertigkeit:heimlichkeit": 3,
+        "grw:fertigkeit:jagdkunst": 3,
+        "grw:fertigkeit:naturkunde": 3,
+        "grw:fertigkeit:ueberleben": 3,
+        "grw:fertigkeit:wahrnehmung": 3,
+        "grw:fertigkeit:zaehigkeit": 3,
+        "grw:fertigkeit:handgemenge": 1,
+        "grw:fertigkeit:stangenwaffen": 3,
+        "grw:fertigkeit:schusswaffen": 2
+       },
+       "ressourcen": {
+        "grw:ressource:kreatur": 1,
+        "grw:ressource:relikt": 1
+       },
+       "staerken": [
+        "grw:staerke:feine-nase",
+        "grw:staerke:flink"
+       ],
+       "meisterschaften": [
+        "grw:meisterschaft:schusswaffen:scharfschuetze",
+        "grw:schwerpunkt:jagdkunst:1"
+       ]
+      }
+     },
+     "schritt7": {
+      "staerken": [
+       "grw:staerke:orientierungssinn",
+       "grw:staerke:tierfreund",
+       "grw:staerke:tiervertrauter"
+      ],
+      "ressourcen": {
+       "grw:ressource:relikt": 1,
+       "grw:ressource:vermoegen": 1
+      },
+      "fertigkeiten": {
+       "grw:fertigkeit:heimlichkeit": 1,
+       "grw:fertigkeit:jagdkunst": 1,
+       "grw:fertigkeit:wahrnehmung": 3
+      }
+     },
+     "ep": {
+      "fertigkeiten": {
+       "grw:fertigkeit:schusswaffen": 1,
+       "grw:fertigkeit:naturmagie": 3
+      },
+      "staerken": [],
+      "meisterschaften": [],
+      "zauber": [
+       "grw:zauber:wasser-finden"
+      ],
+      "ressourcen": {}
+     },
+     "freie_meisterschaften": [
+      "grw:meisterschaft:jagdkunst:unermuedlicher-verfolger",
+      "grw:meisterschaft:naturkunde:jaeger",
+      "grw:meisterschaft:ueberleben:wildnislaeufer",
+      "grw:meisterschaft:wahrnehmung:umgebungssinne",
+      "grw:meisterschaft:zaehigkeit:wachsamkeit"
+     ],
+     "freie_zauber": [
+      "grw:zauber:freund-der-tiere",
+      "grw:zauber:tiersinne"
+     ]
+    },
+    "bogen_werte": {
+     "abgeleitet": {
+      "GSW": 10,
+      "INI": 6,
+      "LP": 8,
+      "FO": 6,
+      "VTD": 18,
+      "GW": 15,
+      "KW": 15
+     },
+     "fertigkeiten": {
+      "grw:fertigkeit:akrobatik": 10,
+      "grw:fertigkeit:alchemie": 4,
+      "grw:fertigkeit:anfuehren": 2,
+      "grw:fertigkeit:arkane-kunde": 4,
+      "grw:fertigkeit:athletik": 12,
+      "grw:fertigkeit:darbietung": 2,
+      "grw:fertigkeit:diplomatie": 3,
+      "grw:fertigkeit:edelhandwerk": 6,
+      "grw:fertigkeit:empathie": 6,
+      "grw:fertigkeit:entschlossenheit": 3,
+      "grw:fertigkeit:fingerfertigkeit": 4,
+      "grw:fertigkeit:geschichte-und-mythen": 5,
+      "grw:fertigkeit:handwerk": 5,
+      "grw:fertigkeit:heilkunde": 6,
+      "grw:fertigkeit:heimlichkeit": 11,
+      "grw:fertigkeit:jagdkunst": 10,
+      "grw:fertigkeit:laenderkunde": 7,
+      "grw:fertigkeit:naturkunde": 12,
+      "grw:fertigkeit:redegewandtheit": 2,
+      "grw:fertigkeit:schloesser-und-fallen": 7,
+      "grw:fertigkeit:schwimmen": 7,
+      "grw:fertigkeit:seefahrt": 5,
+      "grw:fertigkeit:strassenkunde": 5,
+      "grw:fertigkeit:tierfuehrung": 6,
+      "grw:fertigkeit:ueberleben": 12,
+      "grw:fertigkeit:wahrnehmung": 11,
+      "grw:fertigkeit:zaehigkeit": 9,
+      "grw:fertigkeit:naturmagie": 6
+     },
+     "waffen": {
+      "grw:waffe:glefe:nahkampf": {
+       "fertigkeit": "Stangenwaffen",
+       "wert": 13,
+       "wgs": 11,
+       "mod": 1
+      },
+      "grw:waffe:krummdolch:nahkampf": {
+       "fertigkeit": "Klingenwaffen",
+       "wert": 9,
+       "wgs": 7
+      },
+      "grw:waffe:langbogen:fernkampf": {
+       "fertigkeit": "Schusswaffen",
+       "wert": 13,
+       "wgs": 10
+      }
+     },
+     "waffenlos": 10
+    },
     "im_bogen": {
      "Natürlicher Rüstungsschutz": "Natürl. Rüstungsschutz",
      "Jäger": "Jäger Reptil",
@@ -70762,7 +70932,7 @@
       "anzahl": 1
      },
      {
-      "id": "grw:waffe:dolch:fernkampf",
+      "id": "grw:waffe:dolch:nahkampf",
       "anzahl": 1
      },
      {
@@ -70811,6 +70981,170 @@
     "ep": {
      "gesamt": 15,
      "eingesetzt": 13
+    },
+    "erschaffung": {
+     "rasse": "grw:rasse:menschen",
+     "rasse_frei": [
+      "Ausstrahlung",
+      "Stärke"
+     ],
+     "attribute": {
+      "Ausstrahlung": 2,
+      "Beweglichkeit": 3,
+      "Intuition": 1,
+      "Konstitution": 3,
+      "Mystik": 1,
+      "Stärke": 3,
+      "Verstand": 3,
+      "Willenskraft": 2
+     },
+     "kultur": {
+      "modul": "grw:kultur:selenia",
+      "wahl": {
+       "fertigkeiten": {
+        "0": "grw:fertigkeit:hiebwaffen",
+        "1": "grw:fertigkeit:tierfuehrung",
+        "2": "grw:fertigkeit:diplomatie",
+        "7": "grw:fertigkeit:naturkunde"
+       }
+      }
+     },
+     "abstammung": {
+      "modul": "grw:abstammung:landadel",
+      "wahl": {
+       "ressourcen": {
+        "0": "grw:ressource:ansehen",
+        "1": "grw:ressource:vermoegen"
+       },
+       "fertigkeiten": {
+        "0": "grw:fertigkeit:klingenwaffen"
+       }
+      }
+     },
+     "ausbildung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:anfuehren": 3,
+        "grw:fertigkeit:arkane-kunde": 1,
+        "grw:fertigkeit:athletik": 2,
+        "grw:fertigkeit:diplomatie": 3,
+        "grw:fertigkeit:empathie": 2,
+        "grw:fertigkeit:entschlossenheit": 3,
+        "grw:fertigkeit:geschichte-und-mythen": 2,
+        "grw:fertigkeit:laenderkunde": 2,
+        "grw:fertigkeit:redegewandtheit": 2,
+        "grw:fertigkeit:tierfuehrung": 1,
+        "grw:fertigkeit:wahrnehmung": 1,
+        "grw:fertigkeit:zaehigkeit": 3,
+        "grw:fertigkeit:hiebwaffen": 2,
+        "grw:fertigkeit:klingenwaffen": 3
+       },
+       "ressourcen": {
+        "grw:ressource:ansehen": 1,
+        "grw:ressource:kontakte": 1
+       },
+       "staerken": [
+        "grw:staerke:hoher-geistiger-widerstand"
+       ],
+       "meisterschaften": [
+        "grw:meisterschaft:empathie:rede-mit-mir",
+        "grw:meisterschaft:zaehigkeit:starker-schildarm-i"
+       ]
+      }
+     },
+     "schritt7": {
+      "staerken": [
+       "grw:staerke:hoher-koerperlicher-widerstand",
+       "grw:staerke:robust",
+       "grw:staerke:zielstrebig"
+      ],
+      "ressourcen": {
+       "grw:ressource:stand": 1,
+       "grw:ressource:vermoegen": 1
+      },
+      "fertigkeiten": {
+       "grw:fertigkeit:anfuehren": 2,
+       "grw:fertigkeit:zaehigkeit": 3
+      }
+     },
+     "ep": {
+      "fertigkeiten": {
+       "grw:fertigkeit:klingenwaffen": 2
+      },
+      "staerken": [
+       "grw:staerke:attraktivitaet"
+      ],
+      "meisterschaften": [],
+      "zauber": [],
+      "ressourcen": {}
+     },
+     "freie_meisterschaften": [
+      "grw:meisterschaft:anfuehren:herausforderung",
+      "grw:meisterschaft:zaehigkeit:ruestungstraeger-i",
+      {
+       "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:verteidiger",
+       "fuer": "grw:fertigkeit:klingenwaffen"
+      }
+     ],
+     "freie_zauber": []
+    },
+    "bogen_werte": {
+     "abgeleitet": {
+      "GSW": 8,
+      "INI": 9,
+      "LP": 9,
+      "FO": 6,
+      "VTD": 19,
+      "GW": 19,
+      "KW": 19
+     },
+     "fertigkeiten": {
+      "grw:fertigkeit:akrobatik": 7,
+      "grw:fertigkeit:alchemie": 4,
+      "grw:fertigkeit:anfuehren": 11,
+      "grw:fertigkeit:arkane-kunde": 5,
+      "grw:fertigkeit:athletik": 9,
+      "grw:fertigkeit:darbietung": 5,
+      "grw:fertigkeit:diplomatie": 10,
+      "grw:fertigkeit:edelhandwerk": 4,
+      "grw:fertigkeit:empathie": 8,
+      "grw:fertigkeit:entschlossenheit": 8,
+      "grw:fertigkeit:fingerfertigkeit": 6,
+      "grw:fertigkeit:geschichte-und-mythen": 8,
+      "grw:fertigkeit:handwerk": 8,
+      "grw:fertigkeit:heilkunde": 4,
+      "grw:fertigkeit:heimlichkeit": 4,
+      "grw:fertigkeit:jagdkunst": 7,
+      "grw:fertigkeit:laenderkunde": 7,
+      "grw:fertigkeit:naturkunde": 6,
+      "grw:fertigkeit:redegewandtheit": 8,
+      "grw:fertigkeit:schloesser-und-fallen": 4,
+      "grw:fertigkeit:schwimmen": 7,
+      "grw:fertigkeit:seefahrt": 6,
+      "grw:fertigkeit:strassenkunde": 4,
+      "grw:fertigkeit:tierfuehrung": 10,
+      "grw:fertigkeit:ueberleben": 5,
+      "grw:fertigkeit:wahrnehmung": 5,
+      "grw:fertigkeit:zaehigkeit": 11
+     },
+     "waffen": {
+      "grw:waffe:langschwert:nahkampf": {
+       "fertigkeit": "Klingenwaffen",
+       "wert": 13,
+       "wgs": 10
+      },
+      "grw:waffe:streithammer:nahkampf": {
+       "fertigkeit": "Hiebwaffen",
+       "wert": 10,
+       "wgs": 13
+      },
+      "grw:waffe:dolch:nahkampf": {
+       "fertigkeit": "Klingenwaffen",
+       "wert": 10,
+       "wgs": 8
+      }
+     },
+     "waffenlos": 7
     },
     "im_bogen": {
      "Hoher Geistiger Widerstand": "Hoher Geist. Widerstand",
@@ -71063,7 +71397,7 @@
     "kulturkunde": "Keshabid",
     "ausruestung": [
      {
-      "id": "grw:waffe:dolch:fernkampf",
+      "id": "grw:waffe:dolch:nahkampf",
       "anzahl": 1
      },
      {
@@ -71112,6 +71446,170 @@
     "ep": {
      "gesamt": 15,
      "eingesetzt": 15
+    },
+    "erschaffung": {
+     "rasse": "grw:rasse:gnome",
+     "rasse_frei": [
+      "Verstand"
+     ],
+     "attribute": {
+      "Ausstrahlung": 3,
+      "Beweglichkeit": 2,
+      "Intuition": 3,
+      "Konstitution": 1,
+      "Mystik": 1,
+      "Stärke": 2,
+      "Verstand": 3,
+      "Willenskraft": 3
+     },
+     "kultur": {
+      "modul": "grw:kultur:keshabid",
+      "wahl": {
+       "staerke": "grw:staerke:bastler",
+       "fertigkeiten": {
+        "0": "grw:fertigkeit:staerkungsmagie",
+        "3": "grw:fertigkeit:edelhandwerk",
+        "5": "grw:fertigkeit:schloesser-und-fallen"
+       }
+      }
+     },
+     "abstammung": {
+      "modul": "grw:abstammung:haendler",
+      "wahl": {
+       "ressourcen": {
+        "0": "grw:ressource:kontakte",
+        "2": "grw:ressource:stand"
+       },
+       "fertigkeiten": {
+        "4": "grw:fertigkeit:strassenkunde"
+       }
+      }
+     },
+     "ausbildung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:alchemie": 3,
+        "grw:fertigkeit:arkane-kunde": 1,
+        "grw:fertigkeit:diplomatie": 3,
+        "grw:fertigkeit:empathie": 1,
+        "grw:fertigkeit:entschlossenheit": 1,
+        "grw:fertigkeit:heilkunde": 3,
+        "grw:fertigkeit:heimlichkeit": 1,
+        "grw:fertigkeit:laenderkunde": 1,
+        "grw:fertigkeit:naturkunde": 2,
+        "grw:fertigkeit:redegewandtheit": 3,
+        "grw:fertigkeit:strassenkunde": 1,
+        "grw:fertigkeit:wahrnehmung": 3,
+        "grw:fertigkeit:zaehigkeit": 2,
+        "grw:fertigkeit:schusswaffen": 3,
+        "grw:fertigkeit:heilungsmagie": 2
+       },
+       "ressourcen": {
+        "grw:ressource:ansehen": 1,
+        "grw:ressource:relikt": 1
+       },
+       "staerken": [
+        "grw:staerke:gesellig",
+        "grw:staerke:giftresistenz"
+       ],
+       "meisterschaften": [
+        "grw:meisterschaft:alchemie:geselle",
+        "grw:meisterschaft:heilkunde:lebensretter"
+       ]
+      }
+     },
+     "schritt7": {
+      "staerken": [
+       "grw:staerke:gutes-gedaechtnis",
+       "grw:staerke:literat",
+       "grw:staerke:weltgewandt"
+      ],
+      "ressourcen": {
+       "grw:ressource:relikt": 1,
+       "grw:ressource:vermoegen": 1
+      },
+      "fertigkeiten": {
+       "grw:fertigkeit:alchemie": 3,
+       "grw:fertigkeit:heilkunde": 1,
+       "grw:fertigkeit:schusswaffen": 1
+      }
+     },
+     "ep": {
+      "fertigkeiten": {
+       "grw:fertigkeit:schusswaffen": 2,
+       "grw:fertigkeit:heilungsmagie": 1,
+       "grw:fertigkeit:staerkungsmagie": 2
+      },
+      "staerken": [],
+      "meisterschaften": [],
+      "zauber": [],
+      "ressourcen": {}
+     },
+     "freie_meisterschaften": [
+      "grw:meisterschaft:diplomatie:feilscher",
+      "grw:meisterschaft:redegewandtheit:beissender-spott",
+      "grw:meisterschaft:schusswaffen:scharfschuetze"
+     ],
+     "freie_zauber": [
+      "grw:zauber:erfrischung",
+      "grw:zauber:geh-noch-nicht",
+      "grw:zauber:haerte"
+     ]
+    },
+    "bogen_werte": {
+     "abgeleitet": {
+      "GSW": 6,
+      "INI": 7,
+      "LP": 4,
+      "FO": 10,
+      "VTD": 19,
+      "GW": 22,
+      "KW": 16
+     },
+     "fertigkeiten": {
+      "grw:fertigkeit:akrobatik": 3,
+      "grw:fertigkeit:alchemie": 13,
+      "grw:fertigkeit:anfuehren": 6,
+      "grw:fertigkeit:arkane-kunde": 9,
+      "grw:fertigkeit:athletik": 3,
+      "grw:fertigkeit:darbietung": 6,
+      "grw:fertigkeit:diplomatie": 14,
+      "grw:fertigkeit:edelhandwerk": 10,
+      "grw:fertigkeit:empathie": 11,
+      "grw:fertigkeit:entschlossenheit": 7,
+      "grw:fertigkeit:fingerfertigkeit": 5,
+      "grw:fertigkeit:geschichte-und-mythen": 9,
+      "grw:fertigkeit:handwerk": 6,
+      "grw:fertigkeit:heilkunde": 12,
+      "grw:fertigkeit:heimlichkeit": 8,
+      "grw:fertigkeit:jagdkunst": 6,
+      "grw:fertigkeit:laenderkunde": 10,
+      "grw:fertigkeit:naturkunde": 10,
+      "grw:fertigkeit:redegewandtheit": 12,
+      "grw:fertigkeit:schloesser-und-fallen": 6,
+      "grw:fertigkeit:schwimmen": 2,
+      "grw:fertigkeit:seefahrt": 3,
+      "grw:fertigkeit:strassenkunde": 9,
+      "grw:fertigkeit:tierfuehrung": 5,
+      "grw:fertigkeit:ueberleben": 4,
+      "grw:fertigkeit:wahrnehmung": 9,
+      "grw:fertigkeit:zaehigkeit": 6,
+      "grw:fertigkeit:heilungsmagie": 8,
+      "grw:fertigkeit:staerkungsmagie": 6
+     },
+     "waffen": {
+      "grw:waffe:dolch:nahkampf": {
+       "fertigkeit": "Klingenwaffen",
+       "wert": 5,
+       "wgs": 6
+      },
+      "grw:waffe:leichte-armbrust:fernkampf": {
+       "fertigkeit": "Schusswaffen",
+       "wert": 12,
+       "wgs": 10
+      }
+     },
+     "waffenlos": 3
     },
     "im_bogen": {
      "Hoher Geistiger Widerstand": "Hoher Geist. Widerstand"
@@ -71394,7 +71892,7 @@
       "anzahl": 1
      },
      {
-      "id": "grw:waffe:dornenhandschuh:parierwaffe",
+      "id": "grw:waffe:dornenhandschuh:nahkampf",
       "anzahl": 1
      },
      {
@@ -71443,6 +71941,175 @@
     "ep": {
      "gesamt": 15,
      "eingesetzt": 15
+    },
+    "erschaffung": {
+     "rasse": "grw:rasse:menschen",
+     "rasse_frei": [
+      "Beweglichkeit",
+      "Intuition"
+     ],
+     "attribute": {
+      "Ausstrahlung": 2,
+      "Beweglichkeit": 3,
+      "Intuition": 3,
+      "Konstitution": 2,
+      "Mystik": 2,
+      "Stärke": 2,
+      "Verstand": 1,
+      "Willenskraft": 3
+     },
+     "kultur": {
+      "modul": "grw:kultur:mertalischer-staedtebund",
+      "wahl": {
+       "staerke": "grw:staerke:soziales-gespuer",
+       "meisterschaft": 1,
+       "fertigkeiten": {
+        "1": "grw:fertigkeit:hiebwaffen",
+        "5": "grw:fertigkeit:schattenmagie"
+       }
+      }
+     },
+     "abstammung": {
+      "modul": "grw:abstammung:gesindel",
+      "wahl": {
+       "ressourcen": {
+        "2": "grw:ressource:mentor"
+       },
+       "fertigkeiten": {
+        "3": "grw:fertigkeit:strassenkunde"
+       }
+      }
+     },
+     "ausbildung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:akrobatik": 3,
+        "grw:fertigkeit:athletik": 2,
+        "grw:fertigkeit:diplomatie": 1,
+        "grw:fertigkeit:empathie": 3,
+        "grw:fertigkeit:entschlossenheit": 2,
+        "grw:fertigkeit:fingerfertigkeit": 3,
+        "grw:fertigkeit:heimlichkeit": 3,
+        "grw:fertigkeit:laenderkunde": 1,
+        "grw:fertigkeit:schloesser-und-fallen": 1,
+        "grw:fertigkeit:strassenkunde": 3,
+        "grw:fertigkeit:wahrnehmung": 3,
+        "grw:fertigkeit:hiebwaffen": 2,
+        "grw:fertigkeit:klingenwaffen": 3
+       },
+       "ressourcen": {
+        "grw:ressource:kontakte": 1,
+        "grw:ressource:vermoegen": 1
+       },
+       "staerken": [
+        "grw:staerke:flink",
+        "grw:staerke:gleichgewichtssinn"
+       ],
+       "meisterschaften": [
+        "grw:meisterschaft:wahrnehmung:umgebungssinne",
+        "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:verteidiger"
+       ]
+      }
+     },
+     "schritt7": {
+      "staerken": [
+       "grw:staerke:robust",
+       "grw:staerke:scharfes-gehoer",
+       "grw:staerke:scharfe-sicht",
+       "grw:staerke:gesellig"
+      ],
+      "ressourcen": {
+       "grw:ressource:vermoegen": 1,
+       "grw:ressource:zuflucht": 1
+      },
+      "fertigkeiten": {
+       "grw:fertigkeit:empathie": 1,
+       "grw:fertigkeit:wahrnehmung": 3,
+       "grw:fertigkeit:klingenwaffen": 1
+      }
+     },
+     "ep": {
+      "fertigkeiten": {
+       "grw:fertigkeit:klingenwaffen": 2,
+       "grw:fertigkeit:schattenmagie": 2
+      },
+      "staerken": [],
+      "meisterschaften": [],
+      "zauber": [
+       "grw:zauber:schattenwaffe"
+      ],
+      "ressourcen": {}
+     },
+     "freie_meisterschaften": [
+      "grw:meisterschaft:empathie:gegner-durchschauen-i",
+      "grw:meisterschaft:heimlichkeit:unauffaellig",
+      "grw:schwerpunkt:strassenkunde:1",
+      "grw:schwerpunkt:wahrnehmung:1",
+      "grw:meisterschaft:klingenwaffen:verwirrung"
+     ],
+     "freie_zauber": [
+      "grw:zauber:schattenschleier",
+      "grw:zauber:schattenmantel"
+     ]
+    },
+    "bogen_werte": {
+     "abgeleitet": {
+      "GSW": 10,
+      "INI": 6,
+      "LP": 8,
+      "FO": 10,
+      "VTD": 18,
+      "GW": 16,
+      "KW": 17
+     },
+     "fertigkeiten": {
+      "grw:fertigkeit:akrobatik": 9,
+      "grw:fertigkeit:alchemie": 3,
+      "grw:fertigkeit:anfuehren": 5,
+      "grw:fertigkeit:arkane-kunde": 4,
+      "grw:fertigkeit:athletik": 8,
+      "grw:fertigkeit:darbietung": 6,
+      "grw:fertigkeit:diplomatie": 4,
+      "grw:fertigkeit:edelhandwerk": 5,
+      "grw:fertigkeit:empathie": 11,
+      "grw:fertigkeit:entschlossenheit": 8,
+      "grw:fertigkeit:fingerfertigkeit": 9,
+      "grw:fertigkeit:geschichte-und-mythen": 3,
+      "grw:fertigkeit:handwerk": 3,
+      "grw:fertigkeit:heilkunde": 5,
+      "grw:fertigkeit:heimlichkeit": 14,
+      "grw:fertigkeit:jagdkunst": 3,
+      "grw:fertigkeit:laenderkunde": 8,
+      "grw:fertigkeit:naturkunde": 5,
+      "grw:fertigkeit:redegewandtheit": 7,
+      "grw:fertigkeit:schloesser-und-fallen": 9,
+      "grw:fertigkeit:schwimmen": 4,
+      "grw:fertigkeit:seefahrt": 6,
+      "grw:fertigkeit:strassenkunde": 12,
+      "grw:fertigkeit:tierfuehrung": 6,
+      "grw:fertigkeit:ueberleben": 6,
+      "grw:fertigkeit:wahrnehmung": 13,
+      "grw:fertigkeit:zaehigkeit": 6,
+      "grw:fertigkeit:schattenmagie": 9
+     },
+     "waffen": {
+      "grw:waffe:skavona:nahkampf": {
+       "fertigkeit": "Klingenwaffen",
+       "wert": 14,
+       "wgs": 7
+      },
+      "grw:waffe:schlagstock:nahkampf": {
+       "fertigkeit": "Hiebwaffen",
+       "wert": 9,
+       "wgs": 6
+      },
+      "grw:waffe:dornenhandschuh:nahkampf": {
+       "fertigkeit": "Handgemenge",
+       "wert": 8,
+       "wgs": 5
+      }
+     },
+     "waffenlos": 8
     },
     "im_bogen": {
      "Zusätzliche Splitterpunkte": "Zusätzl. Splitterpunkte",
@@ -71759,7 +72426,7 @@
     "kulturkunde": "Ashurmazaan",
     "ausruestung": [
      {
-      "id": "grw:waffe:dolch:fernkampf",
+      "id": "grw:waffe:dolch:nahkampf",
       "anzahl": 1
      },
      {
@@ -71800,6 +72467,187 @@
     "ep": {
      "gesamt": 15,
      "eingesetzt": 15
+    },
+    "erschaffung": {
+     "rasse": "grw:rasse:menschen",
+     "rasse_frei": [
+      "Ausstrahlung",
+      "Mystik"
+     ],
+     "attribute": {
+      "Ausstrahlung": 2,
+      "Beweglichkeit": 2,
+      "Intuition": 2,
+      "Konstitution": 2,
+      "Mystik": 3,
+      "Stärke": 1,
+      "Verstand": 3,
+      "Willenskraft": 3
+     },
+     "kultur": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:arkane-kunde": 2,
+        "grw:fertigkeit:darbietung": 2,
+        "grw:fertigkeit:diplomatie": 2,
+        "grw:fertigkeit:empathie": 1,
+        "grw:fertigkeit:entschlossenheit": 2,
+        "grw:fertigkeit:geschichte-und-mythen": 2,
+        "grw:fertigkeit:laenderkunde": 2,
+        "grw:fertigkeit:naturkunde": 2
+       },
+       "staerke": "grw:staerke:zielstrebig",
+       "meisterschaft": "grw:meisterschaft:diplomatie:diplomat"
+      }
+     },
+     "abstammung": {
+      "modul": "grw:abstammung:hoeflinge",
+      "wahl": {
+       "ressourcen": {
+        "0": "grw:ressource:stand",
+        "1": "grw:ressource:vermoegen"
+       }
+      }
+     },
+     "ausbildung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:arkane-kunde": 3,
+        "grw:fertigkeit:diplomatie": 1,
+        "grw:fertigkeit:entschlossenheit": 3,
+        "grw:fertigkeit:geschichte-und-mythen": 3,
+        "grw:fertigkeit:laenderkunde": 1,
+        "grw:fertigkeit:redegewandtheit": 2,
+        "grw:fertigkeit:strassenkunde": 2,
+        "grw:fertigkeit:klingenwaffen": 2,
+        "grw:fertigkeit:bannmagie": 3,
+        "grw:fertigkeit:felsmagie": 4,
+        "grw:fertigkeit:feuermagie": 4,
+        "grw:fertigkeit:kampfmagie": 1,
+        "grw:fertigkeit:wassermagie": 1
+       },
+       "ressourcen": {
+        "grw:ressource:relikt": 2
+       },
+       "staerken": [
+        "grw:staerke:attraktivitaet",
+        "grw:staerke:erwaehlter-der-wesen"
+       ],
+       "meisterschaften": [
+        "grw:meisterschaft:kampfmagie:gezielte-zauber",
+        "grw:meisterschaft:allgemeine-magiemeisterschaften:sparsamer-zauberer"
+       ]
+      }
+     },
+     "schritt7": {
+      "staerken": [
+       "grw:staerke:erhoehter-fokuspool",
+       "grw:staerke:erhoehter-fokuspool",
+       "grw:staerke:literat"
+      ],
+      "ressourcen": {
+       "grw:ressource:stand": 1,
+       "grw:ressource:vermoegen": 1
+      },
+      "fertigkeiten": {
+       "grw:fertigkeit:arkane-kunde": 1,
+       "grw:fertigkeit:geschichte-und-mythen": 1,
+       "grw:fertigkeit:felsmagie": 2,
+       "grw:fertigkeit:feuermagie": 1
+      }
+     },
+     "ep": {
+      "fertigkeiten": {
+       "grw:fertigkeit:feuermagie": 1,
+       "grw:fertigkeit:windmagie": 2
+      },
+      "staerken": [],
+      "meisterschaften": [],
+      "zauber": [
+       "grw:zauber:zauberer-behindern",
+       "grw:zauber:waerme",
+       "grw:zauber:flammende-waffe",
+       "grw:zauber:stoss"
+      ],
+      "ressourcen": {}
+     },
+     "freie_meisterschaften": [
+      "grw:meisterschaft:arkane-kunde:artefaktkunde",
+      "grw:meisterschaft:entschlossenheit:eiserner-wille",
+      {
+       "id": "grw:meisterschaft:allgemeine-magiemeisterschaften:sparsamer-zauberer",
+       "fuer": "grw:fertigkeit:felsmagie"
+      },
+      "grw:meisterschaft:feuermagie:flammenherz",
+      "grw:meisterschaft:geschichte-und-mythen:buechernarr"
+     ],
+     "freie_zauber": [
+      "grw:zauber:wahrer-blick",
+      "grw:zauber:magie-erschoepfen",
+      "grw:zauber:haerte",
+      "grw:zauber:felsgeschoss",
+      "grw:zauber:felswesen-rufen-i",
+      "grw:zauber:flamme",
+      "grw:zauber:feuerstrahl",
+      "grw:zauber:flammenherrschaft",
+      "grw:zauber:geisterdolch",
+      "grw:zauber:katzenwaesche",
+      "grw:zauber:sanfter-fall"
+     ]
+    },
+    "bogen_werte": {
+     "abgeleitet": {
+      "GSW": 7,
+      "INI": 8,
+      "LP": 7,
+      "FO": 24,
+      "VTD": 15,
+      "GW": 18,
+      "KW": 17
+     },
+     "fertigkeiten": {
+      "grw:fertigkeit:akrobatik": 3,
+      "grw:fertigkeit:alchemie": 7,
+      "grw:fertigkeit:anfuehren": 6,
+      "grw:fertigkeit:arkane-kunde": 13,
+      "grw:fertigkeit:athletik": 3,
+      "grw:fertigkeit:darbietung": 8,
+      "grw:fertigkeit:diplomatie": 10,
+      "grw:fertigkeit:edelhandwerk": 5,
+      "grw:fertigkeit:empathie": 7,
+      "grw:fertigkeit:entschlossenheit": 12,
+      "grw:fertigkeit:fingerfertigkeit": 5,
+      "grw:fertigkeit:geschichte-und-mythen": 13,
+      "grw:fertigkeit:handwerk": 5,
+      "grw:fertigkeit:heilkunde": 5,
+      "grw:fertigkeit:heimlichkeit": 4,
+      "grw:fertigkeit:jagdkunst": 5,
+      "grw:fertigkeit:laenderkunde": 8,
+      "grw:fertigkeit:naturkunde": 7,
+      "grw:fertigkeit:redegewandtheit": 9,
+      "grw:fertigkeit:schloesser-und-fallen": 4,
+      "grw:fertigkeit:schwimmen": 3,
+      "grw:fertigkeit:seefahrt": 4,
+      "grw:fertigkeit:strassenkunde": 8,
+      "grw:fertigkeit:tierfuehrung": 5,
+      "grw:fertigkeit:ueberleben": 4,
+      "grw:fertigkeit:wahrnehmung": 5,
+      "grw:fertigkeit:zaehigkeit": 5,
+      "grw:fertigkeit:bannmagie": 10,
+      "grw:fertigkeit:felsmagie": 12,
+      "grw:fertigkeit:feuermagie": 13,
+      "grw:fertigkeit:kampfmagie": 6,
+      "grw:fertigkeit:wassermagie": 7,
+      "grw:fertigkeit:windmagie": 9
+     },
+     "waffen": {
+      "grw:waffe:dolch:nahkampf": {
+       "fertigkeit": "Klingenwaffen",
+       "wert": 6,
+       "wgs": 6
+      }
+     },
+     "waffenlos": 3
     },
     "im_bogen": {
      "Erhöhter Fokuspool": "Erhöhter Fokuspool x2",
@@ -72089,7 +72937,7 @@
     "kulturkunde": "Furgand",
     "ausruestung": [
      {
-      "id": "grw:waffe:wurfhammer:nahkampf",
+      "id": "grw:waffe:wurfhammer:fernkampf",
       "anzahl": 1
      },
      {
@@ -72142,6 +72990,179 @@
     "ep": {
      "gesamt": 15,
      "eingesetzt": 15
+    },
+    "erschaffung": {
+     "rasse": "grw:rasse:zwerge",
+     "rasse_frei": [
+      "Ausstrahlung"
+     ],
+     "attribute": {
+      "Ausstrahlung": 1,
+      "Beweglichkeit": 2,
+      "Intuition": 2,
+      "Konstitution": 3,
+      "Mystik": 3,
+      "Stärke": 3,
+      "Verstand": 2,
+      "Willenskraft": 2
+     },
+     "kultur": {
+      "modul": "grw:kultur:furgand",
+      "wahl": {
+       "fertigkeiten": {
+        "1": "grw:fertigkeit:schloesser-und-fallen",
+        "2": "grw:fertigkeit:felsmagie"
+       }
+      }
+     },
+     "abstammung": {
+      "modul": "grw:abstammung:kriegsvolk",
+      "wahl": {
+       "ressourcen": {
+        "0": "grw:ressource:ansehen",
+        "1": "grw:ressource:kontakte",
+        "2": "grw:ressource:relikt"
+       },
+       "fertigkeiten": {
+        "0": "grw:fertigkeit:hiebwaffen"
+       }
+      }
+     },
+     "ausbildung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:diplomatie": 1,
+        "grw:fertigkeit:entschlossenheit": 3,
+        "grw:fertigkeit:geschichte-und-mythen": 3,
+        "grw:fertigkeit:handwerk": 2,
+        "grw:fertigkeit:heilkunde": 3,
+        "grw:fertigkeit:jagdkunst": 1,
+        "grw:fertigkeit:laenderkunde": 2,
+        "grw:fertigkeit:naturkunde": 2,
+        "grw:fertigkeit:ueberleben": 3,
+        "grw:fertigkeit:zaehigkeit": 3,
+        "grw:fertigkeit:hiebwaffen": 3,
+        "grw:fertigkeit:wurfwaffen": 2,
+        "grw:fertigkeit:felsmagie": 1,
+        "grw:fertigkeit:feuermagie": 1
+       },
+       "ressourcen": {
+        "grw:ressource:rang": 1,
+        "grw:ressource:relikt": 1
+       },
+       "staerken": [
+        "grw:staerke:erhoehter-fokuspool",
+        "grw:staerke:priester"
+       ],
+       "meisterschaften": [
+        "grw:meisterschaft:ueberleben:gelaendekunde",
+        "grw:meisterschaft:feuermagie:feuerresistenz-i"
+       ]
+      }
+     },
+     "schritt7": {
+      "staerken": [
+       "grw:staerke:konzentrationsstaerke",
+       "grw:staerke:literat",
+       "grw:staerke:soziales-gespuer"
+      ],
+      "ressourcen": {
+       "grw:ressource:relikt": 2
+      },
+      "fertigkeiten": {
+       "grw:fertigkeit:feuermagie": 5
+      }
+     },
+     "ep": {
+      "fertigkeiten": {
+       "grw:fertigkeit:staerkungsmagie": 3
+      },
+      "staerken": [],
+      "meisterschaften": [
+       {
+        "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:umreissen",
+        "fuer": "grw:fertigkeit:hiebwaffen"
+       }
+      ],
+      "zauber": [
+       "grw:zauber:stein"
+      ],
+      "ressourcen": {}
+     },
+     "freie_meisterschaften": [
+      "grw:meisterschaft:entschlossenheit:eiserner-wille",
+      "grw:meisterschaft:feuermagie:brandstifter",
+      "grw:meisterschaft:zaehigkeit:ruestungstraeger-i",
+      {
+       "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:abdraengen",
+       "fuer": "grw:fertigkeit:hiebwaffen"
+      }
+     ],
+     "freie_zauber": [
+      "grw:zauber:haerte",
+      "grw:zauber:flamme",
+      "grw:zauber:schutz-vor-feuer",
+      "grw:zauber:kometenwurf",
+      "grw:zauber:ausdauer-staerken",
+      "grw:zauber:aura-der-entschlossenheit"
+     ]
+    },
+    "bogen_werte": {
+     "abgeleitet": {
+      "GSW": 5,
+      "INI": 8,
+      "LP": 9,
+      "FO": 17,
+      "VTD": 18,
+      "GW": 17,
+      "KW": 19
+     },
+     "fertigkeiten": {
+      "grw:fertigkeit:akrobatik": 4,
+      "grw:fertigkeit:alchemie": 5,
+      "grw:fertigkeit:anfuehren": 6,
+      "grw:fertigkeit:arkane-kunde": 5,
+      "grw:fertigkeit:athletik": 6,
+      "grw:fertigkeit:darbietung": 5,
+      "grw:fertigkeit:diplomatie": 5,
+      "grw:fertigkeit:edelhandwerk": 6,
+      "grw:fertigkeit:empathie": 4,
+      "grw:fertigkeit:entschlossenheit": 11,
+      "grw:fertigkeit:fingerfertigkeit": 3,
+      "grw:fertigkeit:geschichte-und-mythen": 9,
+      "grw:fertigkeit:handwerk": 10,
+      "grw:fertigkeit:heilkunde": 7,
+      "grw:fertigkeit:heimlichkeit": 3,
+      "grw:fertigkeit:jagdkunst": 7,
+      "grw:fertigkeit:laenderkunde": 6,
+      "grw:fertigkeit:naturkunde": 6,
+      "grw:fertigkeit:redegewandtheit": 5,
+      "grw:fertigkeit:schloesser-und-fallen": 4,
+      "grw:fertigkeit:schwimmen": 7,
+      "grw:fertigkeit:seefahrt": 5,
+      "grw:fertigkeit:strassenkunde": 4,
+      "grw:fertigkeit:tierfuehrung": 3,
+      "grw:fertigkeit:ueberleben": 9,
+      "grw:fertigkeit:wahrnehmung": 6,
+      "grw:fertigkeit:zaehigkeit": 13,
+      "grw:fertigkeit:felsmagie": 9,
+      "grw:fertigkeit:feuermagie": 11,
+      "grw:fertigkeit:staerkungsmagie": 9
+     },
+     "waffen": {
+      "grw:waffe:wurfhammer:fernkampf": {
+       "fertigkeit": "Wurfwaffen",
+       "wert": 6,
+       "wgs": 6,
+       "hinweis": "WGS im Bogen ohne den Tick-Zuschlag der Kettenrüstung (bei den Nahkampfwaffen eingerechnet)"
+      },
+      "grw:waffe:streitaxt:nahkampf": {
+       "fertigkeit": "Hiebwaffen",
+       "wert": 13,
+       "wgs": 12
+      }
+     },
+     "waffenlos": 4
     },
     "im_bogen": {
      "Hitzeresistenz": "Hitzeresitenz",
@@ -72455,6 +73476,185 @@
     "ep": {
      "gesamt": 15,
      "eingesetzt": 15
+    },
+    "erschaffung": {
+     "rasse": "grw:rasse:alben",
+     "rasse_frei": [
+      "Beweglichkeit"
+     ],
+     "attribute": {
+      "Ausstrahlung": 2,
+      "Beweglichkeit": 3,
+      "Intuition": 2,
+      "Konstitution": 2,
+      "Mystik": 3,
+      "Stärke": 2,
+      "Verstand": 2,
+      "Willenskraft": 2
+     },
+     "kultur": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:akrobatik": 2,
+        "grw:fertigkeit:arkane-kunde": 2,
+        "grw:fertigkeit:athletik": 2,
+        "grw:fertigkeit:darbietung": 1,
+        "grw:fertigkeit:diplomatie": 2,
+        "grw:fertigkeit:empathie": 1,
+        "grw:fertigkeit:entschlossenheit": 2,
+        "grw:fertigkeit:geschichte-und-mythen": 1,
+        "grw:fertigkeit:heilkunde": 1,
+        "grw:fertigkeit:jagdkunst": 1
+       },
+       "staerke": "grw:staerke:gleichgewichtssinn",
+       "meisterschaft": "grw:meisterschaft:kampfmagie:gezielte-zauber"
+      }
+     },
+     "abstammung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:akrobatik": 1,
+        "grw:fertigkeit:arkane-kunde": 1,
+        "grw:fertigkeit:diplomatie": 1,
+        "grw:fertigkeit:entschlossenheit": 1,
+        "grw:fertigkeit:jagdkunst": 1
+       },
+       "ressourcen": {
+        "grw:ressource:kreatur": 4
+       }
+      }
+     },
+     "ausbildung": {
+      "frei": {
+       "fertigkeiten": {
+        "grw:fertigkeit:akrobatik": 3,
+        "grw:fertigkeit:arkane-kunde": 3,
+        "grw:fertigkeit:diplomatie": 1,
+        "grw:fertigkeit:entschlossenheit": 1,
+        "grw:fertigkeit:jagdkunst": 1,
+        "grw:fertigkeit:redegewandtheit": 1,
+        "grw:fertigkeit:schwimmen": 3,
+        "grw:fertigkeit:seefahrt": 3,
+        "grw:fertigkeit:zaehigkeit": 1,
+        "grw:fertigkeit:kettenwaffen": 3,
+        "grw:fertigkeit:klingenwaffen": 3,
+        "grw:fertigkeit:kampfmagie": 3,
+        "grw:fertigkeit:schutzmagie": 3,
+        "grw:fertigkeit:wassermagie": 1
+       },
+       "ressourcen": {
+        "grw:ressource:mentor": 1,
+        "grw:ressource:stand": 1
+       },
+       "staerken": [
+        "grw:staerke:erhoehter-fokuspool"
+       ],
+       "meisterschaften": [
+        "grw:meisterschaft:akrobatik:blitzreflexe",
+        "grw:meisterschaft:allgemeine-magiemeisterschaften:sparsamer-zauberer"
+       ]
+      }
+     },
+     "schritt7": {
+      "staerken": [
+       "grw:staerke:erhoehter-fokuspool",
+       "grw:staerke:tiervertrauter"
+      ],
+      "ressourcen": {
+       "grw:ressource:vermoegen": 2
+      },
+      "fertigkeiten": {
+       "grw:fertigkeit:kettenwaffen": 3,
+       "grw:fertigkeit:wassermagie": 2
+      }
+     },
+     "ep": {
+      "fertigkeiten": {
+       "grw:fertigkeit:wassermagie": 3
+      },
+      "staerken": [],
+      "meisterschaften": [
+       {
+        "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:umreissen",
+        "fuer": "grw:fertigkeit:kettenwaffen"
+       }
+      ],
+      "zauber": [
+       "grw:zauber:gegenstand-beschaedigen"
+      ],
+      "ressourcen": {}
+     },
+     "freie_meisterschaften": [
+      "grw:meisterschaft:akrobatik:ausweichen-i",
+      "grw:meisterschaft:arkane-kunde:arkane-verteidigung-i",
+      "grw:meisterschaft:wassermagie:kind-der-wellen",
+      "grw:meisterschaft:kettenwaffen:schild-umschlagen"
+     ],
+     "freie_zauber": [
+      "grw:zauber:geisterdolch",
+      "grw:zauber:flammende-waffe",
+      "grw:zauber:kleiner-magieschutz",
+      "grw:zauber:magische-ruestung",
+      "grw:zauber:katzenwaesche",
+      "grw:zauber:einfrieren",
+      "grw:zauber:eislanze"
+     ]
+    },
+    "bogen_werte": {
+     "abgeleitet": {
+      "GSW": 10,
+      "INI": 5,
+      "LP": 6,
+      "FO": 20,
+      "VTD": 19,
+      "GW": 16,
+      "KW": 15
+     },
+     "fertigkeiten": {
+      "grw:fertigkeit:akrobatik": 13,
+      "grw:fertigkeit:alchemie": 5,
+      "grw:fertigkeit:anfuehren": 5,
+      "grw:fertigkeit:arkane-kunde": 11,
+      "grw:fertigkeit:athletik": 9,
+      "grw:fertigkeit:darbietung": 6,
+      "grw:fertigkeit:diplomatie": 9,
+      "grw:fertigkeit:edelhandwerk": 4,
+      "grw:fertigkeit:empathie": 5,
+      "grw:fertigkeit:entschlossenheit": 9,
+      "grw:fertigkeit:fingerfertigkeit": 8,
+      "grw:fertigkeit:geschichte-und-mythen": 6,
+      "grw:fertigkeit:handwerk": 3,
+      "grw:fertigkeit:heilkunde": 5,
+      "grw:fertigkeit:heimlichkeit": 7,
+      "grw:fertigkeit:jagdkunst": 6,
+      "grw:fertigkeit:laenderkunde": 4,
+      "grw:fertigkeit:naturkunde": 4,
+      "grw:fertigkeit:redegewandtheit": 6,
+      "grw:fertigkeit:schloesser-und-fallen": 7,
+      "grw:fertigkeit:schwimmen": 6,
+      "grw:fertigkeit:seefahrt": 9,
+      "grw:fertigkeit:strassenkunde": 5,
+      "grw:fertigkeit:tierfuehrung": 8,
+      "grw:fertigkeit:ueberleben": 3,
+      "grw:fertigkeit:wahrnehmung": 4,
+      "grw:fertigkeit:zaehigkeit": 4,
+      "grw:fertigkeit:kampfmagie": 8,
+      "grw:fertigkeit:schutzmagie": 9,
+      "grw:fertigkeit:wassermagie": 11
+     },
+     "waffen": {
+      "grw:waffe:kettensichel:nahkampf": {
+       "fertigkeit": "Kettenwaffen",
+       "wert": 13,
+       "wgs": 8
+      },
+      "grw:waffe:maira:nahkampf": {
+       "fertigkeit": "Klingenwaffen",
+       "wert": 10,
+       "wgs": 6
+      }
+     },
+     "waffenlos": 7
     },
     "im_bogen": {
      "Erhöhter Fokuspool": "Erhöhter Fokuspool x2",

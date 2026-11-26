@@ -1342,6 +1342,20 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
   abgeleiteten Werten der Bögen als Sollwerten (GSW, INI, LP, FO, VTD, GW, KW, Splitterpunkte), angepasste Kampf- und
   Referenztests. FUNDAMENT: neue Zeile „Archetypen“ in den Regelquellen.
 
+## Stand 61 (26.11.2026): Archetypen gegen alle Werte der Bögen geprüft
+
+- `archetypen.json` trägt zusätzlich die Spalten „Wert“ der Bögen: alle Fertigkeiten und Magieschulen, Waffen (Kampffertigkeit,
+  Wert, WGS, mod.) und die abgeleiteten Werte. `archetypen.py` prüft beim Bauen: Fertigkeitswert = Punkte + Attribute,
+  Waffenwert = Punkte + Attribute der Waffe + mod., WGS = WGS der Waffe + Tick-Zuschlag von Rüstung und Schild. Alles stimmt;
+  einzige Ausnahme ist Telkins Wurfhammer (WGS im Bogen ohne den Tick-Zuschlag, als Hinweis vermerkt). Arrous Glefe hat
+  „mod. +1“ (Relikt); im Editor fehlt der Bonus, bis das Relikt gebaut ist.
+- Fehler behoben: Bei Waffen mit mehreren Fassungen nahm der Bau die erste (Cederions und Seleshas Dolch als Wurfwaffe,
+  Keiras Dornenhandschuh als Parierwaffe). Jetzt die Fassung mit der Kampffertigkeit des Bogens.
+- Jeder Archetyp trägt seinen Bauplan (`erschaffung`, Format von `pruefeErschaffung`/`lader.pruefe_erschaffung`) und die
+  Bogenwerte (`bogen_werte`). Gegenprüfung auf beiden Seiten: `praxistest.py` (Python-Lader: Erschaffung ohne Befund, EP,
+  abgeleitete Werte, Fertigkeitswerte) und `archetypen.test.ts` (Bauplan, Fertigkeitswerte, Angriffswerte, WGS, abgeleitete
+  Werte mit INI). `lader.py` nimmt Modulwahlen jetzt auch mit Text-Schlüsseln an (wie aus JSON und im Editor).
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

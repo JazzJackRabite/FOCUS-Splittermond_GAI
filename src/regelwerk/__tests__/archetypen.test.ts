@@ -9,7 +9,9 @@ import { basisAusDateien } from './hilfen';
 import { regelIdsErmitteln } from '../ids';
 import { aktiverKatalog, setzeAktivenKatalog } from '../bruecke';
 import { archetypen, archetypZuCharakter } from '../archetypen';
-import { pruefeErschaffungImEditor } from '../erschaffungEditor';
+import { editorFertigkeit, pruefeErschaffungImEditor } from '../erschaffungEditor';
+import { pruefeErschaffung, type Bau } from '../erschaffung';
+import { waffenAttribute } from '../ausruestung';
 import { grwMondzeichen, grwRassen } from '../grwListen';
 import { referenceCharacterResources } from '../../utils/gameResourceManager';
 import { calculateCharacter } from '../../utils/characterCalculations';
@@ -62,6 +64,35 @@ describe('Archetypen im GRW-Paket', () => {
     expect(Object.keys(grwRassen(K))).toContain(c.race);
     expect(grwMondzeichen(K)).toContain(c.moonSign);
     expect((c.advancementLog ?? []).filter((e) => /Quelle: unbekannt/.test(e.detail ?? ''))).toEqual([]);
+  });
+
+  it.each(archetypen(K).map((a) => [a.name, a.id] as const))('%s: Bauplan des Pakets besteht die Erschaffungsregeln (wie lader.py der Prüfsuite)', (_n, id) => {
+    const d = K.get(id)!.daten;
+    const { befunde, charakter } = pruefeErschaffung(K, d.erschaffung as Bau);
+    expect(befunde).toEqual([]);
+    expect(charakter.ep_ausgegeben).toBe(d.ep.eingesetzt);
+  });
+
+  it.each(archetypen(K).map((a) => [a.name, a.id] as const))('%s: Werte wie im Charakterbogen (Fertigkeiten, Waffen, abgeleitete Werte)', (_n, id) => {
+    const d = K.get(id)!.daten;
+    const c = charakter(id);
+    // Spalte „Wert“ des Bogens: ohne Rüstung und Schild
+    const r = calculateCharacter({ ...c, inventory: [] });
+    const { GSW, INI, LP, FO, VTD, GW, KW } = r.derived;
+    expect({ GSW, INI, LP: r.maxLP, FO: r.maxFO, VTD, GW, KW }).toEqual(d.bogen_werte.abgeleitet);
+    const fw: Record<string, [number | null, number]> = {};
+    for (const [fid, wert] of Object.entries(d.bogen_werte.fertigkeiten as Record<string, number>)) {
+      const n = editorFertigkeit(K, fid)!;
+      if (r.getSkillTotal(n) !== wert) fw[n] = [r.getSkillTotal(n), wert];
+    }
+    expect(fw).toEqual({});
+    // Waffen: Angriffswert ohne „mod.“ (Relikt-Bonus, solange kein Relikt gebaut ist); WGS mit dem Tick-Zuschlag der Rüstung
+    const mit = calculateCharacter(c);
+    for (const [wid, w] of Object.entries(d.bogen_werte.waffen as Record<string, { wert: number; wgs?: number; mod?: number; hinweis?: string }>)) {
+      const it = c.inventory!.find((x) => x.name === K.get(wid)!.name)!;
+      expect(r.getAttackValue(it.weaponSkill!, waffenAttribute({ id: wid, name: it.name, weaponSkill: it.weaponSkill }, K)), it.name).toBe(w.wert - (w.mod ?? 0));
+      if (w.wgs !== undefined && !w.hinweis) expect(Number(it.wgs) + mit.gearTickModifier, `WGS ${it.name}`).toBe(w.wgs);
+    }
   });
 
   it('Abweichungen vom Modul sind im Paket begründet (Selesha: Kultur, Tiai: Kultur und Abstammung frei)', () => {
