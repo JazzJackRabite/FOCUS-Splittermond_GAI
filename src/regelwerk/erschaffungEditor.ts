@@ -213,18 +213,24 @@ export function bauAusEditor(k: Katalog, state: CharacterState): { bau: Bau; hin
   // ---- Meisterschaften
   type M = { id: string; fuer?: string; tier: number };
   const zuId = (name: string, skill: string): M | null => {
+    // Schwerpunkt: zählt als Meisterschaft der ersten Schwelle (GRW S. 89); im Paket ein Eintrag je Fertigkeit
+    if (/^Schwerpunkt/i.test(name)) {
+      const fi = fertigkeitId(k, skill);
+      const sp = fi ? k.nachTyp('schwerpunkt').find(e => e.daten.fertigkeit === fi) : undefined;
+      if (sp) return { id: sp.id, tier: Number(sp.daten.schwelle) || 1 };
+    }
     const i = meisterschaftId(k, name, skill);
     if (!i) { if (!/^Schwerpunkt/i.test(name)) hinweise.push(`Meisterschaft „${name}“ (${skill}) steht nicht im Regelwerk`); return null; }
     const e = k.get(i)!; const gruppe = String(e.daten.fertigkeit).startsWith('grw:meisterschaftsgruppe:');
     return { id: i, fuer: gruppe ? fertigkeitId(k, skill) : undefined, tier: Number(e.daten.schwelle) || 1 };
   };
-  const erschaffungsM: M[] = []; const freieM: Array<string | { id: string; fuer: string }> = []; const epM: string[] = [];
+  const erschaffungsM: M[] = []; const freieM: Array<string | { id: string; fuer: string }> = []; const epM: Array<string | { id: string; fuer: string }> = [];
   for (const [skill, liste] of Object.entries(state.masteries)) {
     for (const m of liste) {
       const x = zuId(m.name, skill); if (!x) continue;
       if (m.isFree) freieM.push(x.fuer ? { id: x.id, fuer: x.fuer } : x.id);
       else if (m.isCreationBonus || m.source === 'Erschaffung') erschaffungsM.push(x);
-      else epM.push(x.id);
+      else epM.push(x.fuer ? { id: x.id, fuer: x.fuer } : x.id);
     }
   }
   let kulturM: string | undefined;

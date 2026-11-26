@@ -19,10 +19,11 @@
  },
  "abhaengigkeiten": [],
  "statistik": {
-  "eintraege": 1542,
+  "eintraege": 1549,
   "nach_typ": {
    "abstammung": 17,
    "alchemikum": 14,
+   "archetyp": 7,
    "artefaktwirkung": 3,
    "dienstleistung": 19,
    "fertigkeit": 53,
@@ -57,7 +58,7 @@
    "zustand": 17
   },
   "nach_aktion": {
-   "neu": 1542
+   "neu": 1549
   }
  },
  "eintraege": [
@@ -70220,6 +70221,2247 @@
    "hinweise": [
     "Ergänzt am 02.11.2026 (Zustände als Verweisziel; „Liste der Zustände“)."
    ]
+  },
+  {
+   "id": "grw:archetyp:arrou",
+   "typ": "archetyp",
+   "aktion": "neu",
+   "name": "Arrou",
+   "quelle": {
+    "paket": "grw",
+    "buch_seiten": [
+     324,
+     328,
+     329
+    ],
+    "pdf_seiten": [
+     325,
+     329,
+     330
+    ]
+   },
+   "daten": {
+    "titel": "Sandläufer der Tarr",
+    "kurzbeschreibung": "Varg-Kundschafter aus der Wüste, Jäger und Spurenleser mit Glefe, Langbogen und einem Sandfalken als Vertrautem.",
+    "ausbildung_name": "Sandläufer (Waldläufer)",
+    "rasse": "grw:rasse:varge",
+    "kultur": "grw:kultur:tarr",
+    "abstammung": "grw:abstammung:reisende",
+    "mondzeichen": "grw:mondzeichen:freundschaft-der-trabanten",
+    "attribute": {
+     "AUS": 1,
+     "BEW": 3,
+     "INT": 4,
+     "KON": 2,
+     "MYS": 2,
+     "STÄ": 5,
+     "VER": 2,
+     "WIL": 1
+    },
+    "attribute_basis": {
+     "AUS": 1,
+     "BEW": 3,
+     "INT": 3,
+     "KON": 2,
+     "MYS": 2,
+     "STÄ": 3,
+     "VER": 2,
+     "WIL": 2
+    },
+    "rasse_frei": [
+     "INT"
+    ],
+    "kultur_wahl": {
+     "meisterschaft": 1,
+     "fertigkeiten": {
+      "1": "grw:fertigkeit:stangenwaffen",
+      "2": "grw:fertigkeit:schusswaffen",
+      "3": "grw:fertigkeit:athletik",
+      "4": "grw:fertigkeit:tierfuehrung"
+     }
+    },
+    "abstammung_wahl": {
+     "ressourcen": {
+      "0": "grw:ressource:mentor",
+      "1": "grw:ressource:kontakte"
+     },
+     "fertigkeiten": {
+      "2": "grw:fertigkeit:naturkunde",
+      "3": "grw:fertigkeit:ueberleben"
+     }
+    },
+    "fertigkeiten": {
+     "grw:fertigkeit:akrobatik": 2,
+     "grw:fertigkeit:athletik": 4,
+     "grw:fertigkeit:entschlossenheit": 1,
+     "grw:fertigkeit:geschichte-und-mythen": 1,
+     "grw:fertigkeit:handwerk": 1,
+     "grw:fertigkeit:heimlichkeit": 4,
+     "grw:fertigkeit:jagdkunst": 6,
+     "grw:fertigkeit:laenderkunde": 1,
+     "grw:fertigkeit:naturkunde": 6,
+     "grw:fertigkeit:tierfuehrung": 2,
+     "grw:fertigkeit:ueberleben": 6,
+     "grw:fertigkeit:wahrnehmung": 6,
+     "grw:fertigkeit:zaehigkeit": 6,
+     "grw:fertigkeit:handgemenge": 2,
+     "grw:fertigkeit:stangenwaffen": 4,
+     "grw:fertigkeit:schusswaffen": 4,
+     "grw:fertigkeit:naturmagie": 3
+    },
+    "fertigkeiten_ep": {
+     "grw:fertigkeit:schusswaffen": 1,
+     "grw:fertigkeit:naturmagie": 3
+    },
+    "staerken": [
+     {
+      "id": "grw:staerke:natuerlicher-ruestungsschutz",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:ausdauernd",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:natuerliche-waffe",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:hitzeresistenz",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "kultur"
+     },
+     {
+      "id": "grw:staerke:feine-nase",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:flink",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:orientierungssinn",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:tierfreund",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:tiervertrauter",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     }
+    ],
+    "meisterschaften": [
+     {
+      "fertigkeit": "grw:fertigkeit:ueberleben",
+      "id": "grw:meisterschaft:ueberleben:gelaendekunde",
+      "schwelle": 1,
+      "auswahl": "Wüste",
+      "herkunft": "kultur"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:jagdkunst",
+      "id": "grw:meisterschaft:jagdkunst:unermuedlicher-verfolger",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:naturkunde",
+      "id": "grw:meisterschaft:naturkunde:jaeger",
+      "schwelle": 1,
+      "auswahl": "Reptil",
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:ueberleben",
+      "id": "grw:meisterschaft:ueberleben:wildnislaeufer",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:wahrnehmung",
+      "id": "grw:meisterschaft:wahrnehmung:umgebungssinne",
+      "schwelle": 1,
+      "auswahl": "Wüste",
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:zaehigkeit",
+      "id": "grw:meisterschaft:zaehigkeit:wachsamkeit",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:schusswaffen",
+      "id": "grw:meisterschaft:schusswaffen:scharfschuetze",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:jagdkunst",
+      "schwerpunkt_id": "grw:schwerpunkt:jagdkunst:1",
+      "schwerpunkt": "Spurensuche",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     }
+    ],
+    "zauber": [
+     {
+      "id": "grw:zauber:freund-der-tiere",
+      "schule": "grw:fertigkeit:naturmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:tiersinne",
+      "schule": "grw:fertigkeit:naturmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:wasser-finden",
+      "schule": "grw:fertigkeit:naturmagie",
+      "grad": 1,
+      "herkunft": "ep",
+      "ep": 3
+     }
+    ],
+    "ressourcen": [
+     {
+      "id": "grw:ressource:kontakte",
+      "stufe": 2,
+      "text": "viele Händler"
+     },
+     {
+      "id": "grw:ressource:kreatur",
+      "stufe": 2,
+      "text": "Sandfalke „Rouharr“"
+     },
+     {
+      "id": "grw:ressource:mentor",
+      "stufe": 1,
+      "text": "alter Wüstenweiser"
+     },
+     {
+      "id": "grw:ressource:relikt",
+      "stufe": 2,
+      "text": "Glefe +1 FW"
+     },
+     {
+      "id": "grw:ressource:vermoegen",
+      "stufe": 1,
+      "text": "bequemer Lebensstil"
+     }
+    ],
+    "schwaechen": [
+     {
+      "name": "Aufbrausend"
+     }
+    ],
+    "sprachen": [
+     "grw:sprache:tarrgro",
+     "grw:sprache:basargnomisch"
+    ],
+    "kulturkunde": "Tarr",
+    "ausruestung": [
+     {
+      "id": "grw:waffe:glefe:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:krummdolch:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:langbogen:fernkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:ruestung:leder-leicht",
+      "anzahl": 1
+     },
+     {
+      "text": "robuste Kleidung",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:decke",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:wasserschlauch",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:essgeschirr",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:feuerstein-stahl-und-zunder",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:fackel",
+      "anzahl": 5
+     },
+     {
+      "id": "grw:gegenstand:marschration-pro-tag",
+      "anzahl": 3
+     }
+    ],
+    "vermoegen": {
+     "solare": 0,
+     "lunare": 5,
+     "telare": 0
+    },
+    "splitterpunkte": 3,
+    "ep": {
+     "gesamt": 15,
+     "eingesetzt": 15
+    },
+    "im_bogen": {
+     "Natürlicher Rüstungsschutz": "Natürl. Rüstungsschutz",
+     "Jäger": "Jäger Reptil",
+     "Geländekunde": "Geländekunde Wüste",
+     "Umgebungssinne": "Umgebungssinne Wüste"
+    }
+   }
+  },
+  {
+   "id": "grw:archetyp:cederion",
+   "typ": "archetyp",
+   "aktion": "neu",
+   "name": "Cederion von Falkenberg",
+   "quelle": {
+    "paket": "grw",
+    "buch_seiten": [
+     324,
+     330,
+     331
+    ],
+    "pdf_seiten": [
+     325,
+     331,
+     332
+    ]
+   },
+   "daten": {
+    "titel": "Ritter des Kaisers",
+    "kurzbeschreibung": "Selenischer Ritter und Schwertrichter: Anführer, Diplomat und Schwertkämpfer mit Langschwert und Schild.",
+    "ausbildung_name": "Schwertrichter (Recke)",
+    "rasse": "grw:rasse:menschen",
+    "kultur": "grw:kultur:selenia",
+    "abstammung": "grw:abstammung:landadel",
+    "mondzeichen": "grw:mondzeichen:segen-der-mondkraft",
+    "attribute": {
+     "AUS": 3,
+     "BEW": 3,
+     "INT": 1,
+     "KON": 3,
+     "MYS": 1,
+     "STÄ": 4,
+     "VER": 3,
+     "WIL": 2
+    },
+    "attribute_basis": {
+     "AUS": 2,
+     "BEW": 3,
+     "INT": 1,
+     "KON": 3,
+     "MYS": 1,
+     "STÄ": 3,
+     "VER": 3,
+     "WIL": 2
+    },
+    "rasse_frei": [
+     "AUS",
+     "STÄ"
+    ],
+    "kultur_wahl": {
+     "fertigkeiten": {
+      "0": "grw:fertigkeit:hiebwaffen",
+      "1": "grw:fertigkeit:tierfuehrung",
+      "2": "grw:fertigkeit:diplomatie",
+      "7": "grw:fertigkeit:naturkunde"
+     }
+    },
+    "abstammung_wahl": {
+     "ressourcen": {
+      "0": "grw:ressource:ansehen",
+      "1": "grw:ressource:vermoegen"
+     },
+     "fertigkeiten": {
+      "0": "grw:fertigkeit:klingenwaffen"
+     }
+    },
+    "fertigkeiten": {
+     "grw:fertigkeit:anfuehren": 6,
+     "grw:fertigkeit:arkane-kunde": 1,
+     "grw:fertigkeit:athletik": 2,
+     "grw:fertigkeit:diplomatie": 4,
+     "grw:fertigkeit:empathie": 4,
+     "grw:fertigkeit:entschlossenheit": 3,
+     "grw:fertigkeit:geschichte-und-mythen": 4,
+     "grw:fertigkeit:handwerk": 2,
+     "grw:fertigkeit:jagdkunst": 1,
+     "grw:fertigkeit:laenderkunde": 3,
+     "grw:fertigkeit:naturkunde": 2,
+     "grw:fertigkeit:redegewandtheit": 3,
+     "grw:fertigkeit:tierfuehrung": 4,
+     "grw:fertigkeit:ueberleben": 1,
+     "grw:fertigkeit:wahrnehmung": 2,
+     "grw:fertigkeit:zaehigkeit": 6,
+     "grw:fertigkeit:hiebwaffen": 3,
+     "grw:fertigkeit:klingenwaffen": 6
+    },
+    "fertigkeiten_ep": {
+     "grw:fertigkeit:klingenwaffen": 2
+    },
+    "staerken": [
+     {
+      "id": "grw:staerke:zusaetzliche-splitterpunkte",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:gesellig",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "kultur"
+     },
+     {
+      "id": "grw:staerke:attraktivitaet",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ep",
+      "ep": 7
+     },
+     {
+      "id": "grw:staerke:hoher-geistiger-widerstand",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:hoher-koerperlicher-widerstand",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:robust",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:zielstrebig",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     }
+    ],
+    "meisterschaften": [
+     {
+      "fertigkeit": "grw:fertigkeit:geschichte-und-mythen",
+      "schwerpunkt_id": "grw:schwerpunkt:geschichte-und-mythen:1",
+      "schwerpunkt": "Drachlinge",
+      "schwelle": 1,
+      "herkunft": "kultur"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:anfuehren",
+      "id": "grw:meisterschaft:anfuehren:herausforderung",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:zaehigkeit",
+      "id": "grw:meisterschaft:zaehigkeit:ruestungstraeger-i",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:klingenwaffen",
+      "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:verteidiger",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:empathie",
+      "id": "grw:meisterschaft:empathie:rede-mit-mir",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:zaehigkeit",
+      "id": "grw:meisterschaft:zaehigkeit:starker-schildarm-i",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     }
+    ],
+    "zauber": [],
+    "ressourcen": [
+     {
+      "id": "grw:ressource:ansehen",
+      "stufe": 2,
+      "text": "mutiger Ritter"
+     },
+     {
+      "id": "grw:ressource:kontakte",
+      "stufe": 1,
+      "text": "einige Landadlige"
+     },
+     {
+      "id": "grw:ressource:stand",
+      "stufe": 3,
+      "text": "Ritter des Kaisers"
+     },
+     {
+      "id": "grw:ressource:vermoegen",
+      "stufe": 2,
+      "text": "reichlicher Lebensstil"
+     }
+    ],
+    "schwaechen": [
+     {
+      "name": "Ehrenkodex"
+     }
+    ],
+    "sprachen": [
+     "grw:sprache:gemein-dragoreisch",
+     "grw:sprache:basargnomisch"
+    ],
+    "kulturkunde": "Selenia",
+    "ausruestung": [
+     {
+      "id": "grw:waffe:langschwert:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:streithammer:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:dolch:fernkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:ruestung:kette-leicht",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:schild:lederschild",
+      "anzahl": 1
+     },
+     {
+      "text": "robuste Kleidung",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:decke",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:wasserschlauch",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:essgeschirr",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:feuerstein-stahl-und-zunder",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:fackel",
+      "anzahl": 5
+     },
+     {
+      "id": "grw:gegenstand:marschration-pro-tag",
+      "anzahl": 3
+     }
+    ],
+    "vermoegen": {
+     "solare": 0,
+     "lunare": 20,
+     "telare": 0
+    },
+    "splitterpunkte": 5,
+    "ep": {
+     "gesamt": 15,
+     "eingesetzt": 13
+    },
+    "im_bogen": {
+     "Hoher Geistiger Widerstand": "Hoher Geist. Widerstand",
+     "Hoher Körperlicher Widerstand": "Hoher Körperl. Widerstand"
+    }
+   }
+  },
+  {
+   "id": "grw:archetyp:eshi",
+   "typ": "archetyp",
+   "aktion": "neu",
+   "name": "Eshi bid-Herar",
+   "quelle": {
+    "paket": "grw",
+    "buch_seiten": [
+     325,
+     332,
+     333
+    ],
+    "pdf_seiten": [
+     326,
+     333,
+     334
+    ]
+   },
+   "daten": {
+    "titel": "Alchemist und Vagabund",
+    "kurzbeschreibung": "Gnomischer Heiler und Alchemist aus Keshabid, gewandter Händler mit leichter Armbrust und Heil- und Stärkungsmagie.",
+    "ausbildung_name": "Trankmeister (Heiler)",
+    "rasse": "grw:rasse:gnome",
+    "kultur": "grw:kultur:keshabid",
+    "abstammung": "grw:abstammung:haendler",
+    "mondzeichen": "grw:mondzeichen:gunst-des-reichen-mannes",
+    "attribute": {
+     "AUS": 3,
+     "BEW": 2,
+     "INT": 3,
+     "KON": 1,
+     "MYS": 2,
+     "STÄ": 1,
+     "VER": 5,
+     "WIL": 3
+    },
+    "attribute_basis": {
+     "AUS": 3,
+     "BEW": 2,
+     "INT": 3,
+     "KON": 1,
+     "MYS": 1,
+     "STÄ": 2,
+     "VER": 3,
+     "WIL": 3
+    },
+    "rasse_frei": [
+     "VER"
+    ],
+    "kultur_wahl": {
+     "staerke": "grw:staerke:bastler",
+     "fertigkeiten": {
+      "0": "grw:fertigkeit:staerkungsmagie",
+      "3": "grw:fertigkeit:edelhandwerk",
+      "5": "grw:fertigkeit:schloesser-und-fallen"
+     }
+    },
+    "abstammung_wahl": {
+     "ressourcen": {
+      "0": "grw:ressource:kontakte",
+      "2": "grw:ressource:stand"
+     },
+     "fertigkeiten": {
+      "4": "grw:fertigkeit:strassenkunde"
+     }
+    },
+    "fertigkeiten": {
+     "grw:fertigkeit:alchemie": 6,
+     "grw:fertigkeit:arkane-kunde": 2,
+     "grw:fertigkeit:diplomatie": 6,
+     "grw:fertigkeit:edelhandwerk": 2,
+     "grw:fertigkeit:empathie": 3,
+     "grw:fertigkeit:entschlossenheit": 1,
+     "grw:fertigkeit:geschichte-und-mythen": 2,
+     "grw:fertigkeit:heilkunde": 4,
+     "grw:fertigkeit:heimlichkeit": 3,
+     "grw:fertigkeit:laenderkunde": 2,
+     "grw:fertigkeit:naturkunde": 2,
+     "grw:fertigkeit:redegewandtheit": 6,
+     "grw:fertigkeit:schloesser-und-fallen": 1,
+     "grw:fertigkeit:strassenkunde": 3,
+     "grw:fertigkeit:wahrnehmung": 3,
+     "grw:fertigkeit:zaehigkeit": 2,
+     "grw:fertigkeit:schusswaffen": 6,
+     "grw:fertigkeit:heilungsmagie": 3,
+     "grw:fertigkeit:staerkungsmagie": 3
+    },
+    "fertigkeiten_ep": {
+     "grw:fertigkeit:schusswaffen": 2,
+     "grw:fertigkeit:heilungsmagie": 1,
+     "grw:fertigkeit:staerkungsmagie": 2
+    },
+    "staerken": [
+     {
+      "id": "grw:staerke:feensinn",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:hoher-geistiger-widerstand",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:flink",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:bastler",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "kultur"
+     },
+     {
+      "id": "grw:staerke:gesellig",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:giftresistenz",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:gutes-gedaechtnis",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:literat",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:weltgewandt",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     }
+    ],
+    "meisterschaften": [
+     {
+      "fertigkeit": "grw:fertigkeit:heimlichkeit",
+      "id": "grw:meisterschaft:heimlichkeit:leisetreter",
+      "schwelle": 1,
+      "herkunft": "kultur"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:alchemie",
+      "id": "grw:meisterschaft:alchemie:geselle",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:diplomatie",
+      "id": "grw:meisterschaft:diplomatie:feilscher",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:redegewandtheit",
+      "id": "grw:meisterschaft:redegewandtheit:beissender-spott",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:schusswaffen",
+      "id": "grw:meisterschaft:schusswaffen:scharfschuetze",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:heilkunde",
+      "id": "grw:meisterschaft:heilkunde:lebensretter",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     }
+    ],
+    "zauber": [
+     {
+      "id": "grw:zauber:erfrischung",
+      "schule": "grw:fertigkeit:heilungsmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:geh-noch-nicht",
+      "schule": "grw:fertigkeit:heilungsmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:haerte",
+      "schule": "grw:fertigkeit:staerkungsmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     }
+    ],
+    "ressourcen": [
+     {
+      "id": "grw:ressource:ansehen",
+      "stufe": 1,
+      "text": "bekannter Heiler"
+     },
+     {
+      "id": "grw:ressource:kontakte",
+      "stufe": 2,
+      "text": "viele gnomische Freunde"
+     },
+     {
+      "id": "grw:ressource:relikt",
+      "stufe": 2,
+      "text": "Alchemistenkoffer +1 FW"
+     },
+     {
+      "id": "grw:ressource:stand",
+      "stufe": 1,
+      "text": "angesehener Heiler"
+     },
+     {
+      "id": "grw:ressource:vermoegen",
+      "stufe": 2,
+      "text": "reichlicher Lebensstil"
+     }
+    ],
+    "schwaechen": [
+     {
+      "name": "Goldgierig"
+     }
+    ],
+    "sprachen": [
+     "grw:sprache:keshabu",
+     "grw:sprache:basargnomisch"
+    ],
+    "kulturkunde": "Keshabid",
+    "ausruestung": [
+     {
+      "id": "grw:waffe:dolch:fernkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:leichte-armbrust:fernkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:ruestung:tuchruestung",
+      "anzahl": 1
+     },
+     {
+      "text": "robuste Kleidung",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:decke",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:wasserschlauch",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:essgeschirr",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:feuerstein-stahl-und-zunder",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:fackel",
+      "anzahl": 5
+     },
+     {
+      "id": "grw:gegenstand:marschration-pro-tag",
+      "anzahl": 3
+     }
+    ],
+    "vermoegen": {
+     "solare": 0,
+     "lunare": 20,
+     "telare": 0
+    },
+    "splitterpunkte": 3,
+    "ep": {
+     "gesamt": 15,
+     "eingesetzt": 15
+    },
+    "im_bogen": {
+     "Hoher Geistiger Widerstand": "Hoher Geist. Widerstand"
+    }
+   }
+  },
+  {
+   "id": "grw:archetyp:keira",
+   "typ": "archetyp",
+   "aktion": "neu",
+   "name": "Keira Alvios",
+   "quelle": {
+    "paket": "grw",
+    "buch_seiten": [
+     325,
+     334,
+     335
+    ],
+    "pdf_seiten": [
+     326,
+     335,
+     336
+    ]
+   },
+   "daten": {
+    "titel": "Mertalische Protectorin",
+    "kurzbeschreibung": "Schattenklinge aus dem Mertalischen Städtebund: Klingenkämpferin, Kundschafterin der Straßen und Schattenmagierin.",
+    "ausbildung_name": "Protectorin (Schattenklinge)",
+    "rasse": "grw:rasse:menschen",
+    "kultur": "grw:kultur:mertalischer-staedtebund",
+    "abstammung": "grw:abstammung:gesindel",
+    "mondzeichen": "grw:mondzeichen:das-zweite-gesicht",
+    "attribute": {
+     "AUS": 2,
+     "BEW": 4,
+     "INT": 4,
+     "KON": 2,
+     "MYS": 2,
+     "STÄ": 2,
+     "VER": 1,
+     "WIL": 3
+    },
+    "attribute_basis": {
+     "AUS": 2,
+     "BEW": 3,
+     "INT": 3,
+     "KON": 2,
+     "MYS": 2,
+     "STÄ": 2,
+     "VER": 1,
+     "WIL": 3
+    },
+    "rasse_frei": [
+     "BEW",
+     "INT"
+    ],
+    "kultur_wahl": {
+     "staerke": "grw:staerke:soziales-gespuer",
+     "meisterschaft": 1,
+     "fertigkeiten": {
+      "1": "grw:fertigkeit:hiebwaffen",
+      "5": "grw:fertigkeit:schattenmagie"
+     }
+    },
+    "abstammung_wahl": {
+     "ressourcen": {
+      "2": "grw:ressource:mentor"
+     },
+     "fertigkeiten": {
+      "3": "grw:fertigkeit:strassenkunde"
+     }
+    },
+    "fertigkeiten": {
+     "grw:fertigkeit:akrobatik": 3,
+     "grw:fertigkeit:arkane-kunde": 1,
+     "grw:fertigkeit:athletik": 2,
+     "grw:fertigkeit:darbietung": 1,
+     "grw:fertigkeit:diplomatie": 1,
+     "grw:fertigkeit:empathie": 6,
+     "grw:fertigkeit:entschlossenheit": 3,
+     "grw:fertigkeit:fingerfertigkeit": 3,
+     "grw:fertigkeit:heimlichkeit": 6,
+     "grw:fertigkeit:laenderkunde": 3,
+     "grw:fertigkeit:redegewandtheit": 2,
+     "grw:fertigkeit:schloesser-und-fallen": 1,
+     "grw:fertigkeit:strassenkunde": 6,
+     "grw:fertigkeit:wahrnehmung": 6,
+     "grw:fertigkeit:zaehigkeit": 1,
+     "grw:fertigkeit:handgemenge": 2,
+     "grw:fertigkeit:hiebwaffen": 3,
+     "grw:fertigkeit:klingenwaffen": 6,
+     "grw:fertigkeit:schattenmagie": 3
+    },
+    "fertigkeiten_ep": {
+     "grw:fertigkeit:klingenwaffen": 2,
+     "grw:fertigkeit:schattenmagie": 2
+    },
+    "staerken": [
+     {
+      "id": "grw:staerke:zusaetzliche-splitterpunkte",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:soziales-gespuer",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "kultur"
+     },
+     {
+      "id": "grw:staerke:flink",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:gleichgewichtssinn",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:robust",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:scharfes-gehoer",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:scharfe-sicht",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:gesellig",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     }
+    ],
+    "meisterschaften": [
+     {
+      "fertigkeit": "grw:fertigkeit:strassenkunde",
+      "id": "grw:meisterschaft:strassenkunde:geruechte-aufschnappen",
+      "schwelle": 1,
+      "herkunft": "kultur"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:empathie",
+      "id": "grw:meisterschaft:empathie:gegner-durchschauen-i",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:heimlichkeit",
+      "id": "grw:meisterschaft:heimlichkeit:unauffaellig",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:strassenkunde",
+      "schwerpunkt_id": "grw:schwerpunkt:strassenkunde:1",
+      "schwerpunkt": "Orientierung",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:wahrnehmung",
+      "schwerpunkt_id": "grw:schwerpunkt:wahrnehmung:1",
+      "schwerpunkt": "Hinterhalte",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:klingenwaffen",
+      "id": "grw:meisterschaft:klingenwaffen:verwirrung",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:wahrnehmung",
+      "id": "grw:meisterschaft:wahrnehmung:umgebungssinne",
+      "schwelle": 1,
+      "auswahl": "Stadt",
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:klingenwaffen",
+      "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:verteidiger",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     }
+    ],
+    "zauber": [
+     {
+      "id": "grw:zauber:schattenschleier",
+      "schule": "grw:fertigkeit:schattenmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:schattenmantel",
+      "schule": "grw:fertigkeit:schattenmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:schattenwaffe",
+      "schule": "grw:fertigkeit:schattenmagie",
+      "grad": 1,
+      "herkunft": "ep",
+      "ep": 3
+     }
+    ],
+    "ressourcen": [
+     {
+      "id": "grw:ressource:kontakte",
+      "stufe": 4,
+      "text": "viele Informanten und Gauner"
+     },
+     {
+      "id": "grw:ressource:mentor",
+      "stufe": 2,
+      "text": "alter Lehrmeister"
+     },
+     {
+      "id": "grw:ressource:vermoegen",
+      "stufe": 1,
+      "text": "bequemer Lebensstil"
+     },
+     {
+      "id": "grw:ressource:zuflucht",
+      "stufe": 2,
+      "text": "Geheimversteck in Kanalisation"
+     },
+     {
+      "id": "grw:ressource:ansehen",
+      "stufe": -1,
+      "text": null,
+      "nicht_im_bogen": true
+     },
+     {
+      "id": "grw:ressource:kreatur",
+      "stufe": 1,
+      "text": null,
+      "nicht_im_bogen": true
+     },
+     {
+      "id": "grw:ressource:stand",
+      "stufe": -1,
+      "text": null,
+      "nicht_im_bogen": true
+     }
+    ],
+    "schwaechen": [
+     {
+      "name": "Hochmut",
+      "id": "grw:schwaeche:hochmut"
+     }
+    ],
+    "sprachen": [
+     "grw:sprache:mertalisch",
+     "grw:sprache:basargnomisch"
+    ],
+    "kulturkunde": "Mertalischer Städtebund",
+    "ausruestung": [
+     {
+      "id": "grw:waffe:skavona:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:schlagstock:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:dornenhandschuh:parierwaffe",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:ruestung:leder-leicht",
+      "anzahl": 1
+     },
+     {
+      "text": "robuste Kleidung",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:decke",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:wasserschlauch",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:essgeschirr",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:feuerstein-stahl-und-zunder",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:laterne-einfach",
+      "anzahl": 1
+     },
+     {
+      "text": "Lampenöl",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:marschration-pro-tag",
+      "anzahl": 3
+     }
+    ],
+    "vermoegen": {
+     "solare": 0,
+     "lunare": 5,
+     "telare": 0
+    },
+    "splitterpunkte": 5,
+    "ep": {
+     "gesamt": 15,
+     "eingesetzt": 15
+    },
+    "im_bogen": {
+     "Zusätzliche Splitterpunkte": "Zusätzl. Splitterpunkte",
+     "Umgebungssinne": "Umgebungssinne Stadt",
+     "Verwirrung": "Verwirrung (M)"
+    }
+   }
+  },
+  {
+   "id": "grw:archetyp:selesha",
+   "typ": "archetyp",
+   "aktion": "neu",
+   "name": "Selesha Maradoh",
+   "quelle": {
+    "paket": "grw",
+    "buch_seiten": [
+     326,
+     336,
+     337
+    ],
+    "pdf_seiten": [
+     327,
+     337,
+     338
+    ]
+   },
+   "daten": {
+    "titel": "Feuermagierin aus Farukan",
+    "kurzbeschreibung": "Feuerruferin aus Ashurmazaan: gelehrte Elementaristin mit Feuer-, Fels-, Wind- und Bannmagie.",
+    "ausbildung_name": "Feuerruferin (Elementaristin)",
+    "rasse": "grw:rasse:menschen",
+    "kultur": "grw:kultur:ashurmazaan",
+    "abstammung": "grw:abstammung:hoeflinge",
+    "mondzeichen": "grw:mondzeichen:geist-der-gedanken",
+    "attribute": {
+     "AUS": 3,
+     "BEW": 2,
+     "INT": 2,
+     "KON": 2,
+     "MYS": 4,
+     "STÄ": 1,
+     "VER": 3,
+     "WIL": 3
+    },
+    "attribute_basis": {
+     "AUS": 2,
+     "BEW": 2,
+     "INT": 2,
+     "KON": 2,
+     "MYS": 3,
+     "STÄ": 1,
+     "VER": 3,
+     "WIL": 3
+    },
+    "rasse_frei": [
+     "AUS",
+     "MYS"
+    ],
+    "kultur_wahl": {},
+    "abstammung_wahl": {
+     "ressourcen": {
+      "0": "grw:ressource:stand",
+      "1": "grw:ressource:vermoegen"
+     }
+    },
+    "kultur_frei": "Der Bogen hat weder Schuss- noch Stangenwaffen noch Athletik oder Tierführung, die das Modul Ashurmazaan mit je 1 Punkt vorgibt; deshalb als freie Kultur (GRW S. 23) mit Kulturkunde Ashurmazaan gebaut.",
+    "fertigkeiten": {
+     "grw:fertigkeit:arkane-kunde": 6,
+     "grw:fertigkeit:darbietung": 2,
+     "grw:fertigkeit:diplomatie": 4,
+     "grw:fertigkeit:empathie": 2,
+     "grw:fertigkeit:entschlossenheit": 6,
+     "grw:fertigkeit:geschichte-und-mythen": 6,
+     "grw:fertigkeit:laenderkunde": 3,
+     "grw:fertigkeit:naturkunde": 2,
+     "grw:fertigkeit:redegewandtheit": 3,
+     "grw:fertigkeit:strassenkunde": 3,
+     "grw:fertigkeit:klingenwaffen": 2,
+     "grw:fertigkeit:bannmagie": 3,
+     "grw:fertigkeit:felsmagie": 6,
+     "grw:fertigkeit:feuermagie": 6,
+     "grw:fertigkeit:kampfmagie": 1,
+     "grw:fertigkeit:wassermagie": 1,
+     "grw:fertigkeit:windmagie": 2
+    },
+    "fertigkeiten_ep": {
+     "grw:fertigkeit:feuermagie": 1,
+     "grw:fertigkeit:windmagie": 2
+    },
+    "staerken": [
+     {
+      "id": "grw:staerke:zusaetzliche-splitterpunkte",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:zielstrebig",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "kultur"
+     },
+     {
+      "id": "grw:staerke:attraktivitaet",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:erhoehter-fokuspool",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:erhoehter-fokuspool",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:erwaehlter-der-wesen",
+      "stufe": 1,
+      "auswahl": "Feuerwesen",
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:literat",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     }
+    ],
+    "meisterschaften": [
+     {
+      "fertigkeit": "grw:fertigkeit:diplomatie",
+      "id": "grw:meisterschaft:diplomatie:diplomat",
+      "schwelle": 1,
+      "herkunft": "kultur"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:arkane-kunde",
+      "id": "grw:meisterschaft:arkane-kunde:artefaktkunde",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:entschlossenheit",
+      "id": "grw:meisterschaft:entschlossenheit:eiserner-wille",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:felsmagie",
+      "id": "grw:meisterschaft:allgemeine-magiemeisterschaften:sparsamer-zauberer",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:feuermagie",
+      "id": "grw:meisterschaft:feuermagie:flammenherz",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:geschichte-und-mythen",
+      "id": "grw:meisterschaft:geschichte-und-mythen:buechernarr",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:kampfmagie",
+      "id": "grw:meisterschaft:kampfmagie:gezielte-zauber",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:feuermagie",
+      "id": "grw:meisterschaft:allgemeine-magiemeisterschaften:sparsamer-zauberer",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     }
+    ],
+    "zauber": [
+     {
+      "id": "grw:zauber:wahrer-blick",
+      "schule": "grw:fertigkeit:bannmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:zauberer-behindern",
+      "schule": "grw:fertigkeit:bannmagie",
+      "grad": 0,
+      "herkunft": "ep",
+      "ep": 1
+     },
+     {
+      "id": "grw:zauber:magie-erschoepfen",
+      "schule": "grw:fertigkeit:bannmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:haerte",
+      "schule": "grw:fertigkeit:felsmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:felsgeschoss",
+      "schule": "grw:fertigkeit:felsmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:felswesen-rufen-i",
+      "schule": "grw:fertigkeit:felsmagie",
+      "grad": 2,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:flamme",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:waerme",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 0,
+      "herkunft": "ep",
+      "ep": 1
+     },
+     {
+      "id": "grw:zauber:feuerstrahl",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:flammende-waffe",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 1,
+      "herkunft": "ep",
+      "ep": 3
+     },
+     {
+      "id": "grw:zauber:flammenherrschaft",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 2,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:geisterdolch",
+      "schule": "grw:fertigkeit:kampfmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:katzenwaesche",
+      "schule": "grw:fertigkeit:wassermagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:sanfter-fall",
+      "schule": "grw:fertigkeit:windmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:stoss",
+      "schule": "grw:fertigkeit:windmagie",
+      "grad": 0,
+      "herkunft": "ep",
+      "ep": 1
+     }
+    ],
+    "ressourcen": [
+     {
+      "id": "grw:ressource:kontakte",
+      "stufe": 1,
+      "text": "einige Zauberer"
+     },
+     {
+      "id": "grw:ressource:relikt",
+      "stufe": 2,
+      "text": "Zepter +1 FW Schaden Feuermagie"
+     },
+     {
+      "id": "grw:ressource:stand",
+      "stufe": 2,
+      "text": "ehrbare Zauberin"
+     },
+     {
+      "id": "grw:ressource:vermoegen",
+      "stufe": 3,
+      "text": "übermäßiger Lebensstil"
+     }
+    ],
+    "schwaechen": [
+     {
+      "name": "Ehrenkodex"
+     },
+     {
+      "name": "Naivität"
+     }
+    ],
+    "sprachen": [
+     "grw:sprache:farukanisch",
+     "grw:sprache:basargnomisch"
+    ],
+    "kulturkunde": "Ashurmazaan",
+    "ausruestung": [
+     {
+      "id": "grw:waffe:dolch:fernkampf",
+      "anzahl": 1
+     },
+     {
+      "text": "robuste Kleidung",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:decke",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:wasserschlauch",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:essgeschirr",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:feuerstein-stahl-und-zunder",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:fackel",
+      "anzahl": 5
+     },
+     {
+      "id": "grw:gegenstand:marschration-pro-tag",
+      "anzahl": 3
+     }
+    ],
+    "vermoegen": {
+     "solare": 0,
+     "lunare": 40,
+     "telare": 0
+    },
+    "splitterpunkte": 5,
+    "ep": {
+     "gesamt": 15,
+     "eingesetzt": 15
+    },
+    "im_bogen": {
+     "Erhöhter Fokuspool": "Erhöhter Fokuspool x2",
+     "Erwählter der [Wesen]": "Erwählter der Feuerwesen"
+    }
+   }
+  },
+  {
+   "id": "grw:archetyp:telkin",
+   "typ": "archetyp",
+   "aktion": "neu",
+   "name": "Telkin Feuerfaust",
+   "quelle": {
+    "paket": "grw",
+    "buch_seiten": [
+     326,
+     338,
+     339
+    ],
+    "pdf_seiten": [
+     327,
+     339,
+     340
+    ]
+   },
+   "daten": {
+    "titel": "Priester des Kashrok",
+    "kurzbeschreibung": "Zwergischer Hammerpriester aus Furgand: zäher Axtkämpfer mit Feuer-, Fels- und Stärkungsmagie.",
+    "ausbildung_name": "Hammerpriester (Wanderpriester)",
+    "rasse": "grw:rasse:zwerge",
+    "kultur": "grw:kultur:furgand",
+    "abstammung": "grw:abstammung:kriegsvolk",
+    "mondzeichen": "grw:mondzeichen:der-fels",
+    "attribute": {
+     "AUS": 2,
+     "BEW": 1,
+     "INT": 2,
+     "KON": 4,
+     "MYS": 3,
+     "STÄ": 3,
+     "VER": 2,
+     "WIL": 3
+    },
+    "attribute_basis": {
+     "AUS": 1,
+     "BEW": 2,
+     "INT": 2,
+     "KON": 3,
+     "MYS": 3,
+     "STÄ": 3,
+     "VER": 2,
+     "WIL": 2
+    },
+    "rasse_frei": [
+     "AUS"
+    ],
+    "kultur_wahl": {
+     "fertigkeiten": {
+      "1": "grw:fertigkeit:schloesser-und-fallen",
+      "2": "grw:fertigkeit:felsmagie"
+     }
+    },
+    "abstammung_wahl": {
+     "ressourcen": {
+      "0": "grw:ressource:ansehen",
+      "1": "grw:ressource:kontakte",
+      "2": "grw:ressource:relikt"
+     },
+     "fertigkeiten": {
+      "0": "grw:fertigkeit:hiebwaffen"
+     }
+    },
+    "fertigkeiten": {
+     "grw:fertigkeit:anfuehren": 1,
+     "grw:fertigkeit:athletik": 2,
+     "grw:fertigkeit:diplomatie": 1,
+     "grw:fertigkeit:edelhandwerk": 2,
+     "grw:fertigkeit:entschlossenheit": 6,
+     "grw:fertigkeit:geschichte-und-mythen": 4,
+     "grw:fertigkeit:handwerk": 4,
+     "grw:fertigkeit:heilkunde": 3,
+     "grw:fertigkeit:jagdkunst": 1,
+     "grw:fertigkeit:laenderkunde": 2,
+     "grw:fertigkeit:naturkunde": 2,
+     "grw:fertigkeit:schloesser-und-fallen": 1,
+     "grw:fertigkeit:ueberleben": 3,
+     "grw:fertigkeit:wahrnehmung": 1,
+     "grw:fertigkeit:zaehigkeit": 6,
+     "grw:fertigkeit:hiebwaffen": 6,
+     "grw:fertigkeit:wurfwaffen": 2,
+     "grw:fertigkeit:felsmagie": 2,
+     "grw:fertigkeit:feuermagie": 6,
+     "grw:fertigkeit:staerkungsmagie": 3
+    },
+    "fertigkeiten_ep": {
+     "grw:fertigkeit:staerkungsmagie": 3
+    },
+    "staerken": [
+     {
+      "id": "grw:staerke:giftresistenz",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:robust",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:orientierungssinn",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:hitzeresistenz",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "kultur"
+     },
+     {
+      "id": "grw:staerke:erhoehter-fokuspool",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:konzentrationsstaerke",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:literat",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:priester",
+      "stufe": 0,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:soziales-gespuer",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     }
+    ],
+    "meisterschaften": [
+     {
+      "fertigkeit": "grw:fertigkeit:entschlossenheit",
+      "id": "grw:meisterschaft:entschlossenheit:kuehler-kopf-i",
+      "schwelle": 1,
+      "herkunft": "kultur"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:entschlossenheit",
+      "id": "grw:meisterschaft:entschlossenheit:eiserner-wille",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:feuermagie",
+      "id": "grw:meisterschaft:feuermagie:brandstifter",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:zaehigkeit",
+      "id": "grw:meisterschaft:zaehigkeit:ruestungstraeger-i",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:hiebwaffen",
+      "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:abdraengen",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:ueberleben",
+      "id": "grw:meisterschaft:ueberleben:gelaendekunde",
+      "schwelle": 1,
+      "auswahl": "Gebirge",
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:feuermagie",
+      "id": "grw:meisterschaft:feuermagie:feuerresistenz-i",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:hiebwaffen",
+      "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:umreissen",
+      "schwelle": 1,
+      "herkunft": "ep",
+      "ep": 5
+     }
+    ],
+    "zauber": [
+     {
+      "id": "grw:zauber:haerte",
+      "schule": "grw:fertigkeit:felsmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:stein",
+      "schule": "grw:fertigkeit:felsmagie",
+      "grad": 0,
+      "herkunft": "ep",
+      "ep": 1
+     },
+     {
+      "id": "grw:zauber:flamme",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:schutz-vor-feuer",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:kometenwurf",
+      "schule": "grw:fertigkeit:feuermagie",
+      "grad": 2,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:ausdauer-staerken",
+      "schule": "grw:fertigkeit:staerkungsmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:aura-der-entschlossenheit",
+      "schule": "grw:fertigkeit:staerkungsmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     }
+    ],
+    "ressourcen": [
+     {
+      "id": "grw:ressource:ansehen",
+      "stufe": 1,
+      "text": "angesehener Priester"
+     },
+     {
+      "id": "grw:ressource:kontakte",
+      "stufe": 1,
+      "text": "einige Zwerge"
+     },
+     {
+      "id": "grw:ressource:mentor",
+      "stufe": 1,
+      "text": "väterlicher Tempelvorsteher"
+     },
+     {
+      "id": "grw:ressource:rang",
+      "stufe": 1,
+      "text": "Priester der Kashrok-Kirche"
+     },
+     {
+      "id": "grw:ressource:relikt",
+      "stufe": 4,
+      "text": "Siegel +2 GW"
+     }
+    ],
+    "schwaechen": [
+     {
+      "name": "Goldgierig"
+     }
+    ],
+    "sprachen": [
+     "grw:sprache:furato",
+     "grw:sprache:basargnomisch"
+    ],
+    "kulturkunde": "Furgand",
+    "ausruestung": [
+     {
+      "id": "grw:waffe:wurfhammer:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:streitaxt:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:ruestung:kette-leicht",
+      "anzahl": 1
+     },
+     {
+      "text": "robuste Kleidung",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:decke",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:wasserschlauch",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:essgeschirr",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:feuerstein-stahl-und-zunder",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:laterne-einfach",
+      "anzahl": 1
+     },
+     {
+      "text": "Lampenöl",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:marschration-pro-tag",
+      "anzahl": 3
+     }
+    ],
+    "vermoegen": {
+     "solare": 0,
+     "lunare": 3,
+     "telare": 0
+    },
+    "splitterpunkte": 3,
+    "ep": {
+     "gesamt": 15,
+     "eingesetzt": 15
+    },
+    "im_bogen": {
+     "Hitzeresistenz": "Hitzeresitenz",
+     "Geländekunde": "Geländekunde Gebirge",
+     "Aura der Entschlossenheit": "Aura der Entschloss."
+    }
+   }
+  },
+  {
+   "id": "grw:archetyp:tiai",
+   "typ": "archetyp",
+   "aktion": "neu",
+   "name": "Tiai Schimmersee",
+   "quelle": {
+    "paket": "grw",
+    "buch_seiten": [
+     327,
+     340,
+     341
+    ],
+    "pdf_seiten": [
+     328,
+     341,
+     342
+    ]
+   },
+   "daten": {
+    "titel": "Seealbische Klingentänzerin",
+    "kurzbeschreibung": "Albische Klingentänzerin aus dem Seebund: wendige Kettensichel-Kämpferin mit Wasser-, Schutz- und Kampfmagie und einem Wasserelementar.",
+    "ausbildung_name": "Klingentänzerin (Mystische Kriegerin)",
+    "rasse": "grw:rasse:alben",
+    "kultur": "grw:kultur:albischer-seebund",
+    "abstammung": "grw:abstammung:haendler",
+    "mondzeichen": "grw:mondzeichen:der-blitz",
+    "attribute": {
+     "AUS": 3,
+     "BEW": 5,
+     "INT": 2,
+     "KON": 1,
+     "MYS": 3,
+     "STÄ": 2,
+     "VER": 2,
+     "WIL": 2
+    },
+    "attribute_basis": {
+     "AUS": 2,
+     "BEW": 3,
+     "INT": 2,
+     "KON": 2,
+     "MYS": 3,
+     "STÄ": 2,
+     "VER": 2,
+     "WIL": 2
+    },
+    "rasse_frei": [
+     "BEW"
+    ],
+    "kultur_wahl": {},
+    "abstammung_wahl": {},
+    "kultur_frei": "Der Bogen hat keine Länderkunde, die das Modul Albischer Seebund mit 1 Punkt vorgibt, und keine seiner beiden Meisterschaften; deshalb als freie Kultur (GRW S. 23) mit Kulturkunde Albischer Seebund gebaut.",
+    "abstammung_frei": "Der Bogen hat keine Länderkunde und keine Kontakte, die das Modul Händler vorgibt; deshalb als freie Abstammung (GRW S. 23) gebaut.",
+    "fertigkeiten": {
+     "grw:fertigkeit:akrobatik": 6,
+     "grw:fertigkeit:arkane-kunde": 6,
+     "grw:fertigkeit:athletik": 2,
+     "grw:fertigkeit:darbietung": 1,
+     "grw:fertigkeit:diplomatie": 4,
+     "grw:fertigkeit:empathie": 1,
+     "grw:fertigkeit:entschlossenheit": 4,
+     "grw:fertigkeit:geschichte-und-mythen": 1,
+     "grw:fertigkeit:heilkunde": 1,
+     "grw:fertigkeit:jagdkunst": 3,
+     "grw:fertigkeit:redegewandtheit": 1,
+     "grw:fertigkeit:schwimmen": 3,
+     "grw:fertigkeit:seefahrt": 3,
+     "grw:fertigkeit:zaehigkeit": 1,
+     "grw:fertigkeit:kettenwaffen": 6,
+     "grw:fertigkeit:klingenwaffen": 3,
+     "grw:fertigkeit:kampfmagie": 3,
+     "grw:fertigkeit:schutzmagie": 3,
+     "grw:fertigkeit:wassermagie": 6
+    },
+    "fertigkeiten_ep": {
+     "grw:fertigkeit:wassermagie": 3
+    },
+    "staerken": [
+     {
+      "id": "grw:staerke:attraktivitaet",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:scharfes-gehoer",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:daemmersicht",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "rasse"
+     },
+     {
+      "id": "grw:staerke:gleichgewichtssinn",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "kultur"
+     },
+     {
+      "id": "grw:staerke:erhoehter-fokuspool",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "ausbildung"
+     },
+     {
+      "id": "grw:staerke:erhoehter-fokuspool",
+      "stufe": 2,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     },
+     {
+      "id": "grw:staerke:tiervertrauter",
+      "stufe": 1,
+      "auswahl": null,
+      "herkunft": "schritt7"
+     }
+    ],
+    "meisterschaften": [
+     {
+      "fertigkeit": "grw:fertigkeit:akrobatik",
+      "id": "grw:meisterschaft:akrobatik:ausweichen-i",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:arkane-kunde",
+      "id": "grw:meisterschaft:arkane-kunde:arkane-verteidigung-i",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:wassermagie",
+      "id": "grw:meisterschaft:wassermagie:kind-der-wellen",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:kettenwaffen",
+      "id": "grw:meisterschaft:kettenwaffen:schild-umschlagen",
+      "schwelle": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:kampfmagie",
+      "id": "grw:meisterschaft:kampfmagie:gezielte-zauber",
+      "schwelle": 1,
+      "herkunft": "kultur"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:akrobatik",
+      "id": "grw:meisterschaft:akrobatik:blitzreflexe",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:wassermagie",
+      "id": "grw:meisterschaft:allgemeine-magiemeisterschaften:sparsamer-zauberer",
+      "schwelle": 1,
+      "herkunft": "ausbildung"
+     },
+     {
+      "fertigkeit": "grw:fertigkeit:kettenwaffen",
+      "id": "grw:meisterschaft:allgemeine-nahkampfmeisterschaften:umreissen",
+      "schwelle": 1,
+      "herkunft": "ep",
+      "ep": 5
+     }
+    ],
+    "zauber": [
+     {
+      "id": "grw:zauber:geisterdolch",
+      "schule": "grw:fertigkeit:kampfmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:gegenstand-beschaedigen",
+      "schule": "grw:fertigkeit:kampfmagie",
+      "grad": 0,
+      "herkunft": "ep",
+      "ep": 1
+     },
+     {
+      "id": "grw:zauber:flammende-waffe",
+      "schule": "grw:fertigkeit:kampfmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:kleiner-magieschutz",
+      "schule": "grw:fertigkeit:schutzmagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:magische-ruestung",
+      "schule": "grw:fertigkeit:schutzmagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:katzenwaesche",
+      "schule": "grw:fertigkeit:wassermagie",
+      "grad": 0,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:einfrieren",
+      "schule": "grw:fertigkeit:wassermagie",
+      "grad": 1,
+      "herkunft": "feinschliff"
+     },
+     {
+      "id": "grw:zauber:eislanze",
+      "schule": "grw:fertigkeit:wassermagie",
+      "grad": 2,
+      "herkunft": "feinschliff"
+     }
+    ],
+    "ressourcen": [
+     {
+      "id": "grw:ressource:kreatur",
+      "stufe": 4,
+      "text": "kleiner Wasserelementar"
+     },
+     {
+      "id": "grw:ressource:mentor",
+      "stufe": 1,
+      "text": "Kapitän aus alter Zeit"
+     },
+     {
+      "id": "grw:ressource:stand",
+      "stufe": 1,
+      "text": "angesehene Klingentänzerin"
+     },
+     {
+      "id": "grw:ressource:vermoegen",
+      "stufe": 2,
+      "text": "reichlicher Lebensstil"
+     }
+    ],
+    "schwaechen": [
+     {
+      "name": "Ehrgeizig"
+     },
+     {
+      "name": "Stolz"
+     }
+    ],
+    "sprachen": [
+     "grw:sprache:vintial",
+     "grw:sprache:basargnomisch"
+    ],
+    "kulturkunde": "Albischer Seebund",
+    "ausruestung": [
+     {
+      "id": "grw:waffe:kettensichel:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:waffe:maira:nahkampf",
+      "anzahl": 1
+     },
+     {
+      "text": "robuste Kleidung",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:decke",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:wasserschlauch",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:essgeschirr",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:feuerstein-stahl-und-zunder",
+      "anzahl": 1
+     },
+     {
+      "id": "grw:gegenstand:fackel",
+      "anzahl": 5
+     },
+     {
+      "id": "grw:gegenstand:marschration-pro-tag",
+      "anzahl": 3
+     }
+    ],
+    "vermoegen": {
+     "solare": 0,
+     "lunare": 20,
+     "telare": 0
+    },
+    "splitterpunkte": 3,
+    "ep": {
+     "gesamt": 15,
+     "eingesetzt": 15
+    },
+    "im_bogen": {
+     "Erhöhter Fokuspool": "Erhöhter Fokuspool x2",
+     "Umreißen": "Umreißen (M)",
+     "Gegenstand beschädigen": "Gegenstand beschädig."
+    }
+   }
   },
   {
    "id": "grw:regel:abgeleitete-werte-regeln:abgeleitete-werte-einleitung",

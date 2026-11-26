@@ -15,7 +15,7 @@ import {
 } from '../utils/magicRules';
 import { getConditionMalus, getActiveRollModifiers, getConditionDescription } from '../utils/conditionModifiers';
 import { positionsModifikator } from '../regelwerk/kampflage';
-import { CHARACTER_PRESETS } from '../data/presets';
+import { archetypen, archetypZuCharakter } from '../regelwerk/archetypen';
 import { grwRassen } from '../regelwerk/grwListen';
 const RACES = grwRassen();
 import { Katalog } from '../regelwerk/katalog';
@@ -24,155 +24,37 @@ import { basisAusDateien } from '../regelwerk/__tests__/hilfen';
 const KB = basisAusDateien();
 const KAT = new Katalog(KB.manifest, [KB.basis]);
 
-describe('Splittermond GRW – Umfassende Regelprüfung, 5 Testcharaktere & Kampfsimulation', () => {
+describe('Splittermond GRW – Umfassende Regelprüfung, Archetypen & Kampfsimulation', () => {
 
   // =========================================================================
   // TEIL 1: 5 TESTCHARAKTERE NACH GRW-REGELN BAUEN & VALIDIEREN
   // =========================================================================
-  describe('1. Erstellung & Validierung von 5 Testcharakteren', () => {
-
-    it('Charakter 1: Arrou (Varg - Fernkämpfer & Wildnisläufer)', () => {
-      // 1. Rassenregeln Varg: GK 6, STA +2, WIL -1, freier Modifikator +1 KON
-      const vargData = RACES['Varg'];
-      expect(vargData.gk).toBe(6);
-      expect(vargData.mods).toEqual({ STA: 2, WIL: -1 });
-      expect(vargData.freeMods).toBe(1);
-
-      // Preset aus den Daten laden
-      const arrouPreset = CHARACTER_PRESETS.find((p) => p.name === 'Arrou');
-      expect(arrouPreset).toBeDefined();
-      const state = arrouPreset!.fullState;
-
-      // 2. Attributsbudget: Basis 18 Punkte
-      const baseAttrSum = Object.values(state.attrBase).reduce((a, b) => a + b, 0);
-      expect(baseAttrSum).toBe(18);
-
-      // 3. Fertigkeitspunkte: Erschaffung 55 FP, max. 6 pro Fertigkeit auf HG1
-      const skillSum = Object.values(state.skillsBase).reduce((a, b) => a + b, 0);
-      expect(skillSum).toBe(55);
-      Object.entries(state.skillsBase).forEach(([, val]) => {
-        expect(val).toBeLessThanOrEqual(6);
-      });
-
-      // 4. Abgeleitete Werte testen via useCalculations Hook
-      const { result } = renderHook(() => useCalculations(state));
-      // Endwerte der Attribute:
-      // STA: 3 (base) + 2 (Varg) = 5
-      // WIL: 2 (base) - 1 (Varg) = 1
-      // KON: 2 (base) + 1 (freier Bonus) = 3
-      // BEW: 3, INT: 3, AUS: 2, VER: 2, MYS: 1
-      expect(result.current.currentAttributes['STA']).toBe(5);
-      expect(result.current.currentAttributes['WIL']).toBe(1);
-      expect(result.current.currentAttributes['KON']).toBe(3);
-      expect(result.current.currentAttributes['BEW']).toBe(3);
-
-      // GSW = GK (6) + BEW (3) = 9
-      expect(result.current.derived.GSW).toBe(9);
-      // INI = 10 - INT (3) = 7
-      expect(result.current.derived.INI).toBe(7);
-      // LP = GK (6) + KON (3) = 9
-      expect(result.current.maxLP).toBe(9);
-      // FO = 2 * (MYS 1 + WIL 1) = 4
-      expect(result.current.maxFO).toBe(4);
-      // VTD = 12 + BEW (3) + STA (5) + GK-Mod (-2 für GK 6) = 18
-      expect(result.current.derived.VTD).toBe(18);
-      // KW = 12 + KON (3) + WIL (1) = 16
-      expect(result.current.derived.KW).toBe(16);
+  describe('1. Archetypen des GRW (Anhang 3) nach den Rassen- und Erschaffungsregeln', () => {
+    it('Rassenregeln aus dem Paket (GRW S. 33–37)', () => {
+      expect(RACES['Varg']).toMatchObject({ gk: 6, mods: { STA: 2, WIL: -1 }, freeMods: 1 });
+      expect(RACES['Mensch']).toMatchObject({ gk: 5, freeMods: 2 });
+      expect(RACES['Gnom']).toMatchObject({ gk: 3, mods: { MYS: 1, VER: 1, STA: -1 } });
+      expect(RACES['Zwerg']).toMatchObject({ gk: 4, mods: { KON: 1, WIL: 1, BEW: -1 } });
     });
 
-    it('Charakter 2: Cederion von Falkenberg (Mensch - Termarkischer Ritter & Tank)', () => {
-      // 1. Rassenregeln Mensch: GK 5, 2 freie Attributsboni
-      const menschData = RACES['Mensch'];
-      expect(menschData.gk).toBe(5);
-      expect(menschData.freeMods).toBe(2);
-
-      const cederionPreset = CHARACTER_PRESETS.find((p) => p.name === 'Cederion von Falkenberg');
-      expect(cederionPreset).toBeDefined();
-      const state = cederionPreset!.fullState;
-
-      // 2. Attribute: Basis 18 Punkte
-      const baseAttrSum = Object.values(state.attrBase).reduce((a, b) => a + b, 0);
-      expect(baseAttrSum).toBe(18);
-
-      // 3. Fertigkeitspunkte: 55 FP
-      const skillSum = Object.values(state.skillsBase).reduce((a, b) => a + b, 0);
-      expect(skillSum).toBe(55);
-
-      // 4. Abgeleitete Werte testen
-      const { result } = renderHook(() => useCalculations(state));
-      // Mensch hat GK 5 (GK-Mod für VTD = 0)
-      // LP = GK 5 + KON 2 = 7
-      expect(result.current.derived.LP).toBe(7);
-      // INI = 10 - INT (2) = 8
-      expect(result.current.derived.INI).toBe(8);
-      // GSW = GK 5 + BEW 3 = 8
-      expect(result.current.derived.GSW).toBe(8);
+    it.each(archetypen(KAT).map((a) => [a.name, a.id] as const))('%s: 18 Attributpunkte, 55 Fertigkeitspunkte bei der Erschaffung, höchstens 6', (_n, id) => {
+      const state = archetypZuCharakter(id, KAT)!;
+      expect(Object.values(state.attrBase).reduce((a, b) => a + b, 0)).toBe(18);
+      // Kultur 15 + Abstammung 5 + Ausbildung 30 + Schritt 7 5 (GRW S. 23–24); Punkte aus den Start-EP stehen getrennt
+      expect(Object.values(state.skillsBase).reduce((a, b) => a + b, 0)).toBe(55);
+      for (const [n, v] of Object.entries(state.skillsBase)) expect(v + (state.skillsXp[n] ?? 0)).toBeLessThanOrEqual(6);
     });
 
-    it('Charakter 3: Eshi bid-Herar (Mensch - Heilerin & Alchemistin)', () => {
-      const eshiPreset = CHARACTER_PRESETS.find((p) => p.name === 'Eshi bid-Herar');
-      expect(eshiPreset).toBeDefined();
-      const state = eshiPreset!.fullState;
-
-      const baseAttrSum = Object.values(state.attrBase).reduce((a, b) => a + b, 0);
-      expect(baseAttrSum).toBe(18);
-      const skillSum = Object.values(state.skillsBase).reduce((a, b) => a + b, 0);
-      expect(skillSum).toBe(55);
-
+    it('Arrou über den Hook: Werte wie im Bogen (GRW S. 328)', () => {
+      const a = archetypen(KAT).find((x) => x.name === 'Arrou')!;
+      const state = { ...archetypZuCharakter(a.id, KAT)!, inventory: [] };
       const { result } = renderHook(() => useCalculations(state));
-      // MYS = 3 + 1 (Bonus) = 4, WIL = 2 => FO = 2 * (4 + 2) = 12
-      expect(result.current.derived.FO).toBe(12);
-      // INT = 3 + 1 (Bonus) = 4 => INI = 10 - 4 = 6
-      expect(result.current.derived.INI).toBe(6);
-      // Zauber vorhanden (Heilungsmagie)
-      const spells = state.spellsList || [];
-      expect(spells.some((s) => s.school === 'Heilungsmagie')).toBe(true);
-    });
-
-    it('Charakter 4: Keira Alvios (Gnom - Schattenakrobatin & Schurkin)', () => {
-      // Rassenregeln Gnom: GK 3, MYS +1, VER +1, STA -1, freier Mod +1
-      const gnomData = RACES['Gnom'];
-      expect(gnomData.gk).toBe(3);
-      expect(gnomData.mods).toEqual({ MYS: 1, VER: 1, STA: -1 });
-
-      const keiraPreset = CHARACTER_PRESETS.find((p) => p.name === 'Keira Alvios');
-      expect(keiraPreset).toBeDefined();
-      const state = keiraPreset!.fullState;
-
-      const baseAttrSum = Object.values(state.attrBase).reduce((a, b) => a + b, 0);
-      expect(baseAttrSum).toBe(18);
-      const skillSum = Object.values(state.skillsBase).reduce((a, b) => a + b, 0);
-      expect(skillSum).toBe(55);
-
-      const { result } = renderHook(() => useCalculations(state));
-      // GK 3 gibt +4 VTD-Modifikator!
-      // BEW = 4, STA = 1 => 12 + 4 + 1 + 4 = 21 VTD!
-      expect(result.current.derived.VTD).toBeGreaterThanOrEqual(20);
-      // GSW = GK 3 + BEW 4 + 1 (Stärke Flink, Rassenmerkmal) = 8
-      expect(result.current.derived.GSW).toBe(8);
-    });
-
-    it('Charakter 5: Telkin Feuerfaust (Zwerg - Hammerpriester & Krieger)', () => {
-      // Rassenregeln Zwerg: GK 4, KON +1, WIL +1, BEW -1, freier Mod +1
-      const zwergData = RACES['Zwerg'];
-      expect(zwergData.gk).toBe(4);
-      expect(zwergData.mods).toEqual({ KON: 1, WIL: 1, BEW: -1 });
-
-      const telkinPreset = CHARACTER_PRESETS.find((p) => p.name === 'Telkin Feuerfaust');
-      expect(telkinPreset).toBeDefined();
-      const state = telkinPreset!.fullState;
-
-      const baseAttrSum = Object.values(state.attrBase).reduce((a, b) => a + b, 0);
-      expect(baseAttrSum).toBe(18);
-      const skillSum = Object.values(state.skillsBase).reduce((a, b) => a + b, 0);
-      expect(skillSum).toBe(55);
-
-      const { result } = renderHook(() => useCalculations(state));
-      // Hohe Konstitution & Zähigkeit
-      expect(result.current.currentAttributes['KON']).toBeGreaterThanOrEqual(3);
-      expect(result.current.currentAttributes['WIL']).toBeGreaterThanOrEqual(3);
-      // Hat Hiebwaffen & Magie (Felsmagie/Feuermagie)
-      expect(state.skillsBase['Hiebwaffen']).toBeGreaterThanOrEqual(5);
+      // STÄ 3+2, WIL 2−1, INT 3+1 (freier Bonus)
+      expect(result.current.currentAttributes).toMatchObject({ STA: 5, WIL: 1, INT: 4, BEW: 3 });
+      expect(result.current.derived.GSW).toBe(10); // GK 6 + BEW 3 + Flink
+      expect(result.current.derived.INI).toBe(6);  // 10 − INT 4
+      expect(result.current.maxLP).toBe(8);        // GK 6 + KON 2
+      expect(result.current.derived.VTD).toBe(18); // 12 + 3 + 5 − 2 (GK 6)
     });
   });
 

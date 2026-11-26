@@ -1,14 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { CHARACTER_PRESETS } from '../data/presets';
+import { archetypen, archetypZuCharakter } from '../regelwerk/archetypen';
 import { referenceCharacterResources, getMasteryDetails, getSpellDetails } from '../utils/gameResourceManager';
 import type { CharacterState } from '../types';
 
 describe('Archetype and Character Resource Referencing', () => {
-  it('correctly references masteries and spells in all archetype presets to SQLite/GRW rulebook resources', () => {
-    expect(CHARACTER_PRESETS.length).toBeGreaterThanOrEqual(7);
+  // Archetypen aus dem GRW-Paket; beim Laden löst referenceCharacterResources Seiten und Beschreibungen auf (wie im Profil-Dialog)
+  const archetypZustaende = () => archetypen().map((a) => ({ name: a.name, state: referenceCharacterResources(archetypZuCharakter(a.id)!) }));
+  const MAGIER = ['Arrou', 'Eshi bid-Herar', 'Keira Alvios', 'Selesha Maradoh', 'Telkin Feuerfaust', 'Tiai Schimmersee'];
 
-    for (const preset of CHARACTER_PRESETS) {
-      const state = preset.fullState;
+  it('correctly references masteries and spells in all archetypes to GRW rulebook resources', () => {
+    expect(archetypen().length).toBe(7);
+
+    for (const preset of archetypZustaende()) {
+      const state = preset.state;
 
       // Every preset mastery must have valid source 'GRW', page number, and non-empty description
       const masteryKeys = Object.keys(state.masteries || {});
@@ -18,6 +22,7 @@ describe('Archetype and Character Resource Referencing', () => {
         const list = state.masteries[skill];
         expect(list.length).toBeGreaterThan(0);
         for (const m of list) {
+          if (m.name.startsWith('Schwerpunkt')) continue; // Schwerpunkte haben keine eigene Seite
           expect(m.source).toBe('GRW');
           expect(m.page).toBeDefined();
           expect(typeof m.page).toBe('number');
@@ -28,7 +33,7 @@ describe('Archetype and Character Resource Referencing', () => {
       }
 
       // Check spells for caster archetypes (Eshi, Keira, Selesha, Telkin, Tiai)
-      if (['eshi_bid_herar', 'keira_alvios', 'selesha_maradoh', 'telkin_feuerfaust', 'tiai_schimmersee'].includes(preset.id)) {
+      if (MAGIER.includes(preset.name)) {
         expect(state.spellsList.length).toBeGreaterThan(0);
         for (const s of state.spellsList) {
           expect(s.source).toBe('GRW');
@@ -42,8 +47,8 @@ describe('Archetype and Character Resource Referencing', () => {
   });
 
   it('populates advancement log with rulebook-referenced entries for starting masteries and spells', () => {
-    for (const preset of CHARACTER_PRESETS) {
-      const state = preset.fullState;
+    for (const preset of archetypZustaende()) {
+      const state = preset.state;
       expect(state.advancementLog).toBeDefined();
       expect(state.advancementLog!.length).toBeGreaterThan(0);
 
@@ -53,7 +58,7 @@ describe('Archetype and Character Resource Referencing', () => {
         expect(me.detail).toMatch(/Quelle: GRW, S\. \d+/);
       }
 
-      if (['eshi_bid_herar', 'keira_alvios', 'selesha_maradoh', 'telkin_feuerfaust', 'tiai_schimmersee'].includes(preset.id)) {
+      if (MAGIER.includes(preset.name)) {
         const spellEntries = state.advancementLog!.filter((e) => e.category === 'spell');
         expect(spellEntries.length).toBeGreaterThan(0);
         for (const se of spellEntries) {

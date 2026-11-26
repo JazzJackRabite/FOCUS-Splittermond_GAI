@@ -319,6 +319,10 @@
    "bezeichnung": "Imago-Verbesserungen (Meisterschaft Imago-Meister)",
    "charakterbau_auswahl": true
   },
+  "archetyp": {
+   "bezeichnung": "Archetypen (vorgefertigte Charaktere)",
+   "charakterbau_auswahl": false
+  },
   "regel": {
    "bezeichnung": "Regeltexte",
    "charakterbau_auswahl": false
@@ -336,18 +340,19 @@
    "erscheinungsjahr": 2017,
    "regionalband": false,
    "datei": "grw.srp.json",
-   "sha256": "7f5317906d8d5e7fb2b40fde9455aa861ba42be5ecea506b6c1638eddcf7ac4e",
-   "bytes": 2792670,
+   "sha256": "4a1dee5c9a13c156bdde930aac7b14ea3277d4d7a52e53330ba4fc1708ec975b",
+   "bytes": 2845258,
    "basis": true,
    "pflicht": true,
    "abhaengigkeiten": [],
    "optionale_pakete": [],
    "referenziert_pakete": [],
    "ladereihenfolge": 0,
-   "eintraege": 1542,
+   "eintraege": 1549,
    "nach_typ": {
     "abstammung": 17,
     "alchemikum": 14,
+    "archetyp": 7,
     "artefaktwirkung": 3,
     "dienstleistung": 19,
     "fertigkeit": 53,
@@ -382,7 +387,7 @@
     "zustand": 17
    },
    "nach_aktion": {
-    "neu": 1542
+    "neu": 1549
    }
   }
  ],

@@ -21,7 +21,8 @@ export interface Bau {
   abstammung?: { modul: string; wahl?: ModulWahl } | { frei: { fertigkeiten?: Punkte; ressourcen?: Punkte } };
   ausbildung?: { frei: { fertigkeiten?: Punkte; ressourcen?: Punkte; staerken?: string[]; meisterschaften?: string[] } };
   schritt7?: { staerken?: string[]; ressourcen?: Punkte; fertigkeiten?: Punkte };
-  ep?: { attribute?: Punkte; fertigkeiten?: Punkte; staerken?: string[]; meisterschaften?: string[]; zauber?: string[]; ressourcen?: Punkte; sprachen?: number };
+  /** meisterschaften: allgemeine Meisterschaften (Meisterschaftsgruppe) mit der Fertigkeit, für die sie gelten ({ id, fuer }) */
+  ep?: { attribute?: Punkte; fertigkeiten?: Punkte; staerken?: string[]; meisterschaften?: Array<string | FreieMeisterschaft>; zauber?: string[]; ressourcen?: Punkte; sprachen?: number };
   freie_meisterschaften?: Array<string | FreieMeisterschaft>;
   freie_zauber?: string[];
 }
@@ -220,11 +221,14 @@ export function pruefeErschaffung(kat: Katalog, bau: Bau): { charakter: Erschaff
   staerken.push(...(x9.staerken ?? []));
   for (const [i, n] of Object.entries(x9.ressourcen ?? {})) { ep += K9.ressource_je_stufe.kosten_ep * n; res[i] = (res[i] ?? 0) + n; }
   ep += K9.sprache * (x9.sprachen ?? 0);
-  for (const i of x9.meisterschaften ?? []) {
+  for (const x of x9.meisterschaften ?? []) {
+    const i = typeof x === 'object' ? x.id : x;
     const e = g(i); ep += K9.meisterschaft.kosten_ep;
-    if (e && (fert[e.daten.fertigkeit] ?? 0) < K9.meisterschaft.mindest_fertigkeitspunkte) f(`Start-Erfahrung: Meisterschaft ${i} braucht 6 Punkte in der Fertigkeit`);
+    // allgemeine Meisterschaft: Punkte der Fertigkeit, für die sie gewählt ist
+    const fi: string | undefined = typeof x === 'object' && String(e?.daten.fertigkeit ?? '').startsWith('grw:meisterschaftsgruppe:') ? x.fuer : e?.daten.fertigkeit;
+    if (e && (fert[fi ?? ''] ?? 0) < K9.meisterschaft.mindest_fertigkeitspunkte) f(`Start-Erfahrung: Meisterschaft ${i} braucht 6 Punkte in der Fertigkeit`);
   }
-  meist.push(...(x9.meisterschaften ?? []));
+  meist.push(...(x9.meisterschaften ?? []).map(x => (typeof x === 'object' ? x.id : x)));
   const zauber: string[] = [];
   type GradListe = { grad: number; mindest_fertigkeitspunkte_magieschule: number }[];
   const zauberOk = (i: string, liste: GradListe) => {

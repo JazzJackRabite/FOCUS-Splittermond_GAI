@@ -10,7 +10,7 @@ import {
   loadFromLocalStorage,
   type CharacterProfileMeta,
 } from '../../hooks/useLocalStorage';
-import { CHARACTER_PRESETS, type ArchetypePreset } from '../../data/presets';
+import { archetypen, archetypZuCharakter, type ArchetypInfo } from '../../regelwerk/archetypen';
 import { DEFAULT_STATE } from '../../hooks/useCharacterState';
 import { mitRegelIds } from '../../regelwerk/bruecke';
 import { generateId } from '../../utils/id';
@@ -36,7 +36,6 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ onClose, onSelectPro
   });
   const [activeId, setActiveId] = useState<string>(() => getActiveProfileId());
   const [tab, setTab] = useState<'profiles' | 'presets'>('profiles');
-  const [selectedPreset, setSelectedPreset] = useState<ArchetypePreset | null>(null);
 
   const handleSwitchProfile = (id: string) => {
     setActiveProfileId(id);
@@ -122,10 +121,12 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ onClose, onSelectPro
     }
   };
 
-  const handleCreateFromPreset = (preset: ArchetypePreset) => {
+  const handleCreateFromPreset = (preset: ArchetypInfo) => {
+    const roh = archetypZuCharakter(preset.id);
+    if (!roh) { toast.error('Archetyp nicht im geladenen Grundregelwerk'); return; }
     const newId = `char_${generateId()}`;
-    const referenced = referenceCharacterResources(preset.fullState);
-    // Vorlagen nennen Stärken, Meisterschaften und Zauber beim Namen; beim Laden bekommen sie die IDs aus dem Paket
+    const referenced = referenceCharacterResources(roh);
+    // Archetypen nennen Stärken, Meisterschaften und Zauber beim Namen; beim Laden bekommen sie die IDs aus dem Paket
     const newState = mitRegelIds({
       ...referenced,
       creationFinalized: true,
@@ -133,7 +134,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ onClose, onSelectPro
     });
     saveToLocalStorage(newState as unknown as Record<string, unknown>, newId);
     setActiveProfileId(newId);
-    toast.success(`Vorlage "${preset.name}" geladen! Charaktererschaffung ist abgeschlossen.`);
+    toast.success(`Archetyp "${preset.name}" geladen! Charaktererschaffung ist abgeschlossen.`);
     onSelectProfile(newId);
     onClose();
   };
@@ -182,7 +183,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ onClose, onSelectPro
             Meine Charaktere ({profiles.length})
           </Reiter>
           <Reiter gewaehlt={tab === 'presets'} className="flex-1 py-3 text-sm uppercase tracking-wider" onClick={() => setTab('presets')}>
-            <Sparkles size={16} /> Archetypen & Vorlagen
+            <Sparkles size={16} /> Archetypen
           </Reiter>
         </div>
 
@@ -282,29 +283,37 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ onClose, onSelectPro
           {tab === 'presets' && (
             <div className="space-y-4">
               <p className="text-xs text-leise">
-                Wähle eine fertige Heldenvorlage als Basis für deinen neuen Charakter aus:
+                Die sieben Archetypen des Grundregelwerks (Anhang 3) als spielbereite Helden, mit allen Werten ihrer Charakterbögen:
               </p>
+              {archetypen().length === 0 && (
+                <p className="text-xs text-schaden" data-testid="archetypen-leer">Das Grundregelwerk ist noch nicht geladen.</p>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {CHARACTER_PRESETS.map((preset) => (
+                {archetypen().map((preset) => (
                   <div
                     key={preset.id}
+                    data-testid={`archetyp-${preset.id}`}
                     className="p-4 rounded-karte border border-gold bg-flaeche transition-all flex flex-col justify-between"
                   >
                     <div>
                       <div className="font-bold text-schrift flex justify-between items-start">
                         <div>
                           <div className="text-base leading-tight font-extrabold">{preset.name}</div>
-                          <div className="text-xs text-gold font-bold">{preset.title}</div>
+                          <div className="text-xs text-gold font-bold">{preset.titel}</div>
                         </div>
                         <span className="text-xs font-semibold bg-seite text-schrift px-2 py-0.5 rounded-knopf shrink-0">
-                          {preset.race}
+                          {preset.rasse}
                         </span>
                       </div>
-                      <p className="text-xs text-leise my-2">{preset.description}</p>
+                      <p className="text-xs text-leise my-2">{preset.kurz}</p>
                       <div className="text-[11px] text-leise space-y-1 bg-erhoeht p-2 rounded-knopf border border-rahmen">
-                        <div><strong>Attribute:</strong> STA {preset.fullState.attrBase.STA}, KON {preset.fullState.attrBase.KON}, BEW {preset.fullState.attrBase.BEW}, INT {preset.fullState.attrBase.INT}, MYS {preset.fullState.attrBase.MYS}</div>
-                        <div><strong>Region & Mond:</strong> {preset.homeRegion} ({preset.moonSign})</div>
-                        <div><strong>Status:</strong> <span className="text-unverletzt font-bold">Vollständiger Held (Spielbereit)</span></div>
+                        <div><strong>Ausbildung:</strong> {preset.ausbildung}</div>
+                        <div><strong>Attribute:</strong> {Object.entries(preset.attribute).map(([k, v]) => `${k === 'STA' ? 'STÄ' : k} ${v}`).join(', ')}</div>
+                        <div><strong>Kultur & Mond:</strong> {preset.kulturkunde} ({preset.mondzeichen})</div>
+                        <div><strong>Quelle:</strong> GRW S. {preset.seiten.join(', ')}</div>
+                        {preset.abweichungen.map((t, i) => (
+                          <div key={i} className="italic">{t}</div>
+                        ))}
                       </div>
                     </div>
                     <Knopf

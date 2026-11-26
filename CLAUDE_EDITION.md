@@ -1321,6 +1321,27 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
 - `useSpellHandlers.ts`: Rückfall-Liste der Mindest-Fertigkeitspunkte je Zaubergrad entfernt; die Werte kommen nur aus dem
   Paket (`zauber_nach_grad`), ohne Angabe keine Grenze. Veraltete Kommentare über eine Zustands-Rückfalltabelle bereinigt.
 
+## Stand 60 (26.11.2026): Archetypen des Grundregelwerks aus dem GRW-Paket
+
+- Die sieben Archetypen (GRW Anhang 3, S. 323–341) stehen als Einträge vom Typ `archetyp` im GRW-Paket (1549 Einträge).
+  Datenseite: `Werkzeuge/regelpakete/archetypen.json` (Werte der Bögen) und `archetypen.py` (Namen → IDs, 18 Attributpunkte
+  und freie Rassenmodifikatoren zurückgerechnet, Modulwahl mit den wenigsten Fertigkeitspunkten aus EP, Herkunft jeder Stärke,
+  Meisterschaft, jedes Zaubers und jeder Ressourcenstufe). Der Bau bricht ab, wenn die berechneten Start-EP nicht dem Wert
+  „eingesetzt“ des Bogens entsprechen – bei allen sieben stimmen sie (Cederion 13, sonst 15).
+- Zwei Bögen weichen von ihrem Modul ab („inklusive leichten Modifikationen“, GRW S. 323): Selesha hat weder Schuss-/
+  Stangenwaffen noch Athletik/Tierführung (Ashurmazaan), Tiai keine Länderkunde (Albischer Seebund, Händler) und keine
+  Kontakte. Beide sind als freie Kultur bzw. Abstammung (GRW S. 23) gebaut; die Begründung steht im Eintrag und im Dialog.
+  Bei Keira nennt der Bogen die Werte des Abstammungsmoduls Gesindel nicht (Ansehen −1, Stand −1, Kreatur 1); sie bleiben.
+- Neu `regelwerk/archetypen.ts` (Eintrag → Charakter des Editors: Module mit Wahl, freie/EP-Meisterschaften und -Zauber,
+  EP-Fertigkeitspunkte, Ausrüstung aus dem Katalog, Vermögen, Splitterpunkte; ohne Traglast wie die Bögen). Der Dialog
+  „Archetypen“ liest sie aus dem Paket. `src/data/presets.ts` (erfundene Vorlagen) entfällt.
+- Erschaffungsprüfung: Schwerpunkte zählen als Meisterschaft der ersten Schwelle (vorher stillschweigend übergangen);
+  allgemeine Meisterschaften aus den Start-EP prüfen die 6 Punkte in der Fertigkeit, für die sie gewählt sind (`{ id, fuer }`,
+  wie beim Feinschliff; gleiche Änderung im Python-Lader der Prüfsuite).
+- Tests: `archetypen.test.ts` (Prüfung ohne Befund, nur Paketeinträge, Start-EP wie im Bogen), `nachrechnen.test.ts` mit den
+  abgeleiteten Werten der Bögen als Sollwerten (GSW, INI, LP, FO, VTD, GW, KW, Splitterpunkte), angepasste Kampf- und
+  Referenztests. FUNDAMENT: neue Zeile „Archetypen“ in den Regelquellen.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

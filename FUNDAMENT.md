@@ -61,7 +61,8 @@ Felder stehen unter `daten` des jeweiligen Eintrags. **Was hier nicht steht, dar
 | Einträge finden, Namen und IDs, Umbenennungen | Einträge mit `id`, `typ`, `name`; ID-Register | `regelwerk/katalog.ts`, `regelwerk/bruecke.ts`, `regelwerk/ids.ts` |
 | Abgeleitete Werte, Heldengrade, Höchstbonus | Kernregeln: `strukturiert`; an Stärken: `abgeleitete_werte_modifikatoren`; `groessenklasse`; an Ausrüstung: `behinderung`, `vtd_bonus`, `mindest_staerke` | `regelwerk/abgeleitet.ts` |
 | Voraussetzungen | `voraussetzungen` (formal, mit IDs; `gleiche_fertigkeit` für „in der gleichen Magieschule“) | `regelwerk/bedingungen.ts` |
-| Erschaffung: Rassen, Kulturen, Abstammungen, Module, Grenzen je Schritt; Grenzen im Editor (Attributpunkte und Höchstwert, Fertigkeitspunkte und Höchstwert, nicht-magische Punkte, Ressourcen, Start-Meisterschaften, Sprachen) | `modulwerte`, `attributsmodifikatoren`, `staerken_refs`, `strukturiert`, `tabelle`; Kernregel „Übersicht über die Charaktererschaffung“: `strukturiert` (`attribute`, `kultur_frei`, `abstammung_frei`, `ausbildung_frei`, `schritt_7`, `feinschliff`) | `regelwerk/erschaffung.ts`, `regelwerk/erschaffungEditor.ts`, `regelwerk/grwListen.ts` |
+| Erschaffung: Rassen, Kulturen, Abstammungen, Module, Grenzen je Schritt; Grenzen im Editor (Attributpunkte und Höchstwert, Fertigkeitspunkte und Höchstwert, nicht-magische Punkte, Ressourcen, Start-Meisterschaften, Sprachen); Schwerpunkte zählen als Meisterschaft der ersten Schwelle | `modulwerte`, `attributsmodifikatoren`, `staerken_refs`, `strukturiert`, `tabelle`; Kernregel „Übersicht über die Charaktererschaffung“: `strukturiert` (`attribute`, `kultur_frei`, `abstammung_frei`, `ausbildung_frei`, `schritt_7`, `feinschliff`, `steigerungskosten_spielbeginn`); Schwerpunkte: `fertigkeit`, `schwelle` | `regelwerk/erschaffung.ts`, `regelwerk/erschaffungEditor.ts`, `regelwerk/grwListen.ts` |
+| Archetypen des Grundregelwerks (Anhang 3): Werte der Charakterbögen, Modulwahl, Herkunft jeder Stärke, Meisterschaft, jedes Zaubers und jeder Ressourcenstufe (Rasse, Kultur, Abstammung, Ausbildung, Schritt 7, Feinschliff, Start-Erfahrung), Begründung, wo ein Bogen vom Modul abweicht | Einträge vom Typ `archetyp`: `titel`, `kurzbeschreibung`, `ausbildung_name`, `rasse`, `kultur`, `abstammung`, `mondzeichen`, `attribute`, `attribute_basis`, `rasse_frei`, `kultur_wahl`, `abstammung_wahl`, `kultur_frei`, `abstammung_frei`, `fertigkeiten`, `fertigkeiten_ep`, `staerken`, `meisterschaften`, `zauber`, `ressourcen`, `schwaechen`, `sprachen`, `kulturkunde`, `ausruestung`, `vermoegen`, `splitterpunkte`, `ep` | `regelwerk/archetypen.ts` |
 | Wirkungen von Stärken und Meisterschaften (feste Boni, Boni beim Würfeln) | `wirkungen_strukturiert` mit `fertigkeit_refs`, `alle_proben`, `gilt`, `traeger` | `regelwerk/wirkungen.ts` |
 | Kosten und Zauberdauer aus Meisterschaften; Wirkungen nur für Zauber eines Typus | `wirkungen_strukturiert`, Gruppe B, `zauber_typus`; Zauber: `typus` | `regelwerk/wirkungen.ts` |
 | Wirkung aktiver Zauber (Kampfwerte, Proben, Zusatzschaden, Lebenspunkte, unterdrückte Zustände) | `spielwerte`, `typus`, `reichweite` | `regelwerk/zauberwerte.ts`, `utils/magicRules.ts` |
@@ -93,9 +94,11 @@ fehl; die Liste der geduldeten Stellen (`src/fundament/altlasten.json`) ist leer
 Suchmuster, die Regeltext lesen (eine Wortfolge aus drei oder mehr Wörtern oder der Name einer Regel), sind im Editor nicht
 erlaubt: Was aus Fließtext gelesen werden muss, liest die Datenseite (`Werkzeuge/regelpakete/textauslese.py`) und schreibt ein Feld.
 
-Die Beispielcharaktere (`src/data/presets.ts`) nennen Einträge beim Namen; beim Laden einer Vorlage schreibt der Editor die
-IDs aus dem Paket mit, und ein Test prüft, dass jeder Name eine ID im GRW-Paket hat (`vorlagen.test.ts`). Die Tests laufen wie
-der Editor mit geladenem Grundregelwerk-Paket (`src/testSetup.ts`).
+Die Archetypen kommen aus dem GRW-Paket (Einträge vom Typ `archetyp`, Datenseite `Werkzeuge/regelpakete/archetypen.json` und
+`archetypen.py`); im Code steht kein Beispielcharakter. Beim Laden schreibt der Editor die IDs aus dem Paket mit. Ein Test prüft,
+dass jeder Archetyp die Erschaffungsprüfung ohne Befund besteht, nur Einträge des GRW-Pakets nennt und die Start-Erfahrung wie
+im Bogen einsetzt (`archetypen.test.ts`); die abgeleiteten Werte stehen als Sollwerte der Bögen in `nachrechnen.test.ts`.
+Die Tests laufen wie der Editor mit geladenem Grundregelwerk-Paket (`src/testSetup.ts`).
 
 ## 3. Gestaltung
 

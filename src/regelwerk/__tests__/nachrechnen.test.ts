@@ -22,7 +22,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { calculateCharacter } from '../../utils/characterCalculations';
 import { calculateItemCost } from '../../utils/costCalculations';
 import { calculateAttackEG } from '../../utils/combatRules';
-import { CHARACTER_PRESETS } from '../../data/presets';
+import { archetypen, archetypZuCharakter } from '../archetypen';
+import { referenceCharacterResources } from '../../utils/gameResourceManager';
 import { zauberEgRegeln } from '../zauberEg';
 import { ruheregeln, ruhephasenRegeneration, ruhewirkungen } from '../spielwirkungen';
 import { erstelleKatalog, grimoireLesen } from '../laden';
@@ -30,31 +31,37 @@ import { aktiverKatalog, setzeAktivenKatalog } from '../bruecke';
 import { basisAusDateien, GRIMOIRE_ORDNER, istGrimoireDatei } from './hilfen';
 import type { CharacterState } from '../../types';
 
-const praeset = (name: string) => CHARACTER_PRESETS.find(p => p.name === name)!.fullState as CharacterState;
-
-/** von Hand nach GRW gerechnet: Attribute nach Rassenmodifikatoren, abgeleitete Werte, LP/FO mit Stärken, Splitterpunkte */
-const SOLL: Record<string, { attr: string; GSW: number; INI: number; LP: number; FO: number; VTD: number; GW: number; KW: number; maxLP: number; maxFO: number; SP: number }> = {
-  // Varg GK 6: STÄ 3+2, WIL 2−1, KON 2+1 (frei); VTD 12+3+5−2
-  Arrou: { attr: 'AUS2 BEW3 INT3 KON3 MYS1 STA5 VER2 WIL1', GSW: 9, INI: 7, LP: 9, FO: 4, VTD: 18, GW: 15, KW: 16, maxLP: 9, maxFO: 4, SP: 3 },
-  // Mensch GK 5: AUS und STÄ je +1 (frei); Zusätzliche Splitterpunkte
-  'Cederion von Falkenberg': { attr: 'AUS3 BEW3 INT2 KON2 MYS1 STA4 VER2 WIL3', GSW: 8, INI: 8, LP: 7, FO: 8, VTD: 19, GW: 17, KW: 17, maxLP: 7, maxFO: 8, SP: 5 },
-  // Mensch: INT und MYS +1; Erhöhter Fokuspool FO 12+5
-  'Eshi bid-Herar': { attr: 'AUS3 BEW1 INT4 KON2 MYS4 STA1 VER3 WIL2', GSW: 6, INI: 6, LP: 7, FO: 12, VTD: 14, GW: 17, KW: 16, maxLP: 7, maxFO: 17, SP: 5 },
-  // Gnom GK 3: MYS +1, VER +1, STÄ −1, BEW +1 (frei); Flink GSW 4+3+1; Hoher Geistiger Widerstand GW 17+2; VTD 12+4+0+4
-  'Keira Alvios': { attr: 'AUS3 BEW4 INT3 KON2 MYS3 STA0 VER3 WIL2', GSW: 8, INI: 7, LP: 5, FO: 10, VTD: 20, GW: 19, KW: 16, maxLP: 5, maxFO: 10, SP: 3 },
-  // Mensch: MYS und VER +1; Erhöhter Fokuspool
-  'Selesha Maradoh': { attr: 'AUS3 BEW2 INT2 KON2 MYS4 STA1 VER4 WIL2', GSW: 7, INI: 8, LP: 7, FO: 12, VTD: 15, GW: 18, KW: 16, maxLP: 7, maxFO: 17, SP: 5 },
-  // Zwerg GK 4: KON +1, WIL +1, BEW −1, MYS +1 (frei); Robust LP 8+1; Erhöhter Fokuspool FO 14+5; VTD 12+0+2+2
-  'Telkin Feuerfaust': { attr: 'AUS2 BEW0 INT3 KON4 MYS4 STA2 VER2 WIL3', GSW: 4, INI: 7, LP: 8, FO: 14, VTD: 16, GW: 17, KW: 19, maxLP: 9, maxFO: 19, SP: 3 },
-  // Alb GK 5: AUS +1, BEW +1, KON −1, INT +1 (frei); Flink GSW 4+5+1; INI 10−4−3 (Verbesserte Initiative) −3 (Meisterschaft Blitzreflexe, Akrobatik S1)
-  'Tiai Schimmersee': { attr: 'AUS3 BEW4 INT4 KON1 MYS2 STA2 VER2 WIL2', GSW: 10, INI: 0, LP: 6, FO: 8, VTD: 18, GW: 16, KW: 15, maxLP: 6, maxFO: 8, SP: 3 },
+const praeset = (name: string) => {
+  const a = archetypen(aktiverKatalog()).find(x => x.name === name)!;
+  return referenceCharacterResources(archetypZuCharakter(a.id)!) as CharacterState;
 };
 
-describe('Erschaffung: Beispielcharaktere nachgerechnet (GRW S. 13–15, 33–37, 71–74)', () => {
-  it('alle Beispielcharaktere haben Sollwerte', () => expect(Object.keys(SOLL).sort()).toEqual(CHARACTER_PRESETS.map(p => p.name).sort()));
+/**
+ * Sollwerte = die Charakterbögen der Archetypen im GRW (Anhang 3, S. 328–341), Spalte „Wert“ der abgeleiteten Werte;
+ * von Hand nachgerechnet nach den Formeln oben. LP/FO ohne, maxLP/maxFO mit Stärken (Robust, Erhöhter Fokuspool).
+ */
+const SOLL: Record<string, { attr: string; GSW: number; INI: number; LP: number; FO: number; VTD: number; GW: number; KW: number; maxLP: number; maxFO: number; SP: number }> = {
+  // Varg GK 6: GSW 6+3+1 (Flink), VTD 12+3+5−2 (GK 6), LP 6+2, FO 2×(2+1)
+  Arrou: { attr: 'AUS1 BEW3 INT4 KON2 MYS2 STA5 VER2 WIL1', GSW: 10, INI: 6, LP: 8, FO: 6, VTD: 18, GW: 15, KW: 15, maxLP: 8, maxFO: 6, SP: 3 },
+  // Mensch: Robust LP 8+1, Hoher Geistiger/Körperlicher Widerstand je +2, Zusätzliche Splitterpunkte
+  'Cederion von Falkenberg': { attr: 'AUS3 BEW3 INT1 KON3 MYS1 STA4 VER3 WIL2', GSW: 8, INI: 9, LP: 8, FO: 6, VTD: 19, GW: 19, KW: 19, maxLP: 9, maxFO: 6, SP: 5 },
+  // Gnom GK 3: Flink GSW 3+2+1, VTD 12+2+1+4, Hoher Geistiger Widerstand GW 20+2
+  'Eshi bid-Herar': { attr: 'AUS3 BEW2 INT3 KON1 MYS2 STA1 VER5 WIL3', GSW: 6, INI: 7, LP: 4, FO: 10, VTD: 19, GW: 22, KW: 16, maxLP: 4, maxFO: 10, SP: 3 },
+  // Mensch: Flink GSW 5+4+1, Robust LP 7+1, Zusätzliche Splitterpunkte
+  'Keira Alvios': { attr: 'AUS2 BEW4 INT4 KON2 MYS2 STA2 VER1 WIL3', GSW: 10, INI: 6, LP: 7, FO: 10, VTD: 18, GW: 16, KW: 17, maxLP: 8, maxFO: 10, SP: 5 },
+  // Mensch: Erhöhter Fokuspool zweimal FO 14+10
+  'Selesha Maradoh': { attr: 'AUS3 BEW2 INT2 KON2 MYS4 STA1 VER3 WIL3', GSW: 7, INI: 8, LP: 7, FO: 14, VTD: 15, GW: 18, KW: 17, maxLP: 7, maxFO: 24, SP: 5 },
+  // Zwerg GK 4: Robust LP 8+1, Erhöhter Fokuspool FO 12+5, VTD 12+1+3+2
+  'Telkin Feuerfaust': { attr: 'AUS2 BEW1 INT2 KON4 MYS3 STA3 VER2 WIL3', GSW: 5, INI: 8, LP: 8, FO: 12, VTD: 18, GW: 17, KW: 19, maxLP: 9, maxFO: 17, SP: 3 },
+  // Alb GK 5: INI 10−2−3 (Meisterschaft Blitzreflexe), Erhöhter Fokuspool zweimal FO 10+10
+  'Tiai Schimmersee': { attr: 'AUS3 BEW5 INT2 KON1 MYS3 STA2 VER2 WIL2', GSW: 10, INI: 5, LP: 6, FO: 10, VTD: 19, GW: 16, KW: 15, maxLP: 6, maxFO: 20, SP: 3 },
+};
+
+describe('Erschaffung: Archetypen nachgerechnet (GRW S. 13–15, 33–37, 71–74, Bögen S. 328–341)', () => {
+  it('alle Archetypen haben Sollwerte', () => expect(Object.keys(SOLL).sort()).toEqual(archetypen(aktiverKatalog()).map(p => p.name).sort()));
   it.each(Object.entries(SOLL))('%s', (name, s) => {
     const c = praeset(name);
-    const r = calculateCharacter(c);
+    const r = calculateCharacter({ ...c, inventory: [] }); // Spalte „Wert“ des Bogens: ohne Rüstung und Schild (die stehen unter „temp.“)
     expect(Object.entries(r.currentAttributes).map(([k, v]) => k + v).join(' ')).toBe(s.attr);
     expect(Object.values(c.attrBase).reduce((a, b) => a + b, 0)).toBe(18); // 18 Punkte auf die Attribute (S. 24)
     const { GSW, INI, LP, FO, VTD, GW, KW } = r.derived;
@@ -108,12 +115,18 @@ describe('Rast: Ruhephase (GRW S. 72, 173–174, 196)', () => {
   it('Grundregel und Fundstelle', () => {
     expect(ruheregeln()).toMatchObject({ lpFaktor: 2, lpMindestens: 1, foFaktor: 2, foMindestens: 1, ruheStunden: 6, verschnaufMinuten: 30, quelle: 'GRW S. 173–174' });
   });
-  // KON und WIL nach den Sollwerten oben; Eshi und Selesha haben Erhöhte Fokusregeneration (3 × WIL)
-  it.each([['Arrou', 6, 2], ['Cederion von Falkenberg', 4, 6], ['Eshi bid-Herar', 4, 6], ['Keira Alvios', 4, 4],
+  // KON und WIL nach den Sollwerten oben (2 × KON, 2 × WIL)
+  it.each([['Arrou', 4, 2], ['Cederion von Falkenberg', 6, 4], ['Eshi bid-Herar', 2, 6], ['Keira Alvios', 4, 6],
     ['Selesha Maradoh', 4, 6], ['Telkin Feuerfaust', 8, 6], ['Tiai Schimmersee', 2, 4]] as const)('%s: %i LP, %i Fokus', (name, lp, fo) => {
     const c = praeset(name);
     const a = calculateCharacter(c).currentAttributes;
     expect(ruhephasenRegeneration(a.KON, a.WIL, ruhewirkungen(c))).toEqual({ lp, fo });
+  });
+  it('Erhöhte Fokusregeneration: 3 × WIL (Selesha mit der Stärke: 9 Fokus)', () => {
+    const c = praeset('Selesha Maradoh');
+    const mit = { ...c, strengthsList: [...c.strengthsList, { name: 'Erhöhte Fokusregeneration', level: 1, source: 'creation', pointCost: 1 }] };
+    const a = calculateCharacter(mit).currentAttributes;
+    expect(ruhephasenRegeneration(a.KON, a.WIL, ruhewirkungen(mit))).toEqual({ lp: 4, fo: 9 });
   });
 });
 
