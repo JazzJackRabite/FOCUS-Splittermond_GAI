@@ -8,11 +8,12 @@
  */
 import type { Katalog } from './katalog';
 import type { Eintrag } from './typen';
-import type { CharacterState, InventoryItem, ItemEntry, Mastery, Spell } from '../types';
+import type { Begleiter, CharacterState, InventoryItem, ItemEntry, Mastery, Relikt, Spell } from '../types';
 import { aktiverKatalog, RASSE_ID, zauberAlsSpell } from './bruecke';
 import { editorFertigkeit, modulWerte } from './erschaffungEditor';
 import { gratisStaerkeDerKultur } from './grwListen';
-import { alsAusruestung } from './ausruestung';
+import { alsAusruestung, type AusruestungsItem } from './ausruestung';
+import { reliktAlsInventar, reliktBausteine } from './relikte';
 import { DEFAULT_STATE } from '../hooks/useCharacterState';
 import { generateId } from '../utils/id';
 
@@ -24,7 +25,11 @@ type Herkunft = 'rasse' | 'kultur' | 'abstammung' | 'ausbildung' | 'schritt7' | 
 interface AtStaerke { id: string; stufe: number; auswahl?: string | null; herkunft: Herkunft; ep?: number }
 interface AtMeisterschaft { fertigkeit: string; id?: string; schwerpunkt_id?: string; schwerpunkt?: string; schwelle: number; auswahl?: string; herkunft: Herkunft; ep?: number }
 interface AtZauber { id: string; schule: string; grad: number; herkunft: Herkunft; ep?: number }
-interface AtRessource { id: string; stufe: number; text?: string | null; ep_stufen?: number; nicht_im_bogen?: boolean }
+interface AtRessource {
+  id: string; stufe: number; text?: string | null; ep_stufen?: number; nicht_im_bogen?: boolean;
+  begleiter?: { id: string; art: 'tier'; name: string; rufname?: string | null; kreatur: number; vertrauter?: boolean };
+  relikt?: { name: string; art: string; basis?: string; bausteine: { id: string; anzahl: number; auswahl?: string }[]; hinweis?: string };
+}
 interface AtGegenstand { id?: string; text?: string; anzahl: number }
 
 export interface ArchetypInfo {
@@ -138,6 +143,28 @@ export function archetypZuCharakter(id: string, k: Katalog | null = aktiverKatal
   }));
   const inventory = (d.ausruestung as AtGegenstand[]).map((g) => gegenstand(k, g)).filter((x): x is InventoryItem => !!x);
 
+  // Kreatur als Tiergefährte (Begleiter), Relikte mit ihren Bausteinen (Inventareintrag wie beim Bau im Editor)
+  const begleiter: Begleiter[] = (d.ressourcen as AtRessource[]).filter((r) => r.begleiter).map((r) => ({
+    id: r.begleiter!.id, art: 'tier', name: r.begleiter!.name, ...(r.begleiter!.rufname ? { rufname: r.begleiter!.rufname } : {}),
+    kreatur: r.begleiter!.kreatur, ...(r.begleiter!.vertrauter ? { vertrauter: true } : {}),
+  }));
+  const relikte: Relikt[] = [];
+  const bausteine = reliktBausteine(k);
+  for (const r of (d.ressourcen as AtRessource[]).filter((x) => x.relikt)) {
+    const rl = r.relikt!;
+    const be = rl.basis ? k.get(rl.basis) : undefined;
+    const basis = be ? (alsAusruestung(be, k.pakete[be.quelle.paket]?.kuerzel ?? be.quelle.paket) as AusruestungsItem | null) : null;
+    const alt = basis ? inventory.find((it) => it.name === basis.name) : undefined;
+    const relikt: Relikt = {
+      id: generateId(), name: rl.name, punkte: r.stufe, art: rl.art, ...(rl.basis ? { basisId: rl.basis, basisName: basis?.name } : {}),
+      bausteine: rl.bausteine.map((b) => ({ id: b.id, anzahl: b.anzahl, ...(b.auswahl ? { auswahl: b.auswahl } : {}) })),
+      ...(rl.hinweis ? { notiz: rl.hinweis } : {}), inventarId: alt?.id ?? generateId(),
+    };
+    const item = { ...reliktAlsInventar(relikt, bausteine, basis, alt, k), ...(alt ? { equipped: alt.equipped } : {}) };
+    if (alt) inventory[inventory.indexOf(alt)] = item; else inventory.push(item);
+    relikte.push(relikt);
+  }
+
   const texte = [
     ...(d.ressourcen as AtRessource[]).filter((r) => r.text).map((r) => `${name(k, r.id)} ${r.stufe}: ${r.text}`),
     ...(d.ressourcen as AtRessource[]).filter((r) => r.nicht_im_bogen).map((r) => `${name(k, r.id)} ${r.stufe}: vom Abstammungsmodul, im Bogen nicht genannt`),
@@ -156,6 +183,7 @@ export function archetypZuCharakter(id: string, k: Katalog | null = aktiverKatal
     raceBonusAttrs: (d.rasse_frei as string[]).map((a) => ATTR_EDITOR[a] ?? a),
     attrIncrements: { AUS: 0, BEW: 0, INT: 0, KON: 0, MYS: 0, STA: 0, VER: 0, WIL: 0 },
     skillsBase, skillsXp, masteries, strengthsList, resourcesList, weaknessesList, languagesList, spellsList, inventory,
+    ...(begleiter.length ? { begleiter } : {}), ...(relikte.length ? { relikte } : {}),
     money: { solare: Number(d.vermoegen?.solare) || 0, lunare: Number(d.vermoegen?.lunare) || 0, telare: Number(d.vermoegen?.telare) || 0 },
     erschaffung: { kultur, abstammung },
     playState: { ...DEFAULT_STATE.playState, splitterPoints: Number(d.splitterpunkte) || DEFAULT_STATE.playState.splitterPoints },

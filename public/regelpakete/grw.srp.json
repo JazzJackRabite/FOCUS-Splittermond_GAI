@@ -70453,7 +70453,15 @@
      {
       "id": "grw:ressource:kreatur",
       "stufe": 2,
-      "text": "Sandfalke „Rouharr“"
+      "text": "Sandfalke „Rouharr“",
+      "begleiter": {
+       "id": "grw:kreatur:falke",
+       "art": "tier",
+       "name": "Falke",
+       "rufname": "Rouharr",
+       "kreatur": 2,
+       "vertrauter": true
+      }
      },
      {
       "id": "grw:ressource:mentor",
@@ -70463,7 +70471,19 @@
      {
       "id": "grw:ressource:relikt",
       "stufe": 2,
-      "text": "Glefe +1 FW"
+      "text": "Glefe +1 FW",
+      "relikt": {
+       "name": "Glefe",
+       "art": "nahkampfwaffe",
+       "basis": "grw:waffe:glefe:nahkampf",
+       "bausteine": [
+        {
+         "id": "grw:verbesserung:fertigkeitsbonus-auf-einen-schwerpunkt",
+         "anzahl": 1,
+         "auswahl": "Stangenwaffen: Glefe"
+        }
+       ]
+      }
      },
      {
       "id": "grw:ressource:vermoegen",
@@ -71372,7 +71392,20 @@
      {
       "id": "grw:ressource:relikt",
       "stufe": 2,
-      "text": "Alchemistenkoffer +1 FW"
+      "text": "Alchemistenkoffer +1 FW",
+      "relikt": {
+       "name": "Alchemistenkoffer",
+       "art": "gegenstand",
+       "basis": "grw:gegenstand:alchemistenkoffer",
+       "bausteine": [
+        {
+         "id": "grw:verbesserung:fertigkeitsbonus-auf-einen-schwerpunkt",
+         "anzahl": 1,
+         "auswahl": "Alchemie"
+        }
+       ],
+       "hinweis": "Der Bogen nennt keinen Schwerpunkt."
+      }
      },
      {
       "id": "grw:ressource:stand",
@@ -72398,7 +72431,18 @@
      {
       "id": "grw:ressource:relikt",
       "stufe": 2,
-      "text": "Zepter +1 FW Schaden Feuermagie"
+      "text": "Zepter +1 FW Schaden Feuermagie",
+      "relikt": {
+       "name": "Zepter",
+       "art": "gegenstand",
+       "bausteine": [
+        {
+         "id": "grw:verbesserung:fertigkeitsbonus-auf-einen-schwerpunkt",
+         "anzahl": 1,
+         "auswahl": "Feuermagie: Schaden"
+        }
+       ]
+      }
      },
      {
       "id": "grw:ressource:stand",
@@ -72922,7 +72966,17 @@
      {
       "id": "grw:ressource:relikt",
       "stufe": 4,
-      "text": "Siegel +2 GW"
+      "text": "Siegel +2 GW",
+      "relikt": {
+       "name": "Siegel",
+       "art": "gegenstand",
+       "bausteine": [
+        {
+         "id": "grw:artefaktwirkung:verbesserter-widerstand-geistig",
+         "anzahl": 2
+        }
+       ]
+      }
      }
     ],
     "schwaechen": [

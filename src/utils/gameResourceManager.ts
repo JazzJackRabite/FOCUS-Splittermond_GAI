@@ -579,10 +579,12 @@ export function getWeaknessDetails(
     };
   }
 
+  // Eigene Schwächen sind erlaubt (die Liste der Schwächen ist eine Auswahl, keine abschließende Aufzählung):
+  // nicht als „unbekannt“ kennzeichnen, sondern als eigene Schwäche
   return {
     found: false,
-    desc: fallbackDesc || 'Unbekannte Schwäche (nicht im Regelwerk gefunden).',
-    source: 'unbekannt',
+    desc: fallbackDesc || 'Eigene Schwäche (in keinem geladenen Regelpaket).',
+    source: 'eigene',
     page: undefined,
   };
 }

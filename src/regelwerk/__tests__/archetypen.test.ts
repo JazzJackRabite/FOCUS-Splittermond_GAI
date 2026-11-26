@@ -11,7 +11,8 @@ import { aktiverKatalog, setzeAktivenKatalog } from '../bruecke';
 import { archetypen, archetypZuCharakter } from '../archetypen';
 import { editorFertigkeit, pruefeErschaffungImEditor } from '../erschaffungEditor';
 import { pruefeErschaffung, type Bau } from '../erschaffung';
-import { waffenAttribute } from '../ausruestung';
+import { alsAusruestung, waffenAttribute } from '../ausruestung';
+import { pruefeRelikt, reliktBaukasten, reliktBausteine } from '../relikte';
 import { grwMondzeichen, grwRassen } from '../grwListen';
 import { referenceCharacterResources } from '../../utils/gameResourceManager';
 import { calculateCharacter } from '../../utils/characterCalculations';
@@ -93,6 +94,25 @@ describe('Archetypen im GRW-Paket', () => {
       expect(r.getAttackValue(it.weaponSkill!, waffenAttribute({ id: wid, name: it.name, weaponSkill: it.weaponSkill }, K)), it.name).toBe(w.wert - (w.mod ?? 0));
       if (w.wgs !== undefined && !w.hinweis) expect(Number(it.wgs) + mit.gearTickModifier, `WGS ${it.name}`).toBe(w.wgs);
     }
+  });
+
+  it('Kreatur als Tiergefährte, Relikte mit Bausteinen ohne Warnung (Arrou, Eshi, Selesha, Telkin)', () => {
+    const c = (n: string) => charakter(archetypen(K).find((a) => a.name === n)!.id);
+    const arrou = c('Arrou');
+    expect(arrou.begleiter).toEqual([{ id: 'grw:kreatur:falke', art: 'tier', name: 'Falke', rufname: 'Rouharr', kreatur: 2, vertrauter: true }]);
+    const bs = reliktBausteine(K); const bk = reliktBaukasten(K);
+    const alle = ['Arrou', 'Eshi bid-Herar', 'Selesha Maradoh', 'Telkin Feuerfaust'].map(c);
+    for (const ch of alle) {
+      expect(ch.relikte).toHaveLength(1);
+      const r = ch.relikte![0];
+      const basis = r.basisId ? alsAusruestung(K.get(r.basisId)!, 'GRW') : null;
+      expect(pruefeRelikt(r, bs, bk, basis).warnungen, ch.name).toEqual([]);
+      expect(ch.inventory!.some((it) => it.id === r.inventarId), ch.name).toBe(true);
+    }
+    // Glefe bleibt die Waffe (jetzt als Relikt); Telkins Siegel: +2 GW, solange er es besitzt (Bogen: GW 17, temp. +2)
+    expect(arrou.inventory!.filter((it) => it.name === 'Glefe')).toHaveLength(1);
+    const telkin = alle[3];
+    expect(calculateCharacter(telkin).derived.GW).toBe(19);
   });
 
   it('Abweichungen vom Modul sind im Paket begründet (Selesha: Kultur, Tiai: Kultur und Abstammung frei)', () => {

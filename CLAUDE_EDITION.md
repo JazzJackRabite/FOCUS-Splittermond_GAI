@@ -1356,6 +1356,19 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
   abgeleitete Werte, Fertigkeitswerte) und `archetypen.test.ts` (Bauplan, Fertigkeitswerte, Angriffswerte, WGS, abgeleitete
   Werte mit INI). `lader.py` nimmt Modulwahlen jetzt auch mit Text-Schlüsseln an (wie aus JSON und im Editor).
 
+## Stand 62 (26.11.2026): Archetypen mit Tiergefährte und Relikten; eigene Schwächen
+
+- Browsertest Stand 61: alle sieben Archetypen geladen; Werte, Angriffswerte, VTD/GSW mit Rüstung wie im Bogen (Behinderung 0
+  bei Cederion und Telkin durch Rüstungsträger I / Starker Schildarm I, wie im Bogen). Arrous Bogen gibt Leder, leicht SR 0,
+  das Paket (Rüstungstabelle) und Keiras Bogen SR 1 – Fehler im Bogen, der Editor bleibt beim Paket. Die geladenen Archetypen
+  danach mit Zustimmung wieder gelöscht.
+- Arrous Kreatur 2 ist jetzt ein Tiergefährte (Falke „Rouharr“, Vertrauter). Relikte aus dem Relikt-Baukasten des GRW:
+  Arrous Glefe und Eshis Alchemistenkoffer (je Bonus auf einen Schwerpunkt, 2 P.), Seleshas Zepter (Schwerpunkt Feuermagie:
+  Schaden), Telkins Siegel (Verbesserter Widerstand geistig ×2 = GW +2, im Bogen unter „temp.“). Der Schwerpunkt-Bonus wirkt
+  wie bei selbst gebauten Relikten im Würfeldialog. Die Datenseite prüft Kosten = Stufe der Ressource, Höchstzahl und
+  Gegenstandsart. Tiais Wasserelementar steht nicht im GRW und bleibt Ressource mit Text.
+- Schwächen, die in keinem Paket stehen, heißen nicht mehr „unbekannt“, sondern „eigene“ (eigene Schwächen sind erlaubt).
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
