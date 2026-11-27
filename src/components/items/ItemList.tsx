@@ -1,6 +1,7 @@
 import React from 'react';
 import { Knopf } from '../../fundament';
 import { SourceBadge } from '../ui/SourceBadge';
+import { gratisStaerkeDerKultur } from '../../regelwerk/grwListen';
 import type { ItemEntry, AppMode } from '../../types';
 import {
   getStrengthDetails,
@@ -41,8 +42,10 @@ export const ItemList: React.FC<ItemListProps> = ({
         const creationCost = (itemLevel - epStufen) * itemPointCost;
         const xpCost = itemLevel * itemPointCost * xpMultiplier;
 
-        // Schwächen: ablegen oder ersetzen beim Erreichen eines neuen Heldengrades (GRW S. 84) – ohne EP
+        // Schwächen: ablegen oder ersetzen beim Erreichen eines neuen Heldengrades (GRW S. 83–84, 88) – ohne EP
         const istSchwaeche = typeLabel.includes('Schwäch');
+        // kostenlose Kulturkunde der Heimat (Name der Stärke aus dem Paket); Schwächen kosten keine Punkte, also keine Kostenzeile
+        const kulturkunde = gratisStaerkeDerKultur();
         const canDelete = mode === 'creation'
           ? !item.isRacial
           : istSchwaeche || (item.source === 'xp' && !item.isRacial && !item.isFree && item.pointCost !== 0);
@@ -89,11 +92,11 @@ export const ItemList: React.FC<ItemListProps> = ({
                 />
               </div>
 
-              {showCosts && (
+              {showCosts && !istSchwaeche && (
                 <div className="text-[11px] text-leise mt-1">
                   {item.isRacial ? (
                     <span className="text-unverletzt font-bold">Gratis: Rasse</span>
-                  ) : item.pointCost === 0 ? (
+                  ) : kulturkunde && item.name.startsWith(`${kulturkunde} (`) ? (
                     <span className="text-unverletzt font-bold">Gratis: Heimat</span>
                   ) : item.isFree || (typeLabel.includes('Sprach') && item.source === 'creation') ? (
                     <span className="text-unverletzt font-bold">
@@ -118,7 +121,7 @@ export const ItemList: React.FC<ItemListProps> = ({
               <Knopf
                 onClick={() => onDelete(idx)}
                 className="text-lg no-print shrink-0"
-                title={istSchwaeche && mode !== 'creation' ? 'Ablegen (beim Erreichen eines neuen Heldengrades, GRW S. 84)' : 'Entfernen'}
+                title={istSchwaeche && mode !== 'creation' ? 'Ablegen (beim Erreichen eines neuen Heldengrades, GRW S. 83–84, 88)' : 'Entfernen'}
               >
                 ×
               </Knopf>

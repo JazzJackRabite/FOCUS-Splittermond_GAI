@@ -104,7 +104,7 @@ export interface WeaponItem {
     load: number | string;
     hardness?: number;
     attributes: string;
-    /** Attribute, die mit der Kampffertigkeit den Angriffswert ergeben (Paketfeld daten.attribute; GRW S. 181) */
+    /** Attribute, die mit der Kampffertigkeit den Angriffswert ergeben (Paketfeld daten.attribute; GRW S. 185) */
     kampfAttribute?: string[];
     source: string;
     page: number;

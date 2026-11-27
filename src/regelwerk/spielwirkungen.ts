@@ -77,14 +77,14 @@ function dauerhafte(c: MitListen, k: Katalog) {
   return wirkungenDesCharakters(k, eintragsIds(k, c)).filter((cw) => cw.wirkung.gilt === 'immer' && cw.wirkung.art === 'wert_gesenkt' && typeof cw.wirkung.wert === 'number');
 }
 
-/** Um so viele Punkte sind Wundabzüge verringert (Schmerzresistenz, Schmerzwiderstand I/II, GRW S. 74, 123) */
+/** Um so viele Punkte sind Wundabzüge verringert (Schmerzresistenz, Schmerzwiderstand I/II, GRW S. 73, 137) */
 export function wundabzugMinderung(c: MitListen, k: Katalog | null = aktiverKatalog()): { summe: number; quellen: string[] } {
   if (!k) return { summe: 0, quellen: [] };
   const l = dauerhafte(c, k).filter((cw) => cw.wirkung.bezug === 'wundabzug');
   return { summe: l.reduce((n, cw) => n + (cw.wirkung.wert as number), 0), quellen: l.map((cw) => cw.quelleName) };
 }
 
-/** Minderung von Behinderung und Tick-Zuschlag für Rüstung bzw. Schild (Rüstungsträger, Starker Schildarm, GRW S. 123) */
+/** Minderung von Behinderung und Tick-Zuschlag für Rüstung bzw. Schild (Rüstungsträger, Starker Schildarm, GRW S. 137) */
 export function ausruestungsMinderung(c: MitListen, k: Katalog | null = aktiverKatalog()): Record<'ruestung' | 'schild', { behinderung: number; tick_zuschlag: number }> {
   const out = { ruestung: { behinderung: 0, tick_zuschlag: 0 }, schild: { behinderung: 0, tick_zuschlag: 0 } };
   if (!k) return out;
@@ -95,7 +95,7 @@ export function ausruestungsMinderung(c: MitListen, k: Katalog | null = aktiverK
   return out;
 }
 
-/** Traglast (Optionalregel GRW S. 165, Kernregel `strukturiert.traglast`): Last je Punkt Stärke, Behinderung je weiterem Lastpunkt */
+/** Traglast (Optionalregel GRW S. 181, Kernregel `strukturiert.traglast`): Last je Punkt Stärke, Behinderung je weiterem Lastpunkt */
 export function traglast(k: Katalog | null = aktiverKatalog()): { attribut: string; lastJePunkt: number; behinderungJeLastpunkt: number } | null {
   const t = k?.get('grw:regel:ausruestungsregeln:traglast-optionalregel')?.daten.strukturiert?.traglast;
   return t ? { attribut: t.attribut, lastJePunkt: t.last_je_punkt, behinderungJeLastpunkt: t.behinderung_je_lastpunkt } : null;

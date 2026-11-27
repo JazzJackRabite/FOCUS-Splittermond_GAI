@@ -115,7 +115,7 @@ const STANDARDANGRIFF: CombatManeuver = {
   type: 'free',
   source: 'GRW',
   page: 160,
-  description: 'Erfolgsgrade können nach dem Wurf für freie Manöver eingesetzt werden (GRW S. 161).',
+  description: 'Erfolgsgrade können nach dem Wurf für freie Manöver eingesetzt werden (GRW S. 160–161).',
   shortDesc: 'Erfolgsgrade für freie Manöver',
   egCost: 0,
   damageMultiplier: 1,
@@ -397,7 +397,7 @@ export function getAvailableCombatManeuvers(
     const e = id ? k.get(id) : undefined;
     if (!e?.daten.manoever) continue;
     const fertigkeit = k.get(e.daten.fertigkeit)?.name ?? e.daten.fertigkeit_name;
-    // Eine Meisterschaft gilt nur in ihrer Fertigkeit (GRW S. 94); allgemeine Nahkampfmeisterschaften für jede Nahkampfwaffe
+    // Eine Meisterschaft gilt nur in ihrer Fertigkeit (GRW S. 91, 95); allgemeine Nahkampfmeisterschaften für jede Nahkampfwaffe
     if (!passtZurWaffe(fertigkeit, weaponSkill, isMelee) || gesehen.has(e.id)) continue;
     gesehen.add(e.id);
     out.push(manoeverAusEintrag(e, k, werte));

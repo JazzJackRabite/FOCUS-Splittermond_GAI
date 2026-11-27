@@ -213,7 +213,7 @@ export function bauAusEditor(k: Katalog, state: CharacterState): { bau: Bau; hin
   // ---- Meisterschaften
   type M = { id: string; fuer?: string; tier: number };
   const zuId = (name: string, skill: string): M | null => {
-    // Schwerpunkt: zählt als Meisterschaft der ersten Schwelle (GRW S. 89); im Paket ein Eintrag je Fertigkeit
+    // Schwerpunkt: zählt als Meisterschaft der ersten Schwelle (GRW S. 92); im Paket ein Eintrag je Fertigkeit
     if (/^Schwerpunkt/i.test(name)) {
       const fi = fertigkeitId(k, skill);
       const sp = fi ? k.nachTyp('schwerpunkt').find(e => e.daten.fertigkeit === fi) : undefined;

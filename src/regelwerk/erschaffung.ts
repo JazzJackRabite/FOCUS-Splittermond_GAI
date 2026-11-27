@@ -42,7 +42,7 @@ export interface ErschaffenerCharakter {
   splitterpunkte: number;
 }
 
-/** Gilt eine allgemeine Meisterschaftsgruppe für die Fertigkeit? (GRW S. 106/199) */
+/** Gilt eine allgemeine Meisterschaftsgruppe für die Fertigkeit? (GRW S. 95/201) */
 export function gruppePasst(gruppe: string, fertigkeit: string, kat: Katalog): boolean {
   const kategorie = kat.get(fertigkeit)?.daten.kategorie;
   if (gruppe.endsWith('allgemeine-nahkampfmeisterschaften')) return NAHKAMPF.has(fertigkeit);

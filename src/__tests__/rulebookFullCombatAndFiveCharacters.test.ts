@@ -30,7 +30,7 @@ describe('Splittermond GRW – Umfassende Regelprüfung, Archetypen & Kampfsimul
   // TEIL 1: 5 TESTCHARAKTERE NACH GRW-REGELN BAUEN & VALIDIEREN
   // =========================================================================
   describe('1. Archetypen des GRW (Anhang 3) nach den Rassen- und Erschaffungsregeln', () => {
-    it('Rassenregeln aus dem Paket (GRW S. 33–37)', () => {
+    it('Rassenregeln aus dem Paket (GRW S. 32–37)', () => {
       expect(RACES['Varg']).toMatchObject({ gk: 6, mods: { STA: 2, WIL: -1 }, freeMods: 1 });
       expect(RACES['Mensch']).toMatchObject({ gk: 5, freeMods: 2 });
       expect(RACES['Gnom']).toMatchObject({ gk: 3, mods: { MYS: 1, VER: 1, STA: -1 } });
@@ -63,7 +63,7 @@ describe('Splittermond GRW – Umfassende Regelprüfung, Archetypen & Kampfsimul
   // =========================================================================
   describe('2. Durchspiel eines vollständigen Kampfes (Tick-System, Proben, Manöver, Schaden & Heilung)', () => {
 
-    it('Schritt 1: Initiative-Wurf & Start-Ticks nach GRW S. 154', () => {
+    it('Schritt 1: Initiative-Wurf & Start-Ticks nach GRW S. 157', () => {
       // Formel: Start-Ticks = 10 - INI - Erfolgsgrade(Initiative-Wurf)
       // Cederion: INI = 8
       const cederionINI = 8;
@@ -80,7 +80,7 @@ describe('Splittermond GRW – Umfassende Regelprüfung, Archetypen & Kampfsimul
       expect(cederionStartTick).toBeLessThan(enemyStartTick);
     });
 
-    it('Schritt 2: Nahkampfangriff mit Breitschwert und Kampfmanöver Wuchtangriff (GRW S. 158-160)', () => {
+    it('Schritt 2: Nahkampfangriff mit Breitschwert und Kampfmanöver Wuchtangriff (GRW S. 159–161)', () => {
       // Cederion führt ein Breitschwert (1W6+5, WGS 7)
       const weaponFormula = '1W6+5';
       const parsed = parseWeaponDamage(weaponFormula);
@@ -187,7 +187,7 @@ describe('Splittermond GRW – Umfassende Regelprüfung, Archetypen & Kampfsimul
       expect(getConditionDescription({ id: 'cond_liegend', key: 'Liegend', level: 1 })).toContain('eigene Angriffe');
     });
 
-    it('Schritt 5: Magie im Kampf – Kampfzauber wirken & Fokusverwaltung (GRW S. 192-198)', () => {
+    it('Schritt 5: Magie im Kampf – Kampfzauber wirken & Fokusverwaltung (GRW S. 192–198)', () => {
       // Telkin wirkt 'Felsgeschoss' (Grad 1, Kosten 3V1)
       const costStr = '3V1';
       const parsedCost = parseFocusCost(costStr);
@@ -227,7 +227,7 @@ describe('Splittermond GRW – Umfassende Regelprüfung, Archetypen & Kampfsimul
       expect(freeFocus).toBe(17); // 20 - 3 = 17 freier Fokus
     });
 
-    it('Schritt 6: Splitterpunkt-Einsatz im Kampf (GRW S. 200)', () => {
+    it('Schritt 6: Splitterpunkt-Einsatz im Kampf (GRW S. 80–81)', () => {
       const { result } = renderHook(() => useCharacterState());
       act(() => {
         result.current.dispatch({
@@ -248,7 +248,7 @@ describe('Splittermond GRW – Umfassende Regelprüfung, Archetypen & Kampfsimul
       expect(result.current.state.playState.splitterPoints).toBe(2);
     });
 
-    it('Schritt 7: Erholung nach dem Kampf – Verschnaufpause & Ruhephase (GRW S. 174 & 195)', () => {
+    it('Schritt 7: Erholung nach dem Kampf – Verschnaufpause & Ruhephase (GRW S. 173–174 & 196)', () => {
       const { result } = renderHook(() => useCharacterState());
       act(() => {
         result.current.dispatch({

@@ -368,7 +368,7 @@ export const PlaySessionProvider: React.FC<{ children: ReactNode }> = ({ childre
   ) => {
     const characterWeapons = (state.inventory || []).filter((item) => item.type === 'weapon');
     const foundWeapon = characterWeapons.find((w) => w.name === weaponName);
-    // Angriffswert: Punkte der Kampffertigkeit + die Attribute der Waffe aus dem Paket (GRW S. 181)
+    // Angriffswert: Punkte der Kampffertigkeit + die Attribute der Waffe aus dem Paket (GRW S. 185)
     const waffe = skill === 'Handgemenge' && weaponName === 'Waffenlos' ? waffenlosImPaket() : waffeImPaket(foundWeapon ?? { id: weaponData?.id, name: weaponName, weaponSkill: skill });
     const totalVal = getAttackValue(skill, waffe?.kampfAttribute ?? []);
 

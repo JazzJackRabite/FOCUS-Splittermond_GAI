@@ -176,7 +176,7 @@ export function archetypZuCharakter(id: string, k: Katalog | null = aktiverKatal
   return {
     ...DEFAULT_STATE,
     mode: 'play', creationFinalized: true, xpTotal: Number(d.ep?.gesamt) || 15,
-    // Die Bögen rechnen ohne die Optionalregel Traglast (GRW S. 165): GSW nur mit der Behinderung der Rüstung
+    // Die Bögen rechnen ohne die Optionalregel Traglast (GRW S. 181): GSW nur mit der Behinderung der Rüstung
     ignoreEncumbrance: true,
     name: e.name, race: RASSE_EDITOR[d.rasse] ?? '', moonSign: name(k, d.mondzeichen), homeRegion: d.kulturkunde ?? '',
     attrBase: attrEditor(d.attribute_basis) as unknown as CharacterState['attrBase'],

@@ -5,7 +5,7 @@ import { HealModal } from '../components/play/HealModal';
 import type { HealthSlot, StatusCondition } from '../types';
 import { setzeHausregeln } from '../fundament/hausregeln';
 
-describe('HealModal (GRW S. 165-167)', () => {
+describe('HealModal (GRW S. 119–120, 173–174)', () => {
   const sampleSlots: HealthSlot[] = [
     { type: 'consumed' },
     { type: 'consumed' },

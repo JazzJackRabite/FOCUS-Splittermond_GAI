@@ -87,7 +87,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
         const d = type === 'weakness'
           ? getWeaknessDescription(item, grwSchwaechenTexte()[item] || '')
           : '';
-        const page = type === 'weakness' ? (grwSchwaechenSeiten()[item] ?? 84) : undefined;
+        const page = type === 'weakness' ? grwSchwaechenSeiten()[item] : undefined;   // Seite nur aus dem Paket
         return {
           name: item,
           cost: 1,
@@ -236,14 +236,14 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
 
     if (isLanguage) {
       source = isCustom ? (customSource || 'Eigen') : ((currentItemData as any)?.source ?? 'GRW');
-      page = isCustom ? undefined : ((currentItemData as any)?.page ?? 314);
+      page = isCustom ? undefined : (currentItemData as any)?.page;   // Seite nur aus dem Paket
       if (isMotherTongue) {
         finalDesc = 'Muttersprache';
         isFree = true;
       }
     } else if (type === 'weakness') {
       source = isCustom ? (customSource || 'Eigen') : ((currentItemData as any)?.source ?? 'GRW');
-      page = isCustom ? undefined : ((currentItemData as any)?.page ?? grwSchwaechenSeiten()[name] ?? 84);
+      page = isCustom ? undefined : ((currentItemData as any)?.page ?? grwSchwaechenSeiten()[name]);
     }
 
     if (zielVoll && !hausregeln) return;

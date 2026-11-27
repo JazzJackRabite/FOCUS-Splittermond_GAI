@@ -409,7 +409,7 @@ export const CombatMagicTab: React.FC = () => {
               {/* Character Weapons from Inventory */}
               {weapons.map((w) => {
                 const skillName = w.weaponSkill || 'Klingenwaffen';
-                // Angriffswert: Fertigkeitspunkte + Attribute der Waffe (GRW S. 181)
+                // Angriffswert: Fertigkeitspunkte + Attribute der Waffe (GRW S. 185)
                 const skillVal = getAttackValue(skillName, waffenAttribute(w, katalog));
                 const itemSrc = getItemSource(w);
                 const enchantments = getWeaponEnchantments(w, channeledSpells);

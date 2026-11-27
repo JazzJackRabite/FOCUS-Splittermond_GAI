@@ -1378,6 +1378,25 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
 - Browsertest Stand 62: Arrous Falke „Rouharr“ als Begleiter, Glefe als Relikt mit +1 im Angriffsdialog, Telkins Siegel
   (GW 19); die beiden Testcharaktere danach mit Zustimmung gelöscht.
 
+## Stand 64 (27.11.2026): Seitenangaben gegen den Text des GRW geprüft
+
+Alle „GRW S. n“ im Quelltext (rund 350 Stellen, 95 verschiedene Angaben) mit dem Text der jeweiligen Buchseite abgeglichen.
+Falsch und korrigiert:
+- Traglast S. 165 → 181; Rüstungsträger/Starker Schildarm S. 123 → 137; Schmerzresistenz S. 74 → 73, Schmerzwiderstand → 137.
+- Angriffswert = Kampffertigkeit + Attribute der Waffe S. 181 → 185 (6 Stellen); Schwerpunkt als Schwelle-1-Meisterschaft
+  S. 89 → 92; allgemeine Meisterschaften S. 106/199 → 95/201; Meisterschaft gehört zu ihrer Fertigkeit S. 94 → 91, 95.
+- Freie Zauber im Feinschliff S. 25 → 26, „danach auch ein niedrigerer Grad“ S. 223 → 200; Startsplitterpunkte S. 88 → 26.
+- Mindestkosten eines Zaubers (1 erschöpfter oder kanalisierter Punkt) S. 194 → 195; Auslösezeit S. 194–195 → 222.
+- Deckung S. 163 → 162; Lücke suchen S. 162 → 161; Kampfgetümmel S. 163 → 162 (Situationen S. 161–162, 170–171).
+- Gefolgsmann mit Attributen 2 S. 78 → 77; Schwäche ablegen S. 84 → 83–84, 88; Rassen S. 33–37 → 32–37; Tierwerte S. 283–286.
+- Testbeschriftungen: Initiative S. 154 → 157, Nahkampf S. 158–160 → 159–161, Splitterpunkte S. 200 → 80–81, Pausen
+  S. 174/195 → 173–174/196, Heilen S. 165–167 → 119–120/173–174, Schaden S. 162–165 → 172–173; „PDF S.“ in
+  pdfRulesVerification waren Buchseiten (jetzt „GRW S.“).
+Ohne Beleg entfernt bzw. aus dem Paket: Ersatz-Seitenzahlen 84 (Schwächen), 314 (Sprachen), 75 (Ressourcen), wenn das Paket keine
+Seite nennt – dann steht keine. Gefolge: „ab 1, 3 und 6 Punkten“ aus dem Paket (`freieZauberSchwellen`), Kosten mit GRW S. 78.
+Kostenzeile: „Gratis: Heimat“ nur noch für die Kulturkunde der Heimat (vorher für alles mit 0 Punkten, z. B. Sprachen,
+Schwächen, Priester); Schwächen ohne Kostenzeile.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

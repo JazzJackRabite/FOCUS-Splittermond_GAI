@@ -1,5 +1,5 @@
 /**
- * Modifikatoren für Angriffe je nach Lage, aus dem GRW-Paket (GRW S. 162–163, 170–171):
+ * Modifikatoren für Angriffe je nach Lage, aus dem GRW-Paket (GRW S. 161–162, 170–171):
  * Kampfpositionen (Tabelle S. 170), Taktischer Vorteil, Überzahl, Lücke suchen, Zielen, Deckung, Kampfgetümmel.
  * Ohne Paket gibt es keine Situationsmodifikatoren (keine Zahlen im Code).
  */

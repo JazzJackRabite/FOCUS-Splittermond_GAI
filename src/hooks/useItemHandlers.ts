@@ -87,10 +87,10 @@ export function useItemHandlers({ state, calc, dispatch }: ItemHandlersParams) {
       itemName = item?.name ?? '';
       dispatch({ type: 'REMOVE_RESOURCE', payload: idx });
     } else if (type === 'weakness') {
-      // GRW S. 84: beim Erreichen eines neuen Heldengrades eine Schwäche ablegen oder ersetzen (einmal je Heldengrad)
+      // GRW S. 83–84, 88: beim Erreichen eines neuen Heldengrades eine Schwäche ablegen oder ersetzen (einmal je Heldengrad)
       const hg = heldengradNr ?? 1;
       if (mode === 'xp' && hg <= (schwaechenHg ?? 1)
-        && regelverstoss('Eine Schwäche lässt sich nur beim Erreichen eines neuen Heldengrades ablegen (GRW S. 84) – auf diesem Heldengrad schon geschehen oder noch kein neuer erreicht.')) return;
+        && regelverstoss('Eine Schwäche lässt sich nur beim Erreichen eines neuen Heldengrades ablegen (GRW S. 83–84, 88) – auf diesem Heldengrad schon geschehen oder noch kein neuer erreicht.')) return;
       itemName = weaknessesList[idx]?.name ?? '';
       dispatch({ type: 'REMOVE_WEAKNESS', payload: idx });
       if (mode === 'xp') dispatch({ type: 'SCHWAECHEN_HG', payload: hg });

@@ -1,5 +1,5 @@
 /**
- * Angriffswert = Punkte der Kampffertigkeit + die beiden Attribute der Waffe (GRW S. 181); die Attribute stehen im Paket
+ * Angriffswert = Punkte der Kampffertigkeit + die beiden Attribute der Waffe (GRW S. 185); die Attribute stehen im Paket
  * (daten.attribute). Vorher zählten nur die Fertigkeitspunkte.
  */
 import { describe, expect, it } from 'vitest';

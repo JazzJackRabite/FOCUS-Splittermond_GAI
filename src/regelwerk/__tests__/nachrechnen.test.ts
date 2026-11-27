@@ -2,11 +2,11 @@
  * Nachgerechnet gegen das Buch: Die Sollwerte hier sind von Hand nach den Formeln des Grundregelwerks bestimmt
  * (nicht aus dem Paket gelesen) und werden mit dem verglichen, was der Editor ausrechnet.
  *
- *  Erschaffung  Attribute = Grundwert + Rassenmodifikatoren (GRW S. 33–37)
+ *  Erschaffung  Attribute = Grundwert + Rassenmodifikatoren (GRW S. 32–37)
  *               GSW = BEW + GK, INI = 10 − INT, LP = GK + KON, FO = 2 × (MYS + WIL) (S. 13)
  *               VTD = 12 + BEW + STÄ + Modifikator der GK, GW = 12 + VER + WIL, KW = 12 + KON + WIL (S. 13, 15)
  *               Stärken: Flink GSW +1, Verbesserte Initiative INI −3, Robust LP +1, Erhöhter Fokuspool FO +5,
- *               Hoher Geistiger Widerstand GW +2, Zusätzliche Splitterpunkte +2 (S. 71–74); Splitterpunkte 3 (S. 88)
+ *               Hoher Geistiger Widerstand GW +2, Zusätzliche Splitterpunkte +2 (S. 71–74); Splitterpunkte 3 (S. 26)
  *  Steigerung   Kostentabelle S. 86–87 und Steigerungskosten zu Spielbeginn S. 25
  *  Angriff      je volle 3 Punkte über der Schwierigkeit 1 Erfolgsgrad, Triumph +3 EG (S. 17–18)
  *  Zauber       Erfolgsgrade: erschöpft 1 EG, kanalisiert 2 EG, verzehrt 3 EG, Auslösezeit 3 EG (höchstens 2×) (S. 221–222)
@@ -57,7 +57,7 @@ const SOLL: Record<string, { attr: string; GSW: number; INI: number; LP: number;
   'Tiai Schimmersee': { attr: 'AUS3 BEW5 INT2 KON1 MYS3 STA2 VER2 WIL2', GSW: 10, INI: 5, LP: 6, FO: 10, VTD: 19, GW: 16, KW: 15, maxLP: 6, maxFO: 20, SP: 3 },
 };
 
-describe('Erschaffung: Archetypen nachgerechnet (GRW S. 13–15, 33–37, 71–74, Bögen S. 328–341)', () => {
+describe('Erschaffung: Archetypen nachgerechnet (GRW S. 13–15, 32–37, 71–74, Bögen S. 328–341)', () => {
   it('alle Archetypen haben Sollwerte', () => expect(Object.keys(SOLL).sort()).toEqual(archetypen(aktiverKatalog()).map(p => p.name).sort()));
   it.each(Object.entries(SOLL))('%s', (name, s) => {
     const c = praeset(name);

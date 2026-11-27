@@ -565,7 +565,7 @@ export function getWeaknessDetails(
         found: true,
         desc: found.desc || fallbackDesc || 'Details im Regelwerk.',
         source: found.source || pkg.shortName || 'Modul',
-        page: found.page ?? grwSchwaechenSeiten()[name] ?? 84,
+        page: found.page ?? grwSchwaechenSeiten()[name],
       };
     }
   }
@@ -575,7 +575,7 @@ export function getWeaknessDetails(
       found: true,
       desc: grwSchwaechenTexte()[name] || fallbackDesc || 'Details im Regelwerk.',
       source: 'GRW',
-      page: grwSchwaechenSeiten()[name] ?? 84,
+      page: grwSchwaechenSeiten()[name],
     };
   }
 
@@ -604,7 +604,7 @@ export function getLanguageDetails(
       found: true,
       desc,
       source: found.source || 'GRW',
-      page: found.page ?? 314,
+      page: found.page,
     };
   }
 
@@ -681,7 +681,7 @@ export function getResourceDetails(
       found: true,
       desc: found?.desc || grwRessourcenTexte()[name] || fallbackDesc || 'Details im Regelwerk.',
       source: found?.source || 'GRW',
-      page: found?.page ?? 75,
+      page: found?.page,
     };
   }
 

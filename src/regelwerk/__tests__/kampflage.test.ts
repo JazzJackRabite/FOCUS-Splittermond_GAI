@@ -1,6 +1,6 @@
 /**
  * Lage beim Angriff aus dem GRW-Paket (regelwerk/kampflage.ts): Kampfpositionen (Tabelle GRW S. 170),
- * Taktischer Vorteil und Überzahl (S. 170–171), Lücke suchen (S. 162), Zielen, Deckung, Kampfgetümmel (S. 163),
+ * Taktischer Vorteil und Überzahl (S. 170–171), Lücke suchen (S. 161), Zielen, Deckung, Kampfgetümmel (S. 162),
  * Scharfschütze hebt Kampfgetümmel auf. Proben (regelwerk/proben.ts): Erfolgsgrade, Patzer, Triumph (S. 17–18).
  */
 import { describe, expect, it } from 'vitest';

@@ -1,5 +1,5 @@
 /**
- * Begleiter: Tiergefährten aus dem GRW (Ressource Kreatur, S. 78; Tierwerte S. 284–287), Tab „Begleiter“,
+ * Begleiter: Tiergefährten aus dem GRW (Ressource Kreatur, S. 78; Tierwerte S. 283–286), Tab „Begleiter“,
  * Abrichtungen und Potenzial (Bestienmeister S. 15–23, lokal mit FOKUS_GRIMOIRES).
  */
 import { setzeHausregeln } from '../../fundament/hausregeln';

@@ -120,7 +120,12 @@ export function freieZauberNachPunkten(k: Katalog, n: number): number[] {
   const t: { grad: number; ab_fertigkeitspunkten: number }[] = k.get(ERSCHAFFUNG_ID)?.daten.strukturiert?.feinschliff?.freie_zauber_je_magieschule ?? [];
   return t.filter((z) => n >= z.ab_fertigkeitspunkten).map((z) => z.grad);
 }
-/** Grade der freien Zauber einer Magieschule bei n Punkten: je erreichter Schwelle einer (GRW S. 25 und S. 223) */
+/** Punkte in einer Magieschule, ab denen je ein freier Zauber dazukommt (Feinschliff, GRW S. 26), z. B. [1, 3, 6] */
+export function freieZauberSchwellen(k: Katalog | null): number[] {
+  const t: { ab_fertigkeitspunkten: number }[] = k?.get(ERSCHAFFUNG_ID)?.daten.strukturiert?.feinschliff?.freie_zauber_je_magieschule ?? [];
+  return t.map((z) => z.ab_fertigkeitspunkten);
+}
+/** Grade der freien Zauber einer Magieschule bei n Punkten: je erreichter Schwelle einer (GRW S. 26 und S. 200) */
 export function freieZauberGrade(n: number, k: Katalog | null): number[] {
   if (!k) return [];
   return (steigerung(k)?.zauber_nach_grad ?? []).filter((z) => n >= z.mindest_fertigkeitspunkte_magieschule).map((z) => z.grad);

@@ -10,6 +10,7 @@ import { Auswahl, Eingabe, Knopf, Marke } from '../../../fundament';
 import { MarkeMitEntfernen } from '../Wertekasten';
 import { gefolgeVerbraucht } from '../besitzer';
 import { Erklaerung, Titel3, UEBERSICHT } from './teile';
+import { freieZauberSchwellen } from '../../../regelwerk/abgeleitet';
 import type { Schritt, SchrittProps } from './typen';
 
 const AUFGABEN = ['Leibdiener', 'Leibdienerin', 'Knappe', 'Leibwächter', 'Zofe', 'Knecht', 'Koch', 'Vorkoster', 'Schildmaid'];
@@ -50,7 +51,7 @@ const Grundlage: React.FC<SchrittProps> = (p) => {
           {ku.map(c => <option key={c.id} value={c.id}>{c.name}{c.quelle.paket !== 'grw' ? ` (${k.pakete[c.quelle.paket]?.kuerzel ?? c.quelle.paket})` : ''}</option>)}
         </Auswahl>
       </div>
-      {b.rasse && <Erklaerung>{rasseText(k, b.rasse)}; sonst alle Attribute 2 (GRW S. 78).</Erklaerung>}
+      {b.rasse && <Erklaerung>{rasseText(k, b.rasse)}; sonst alle Attribute 2 (GRW S. 77).</Erklaerung>}
     </div>
   );
 };
@@ -125,7 +126,7 @@ const Fertigkeiten: React.FC<SchrittProps> = (p) => {
   return (
     <div className="space-y-4">
       <Punkte {...p} />
-      <Erklaerung>Eine Fertigkeit auf die erste Schwelle ({schwelle1}) anzuheben kostet 1 Punkt und bringt eine freie Meisterschaft.</Erklaerung>
+      <Erklaerung>Eine Fertigkeit auf die erste Schwelle ({schwelle1}) anzuheben kostet 1 Punkt und bringt eine freie Meisterschaft (GRW S. 78).</Erklaerung>
       {g.fertigkeiten.length === 0 ? <Erklaerung>Keine Fertigkeiten.</Erklaerung> : (
         <div className="overflow-x-auto">
           <table className="w-full text-left border-separate border-spacing-y-1 text-sm">
@@ -212,7 +213,7 @@ const MeisterschaftenZauber: React.FC<SchrittProps> = (p) => {
             </MarkeMitEntfernen>
           ))}
         </div>
-        <Erklaerung>Frei: {g.freieMeisterschaften} (eine je angehobener Fertigkeit); jede weitere kostet 1 Punkt.</Erklaerung>
+        <Erklaerung>Frei: {g.freieMeisterschaften} (eine je angehobener Fertigkeit); jede weitere kostet 1 Punkt (GRW S. 78).</Erklaerung>
         <div className="flex flex-wrap gap-2 items-end">
           <Auswahl beschriftung="Meisterschaft für Gefolgsmann wählen" value={msWahl} onChange={ev => setMsWahl(ev.target.value)}>
             <option value="">Meisterschaft wählen …</option>
@@ -235,7 +236,7 @@ const MeisterschaftenZauber: React.FC<SchrittProps> = (p) => {
               </MarkeMitEntfernen>
             ))}
           </div>
-          <Erklaerung>Frei: {g.freieZauber} (je Magieschule ab 1, 3 und 6 Punkten einer); jeder weitere kostet 1 Punkt.</Erklaerung>
+          <Erklaerung>Frei: {g.freieZauber} (je Magieschule ab {freieZauberSchwellen(k).join(', ').replace(/, (\d+)$/, ' und $1')} Punkten einer); jeder weitere kostet 1 Punkt (GRW S. 78).</Erklaerung>
           <div className="flex flex-wrap gap-2 items-end">
             <Auswahl beschriftung="Zauber für Gefolgsmann wählen" value={zWahl} onChange={ev => setZWahl(ev.target.value)}>
               <option value="">Zauber wählen …</option>

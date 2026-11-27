@@ -23,11 +23,11 @@ afterAll(() => setzeAktivenKatalog(null, false));
 
 describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand PDF', () => {
   // =========================================================================
-  // 1. ATTRIBUTE & ABGELEITETE WERTE (PDF S. 11-16, S. 321-323, Anhang 4 S. 343)
+  // 1. ATTRIBUTE & ABGELEITETE WERTE (GRW S. 11-16, S. 321-323, Anhang 4 S. 343)
   // =========================================================================
   describe('1. Abgeleitete Werte nach Formeln im Regelwerk', () => {
-    it('berechnet GSW = BEW + GK für alle spielbaren Rassen korrekt (PDF S. 13, 15, 32-37)', () => {
-      // Mensch: GK 5 (S. 35)
+    it('berechnet GSW = BEW + GK für alle spielbaren Rassen korrekt (GRW S. 13, 15, 32-37)', () => {
+      // Mensch: GK 5 (GRW S. 35)
       const menschState: CharacterState = {
         ...DEFAULT_STATE,
         race: 'Mensch',
@@ -73,7 +73,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(rVarg.current.derived.GSW).toBe(9); // BEW 3 + GK 6 = 9
     });
 
-    it('berechnet INI = 10 - INT, LP = GK + KON, FO = 2 * (MYS + WIL) (PDF S. 13-15)', () => {
+    it('berechnet INI = 10 - INT, LP = GK + KON, FO = 2 * (MYS + WIL) (GRW S. 13-15)', () => {
       const state: CharacterState = {
         ...DEFAULT_STATE,
         race: 'Mensch',
@@ -90,7 +90,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(result.current.maxFO).toBe(14);
     });
 
-    it('berechnet VTD mit Größenklasse-Modifikatoren (PDF S. 13 Tabelle)', () => {
+    it('berechnet VTD mit Größenklasse-Modifikatoren (GRW S. 13 Tabelle)', () => {
       // Formel: 12 + BEW + STA + Modifikator nach GK
       // GK 3 (Gnom): +4
       // GK 4 (Zwerg): +2
@@ -124,7 +124,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(rVarg.current.derived.VTD).toBe(18);
     });
 
-    it('berechnet GW = 12 + VER + WIL und KW = 12 + KON + WIL (PDF S. 15)', () => {
+    it('berechnet GW = 12 + VER + WIL und KW = 12 + KON + WIL (GRW S. 15)', () => {
       const state: CharacterState = {
         ...DEFAULT_STATE,
         race: 'Mensch',
@@ -137,7 +137,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(result.current.derived.KW).toBe(19);
     });
 
-    it('berücksichtigt Stärken Robust (+1 LP/Stufe) und Erhöhter Fokuspool (+5 FO) (PDF S. 72-73)', () => {
+    it('berücksichtigt Stärken Robust (+1 LP/Stufe) und Erhöhter Fokuspool (+5 FO) (GRW S. 72-73)', () => {
       const state: CharacterState = {
         ...DEFAULT_STATE,
         race: 'Mensch',
@@ -156,10 +156,10 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
   });
 
   // =========================================================================
-  // 2. HELDENGRADE & STEIGERUNGSKOSTEN (PDF S. 25, S. 87-89)
+  // 2. HELDENGRADE & STEIGERUNGSKOSTEN (GRW S. 25, S. 87-89)
   // =========================================================================
   describe('2. Heldengrade und Steigerungskosten', () => {
-    it('erhöht Widerstandswerte um +2 je Heldengrad ab Wanderer (PDF S. 89)', () => {
+    it('erhöht Widerstandswerte um +2 je Heldengrad ab Wanderer (GRW S. 89)', () => {
       // 100 EP = Heldengrad 2 (Wanderer) -> +2 Widerstände
       const stateHG2: CharacterState = {
         ...DEFAULT_STATE,
@@ -183,7 +183,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(rHG2.current.derived.KW).toBe(18);
     });
 
-    it('berechnet Steigerungskosten gemäß Buchbeispiel (PDF S. 87: Fertigkeit 5 auf 7 kostet 8 EP)', () => {
+    it('berechnet Steigerungskosten gemäß Buchbeispiel (GRW S. 87: Fertigkeit 5 auf 7 kostet 8 EP)', () => {
       // Buchbeispiel S. 87:
       // "Ein Abenteurer des Heldengrades Wanderer will eine Fertigkeit von 5 auf 7 steigern.
       // Hierzu muss er 8 Erfahrungspunkte aufwenden: 3 (von 5 auf 6) + 5 (von 6 auf 7).
@@ -201,7 +201,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(totalXp).toBe(14);
     });
 
-    it('prüft offizielle EP-Kosten aller Eigenschaften (PDF S. 25 & 87)', () => {
+    it('prüft offizielle EP-Kosten aller Eigenschaften (GRW S. 25 & 87)', () => {
       // Attribute: 1.=10, 2.=15, 3.=20, 4.=25
       expect(calculateItemCost('attribute', 1)).toBe(10);
       expect(calculateItemCost('attribute', 2)).toBe(15);
@@ -235,7 +235,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
   });
 
   // =========================================================================
-  // 3. PROBEN, ERFOLGSGRADE, PATZER & TRIUMPH (PDF S. 16-20, S. 198, Anhang 4 S. 343)
+  // 3. PROBEN, ERFOLGSGRADE, PATZER & TRIUMPH (GRW S. 16-20, S. 198, Anhang 4 S. 343)
   // =========================================================================
   describe('3. Proben- und Erfolgsgradberechnung nach Tabelle S. 17 & 343', () => {
     it('berechnet Erfolgsgrade bei gelungenen Proben (Diff 0-2 = 0 EG, je 3 Punkte darüber +1 EG)', () => {
@@ -260,8 +260,8 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(calculateSpellEG(30, 15).eg).toBe(5);
     });
 
-    it('erkennt "Knapp misslungen" (Diff -1 bis -2): 0 EG und 0 Fokusverlust (PDF S. 17 & 198)', () => {
-      // PDF S. 17 & 198: "Bei Kampf und Zauberei müssen trotz Fehlschlag keine negativen Auswirkungen in Kauf genommen werden."
+    it('erkennt "Knapp misslungen" (Diff -1 bis -2): 0 EG und 0 Fokusverlust (GRW S. 17 & 198)', () => {
+      // GRW S. 17 & 198: "Bei Kampf und Zauberei müssen trotz Fehlschlag keine negativen Auswirkungen in Kauf genommen werden."
       const calcMinus1 = calculateSpellEG(14, 15);
       expect(calcMinus1.isSuccess).toBe(false);
       expect(calcMinus1.differenz).toBe(-1);
@@ -275,7 +275,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(calcMinus2.exhaustedFocusLostOnFailure).toBe(0);
     });
 
-    it('berechnet negative Erfolgsgrade bei Misserfolg (Diff <= -3) (PDF S. 17 & 343)', () => {
+    it('berechnet negative Erfolgsgrade bei Misserfolg (Diff <= -3) (GRW S. 17 & 343)', () => {
       // Diff -3 bis -5: -1 EG (1 negativer EG -> 1 Fokus erschöpft)
       const calcMinus3 = calculateSpellEG(12, 15);
       expect(calcMinus3.isSuccess).toBe(false);
@@ -317,10 +317,10 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
   });
 
   // =========================================================================
-  // 4. SCHADEN & WUNDABZÜGE (PDF S. 14, S. 172-173, Anhang 4 S. 343)
+  // 4. SCHADEN & WUNDABZÜGE (GRW S. 14, S. 172-173, Anhang 4 S. 343)
   // =========================================================================
   describe('4. Schaden, Wundstufen und Wundabzüge', () => {
-    it('berechnet Wundabzüge AUSSCHLIESSLICH aus echtem Schaden (PDF S. 14 & S. 173 Arrou-Beispiel)', () => {
+    it('berechnet Wundabzüge AUSSCHLIESSLICH aus echtem Schaden (GRW S. 14 & S. 173 Arrou-Beispiel)', () => {
       // Aus dem Regelwerk S. 173:
       // "Arrou (8 Lebenspunkte) hat durch eine Kneipenschlägerei bereits 7 Punkte Betäubungsschaden erlitten,
       // ist also noch unverletzt. Plötzlich rammt ihm sein Gegenüber einen Dolch zwischen die Rippen,
@@ -365,7 +365,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(rCalcAfter.current.currentHealthLevelName).toBe('Angeschlagen');
     });
 
-    it('erhöht Wundstufe durch Zustand Verwundet (PDF S. 169)', () => {
+    it('erhöht Wundstufe durch Zustand Verwundet (GRW S. 169)', () => {
       // 0 echter Schaden (Unverletzt) mit Verwundet 1: Wundabzug wie Angeschlagen (−1), die Gesundheitsstufe bleibt
       // („gilt in Bezug auf die Wundabzüge … als um eine Wundstufe schwerer verletzt“)
       const state: CharacterState = {
@@ -384,7 +384,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(result.current.currentHealthLevelName).toBe('Unverletzt');
     });
 
-    it('reduziert Wundabzüge durch Stärke Schmerzresistenz (PDF S. 73) und Schmerzwiderstand (PDF S. 137)', () => {
+    it('reduziert Wundabzüge durch Stärke Schmerzresistenz (GRW S. 73) und Schmerzwiderstand (GRW S. 137)', () => {
       const state: CharacterState = {
         ...DEFAULT_STATE,
         race: 'Mensch',
@@ -407,10 +407,10 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
   });
 
   // =========================================================================
-  // 5. ERHOLUNG & PAUSEN (PDF S. 174, S. 195)
+  // 5. ERHOLUNG & PAUSEN (GRW S. 173–174, S. 196)
   // =========================================================================
   describe('5. Heilung durch Pausen', () => {
-    it('Verschnaufpause: heilt Betäubungsschaden, regeneriert erschöpften Fokus, baut 1 Stufe Erschöpft ab (PDF S. 174)', () => {
+    it('Verschnaufpause: heilt Betäubungsschaden, regeneriert erschöpften Fokus, baut 1 Stufe Erschöpft ab (GRW S. 174)', () => {
       const { result } = renderHook(() => useCharacterState());
       act(() => {
         result.current.dispatch({
@@ -444,7 +444,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(result.current.state.playState.conditions.find((c) => c.key === 'Erschöpft')?.level).toBe(1);
     });
 
-    it('Ruhephase: heilt Betäubungsschaden, heilt KONx2 echten Schaden, regeneriert WILx2 verzehrten Fokus (PDF S. 174 & 195)', () => {
+    it('Ruhephase: heilt Betäubungsschaden, heilt KONx2 echten Schaden, regeneriert WILx2 verzehrten Fokus (GRW S. 173–174 & 196)', () => {
       const { result } = renderHook(() => useCharacterState());
       act(() => {
         result.current.dispatch({
@@ -471,10 +471,10 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
   });
 
   // =========================================================================
-  // 6. ZAUBERVORGANG & EG-MODIFIKATIONEN (PDF S. 195-200, S. 221-223)
+  // 6. ZAUBERVORGANG & EG-MODIFIKATIONEN (GRW S. 193–200, S. 221–223)
   // =========================================================================
   describe('6. Zaubervorgang, Fokuskosten und EG-Modifikationen', () => {
-    it('parst Fokuskosten wie K4V1, 5V2, K8V2, K1 korrekt (PDF S. 195-196)', () => {
+    it('parst Fokuskosten wie K4V1, 5V2, K8V2, K1 korrekt (GRW S. 195)', () => {
       const c1 = parseFocusCost('K4V1');
       expect(c1.isChanneled).toBe(true);
       // GRW: „K6V2 sind 6 kanalisierte Punkte Fokus insgesamt, davon werden 2 sofort verzehrt“
@@ -494,7 +494,7 @@ describe('Splittermond GRW (2. erratierte Neuauflage) - Regelverifikation anhand
       expect(c3.total).toBe(1);
     });
 
-    it('wendet EG-Modifikationen nach PDF S. 221 an (Fokus einsparen, Auslösezeit, Schaden)', () => {
+    it('wendet EG-Modifikationen nach GRW S. 221 an (Fokus einsparen, Auslösezeit, Schaden)', () => {
       const baseCost = parseFocusCost('6V2');
       const allocations = {
         ...INITIAL_EG_ALLOCATIONS,

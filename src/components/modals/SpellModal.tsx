@@ -13,7 +13,7 @@ interface SpellModalProps {
   budget: number;
   freeSlots: Record<string, number[]>;
   schoolName: string | null;
-  /** bei der Erschaffung: freier Zauber genau des Grades seiner Stufe (GRW S. 25); danach auch niedriger (S. 223) */
+  /** bei der Erschaffung: freier Zauber genau des Grades seiner Stufe (GRW S. 26); danach auch niedriger (S. 200) */
   exakterGrad?: boolean;
 }
 

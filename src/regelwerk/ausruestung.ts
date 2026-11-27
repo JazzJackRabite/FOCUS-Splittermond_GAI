@@ -230,7 +230,7 @@ export function waffeImPaket(w: { id?: string; name: string; weaponSkill?: strin
     ?? waffen.find(i => i.name === w.name) ?? null;
 }
 
-/** Attribute für den Angriffswert einer Waffe (Fertigkeitspunkte + diese beiden Attribute, GRW S. 181); leer, wenn unbekannt */
+/** Attribute für den Angriffswert einer Waffe (Fertigkeitspunkte + diese beiden Attribute, GRW S. 185); leer, wenn unbekannt */
 export function waffenAttribute(w: { id?: string; name: string; weaponSkill?: string }, k: Katalog | null = aktiverKatalog()): string[] {
   return waffeImPaket(w, k)?.kampfAttribute ?? [];
 }

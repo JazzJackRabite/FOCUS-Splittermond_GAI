@@ -1,5 +1,5 @@
 /**
- * Zauber durch Erfolgsgrade verbessern (GRW S. 221–222) und Auslösezeit (GRW S. 194–195) aus dem GRW-Paket:
+ * Zauber durch Erfolgsgrade verbessern (GRW S. 221–222) und Auslösezeit (GRW S. 222) aus dem GRW-Paket:
  * EG je Option, Höchstzahl, Mindestwerte. Ohne Paket ist keine Option wählbar.
  */
 import type { Katalog } from './katalog';

@@ -499,7 +499,7 @@ export function calculateFinalSpellCosts(
     );
   }
 
-  // Auslösezeit (GRW S. 194–195, 221–222): Grundwert, höchstens zweimal senkbar, Minimum aus dem Paket
+  // Auslösezeit (GRW S. 221–222): Grundwert, höchstens zweimal senkbar, Minimum aus dem Paket
   const senkung = Math.min(allocations.reduceCastTime || 0, r.ausloesezeit.hoechstens ?? Infinity);
   const effectiveCastTicks = Math.max(r.ausloesezeit.minimum ?? 0, r.grundAusloesezeit - senkung);
 

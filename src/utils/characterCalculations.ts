@@ -41,7 +41,7 @@ export interface CharacterCalculationResult {
   groupedSpells: Array<{ skill: string; items: Spell[] }>;
   getSkillValue: (skill: string) => number;
   getSkillTotal: (skill: string) => number | null;
-  /** Angriffswert: Punkte der Kampffertigkeit + die Attribute der Waffe + Boni aus Wirkungen (GRW S. 181) */
+  /** Angriffswert: Punkte der Kampffertigkeit + die Attribute der Waffe + Boni aus Wirkungen (GRW S. 185) */
   getAttackValue: (skill: string, attribute: string[]) => number;
   armorSR: number;
   gearVtdBonus: number;
@@ -171,7 +171,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
   const gearHandicap = equippedItems
     .reduce((sum, it) => sum + (Number(it.handicap) || 0), 0);
 
-  // Traglast (Optionalregel GRW S. 165): Last je Punkt des Attributs aus dem Paket, Behinderung je weiterem Lastpunkt
+  // Traglast (Optionalregel GRW S. 181): Last je Punkt des Attributs aus dem Paket, Behinderung je weiterem Lastpunkt
   const tl = traglast();
   const tlAttr = Object.entries(grwAttribute()).find(([, n]) => n === tl?.attribut)?.[0];
   const loadCapacity = tl && tlAttr ? (Number(currentAttributes[tlAttr as keyof typeof currentAttributes]) || 0) * tl.lastJePunkt : Infinity;
@@ -180,7 +180,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
     0
   );
 
-  // Meisterschaften, die Behinderung und Tick-Zuschlag von Rüstung bzw. Schild senken (Wirkungen mit gilt_fuer aus dem Paket, GRW S. 123)
+  // Meisterschaften, die Behinderung und Tick-Zuschlag von Rüstung bzw. Schild senken (Wirkungen mit gilt_fuer aus dem Paket, GRW S. 137)
   const minderung = ausruestungsMinderung(state);
 
   const armorHandicapRaw = equippedItems
@@ -272,7 +272,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
 
     let penalty = WOUND_PENALTIES[abzugIndex] ?? 0;
     if (penalty < 0) {
-      // Wundabzüge verringert (Schmerzresistenz, Schmerzwiderstand; Wirkungen aus dem Paket, GRW S. 172)
+      // Wundabzüge verringert (Schmerzresistenz, Schmerzwiderstand; Wirkungen aus dem Paket, GRW S. 73, 137, 172)
       const reduction = wundabzugMinderung(state).summe;
       penalty = Math.min(0, penalty + reduction);
     }
@@ -379,7 +379,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
   const detailedFreeSpellSlots: Record<string, number[]> = {};
   grwFertigkeitsKategorien().MAGIC.forEach((skill) => {
     const val = (skillsBase[skill] ?? 0) + (skillsXp[skill] ?? 0);
-    // je erreichter Schwelle der Magieschule ein Zauber dieses oder eines niedrigeren Grades (GRW S. 25, S. 223);
+    // je erreichter Schwelle der Magieschule ein Zauber dieses oder eines niedrigeren Grades (GRW S. 26, S. 200);
     // Schwellen aus dem Paket (Steigerungskosten: zauber_nach_grad)
     const earned: number[] = freieZauberGrade(val, aktiverKatalog());
     const usedInSchool = spellsList
@@ -387,7 +387,7 @@ export function calculateCharacter(state: CharacterState): CharacterCalculationR
       .map((s) => s.grade)
       .sort((a, b) => a - b);
     earned.sort((a, b) => a - b);
-    // bei der Erschaffung genau der Grad der Stufe (GRW S. 25), danach auch ein niedrigerer (S. 223)
+    // bei der Erschaffung genau der Grad der Stufe (GRW S. 26), danach auch ein niedrigerer (S. 200)
     const exakt = state.mode === 'creation';
     usedInSchool.forEach((usedGrade) => {
       const idx = earned.findIndex((slot) => (exakt ? slot === usedGrade : slot >= usedGrade));

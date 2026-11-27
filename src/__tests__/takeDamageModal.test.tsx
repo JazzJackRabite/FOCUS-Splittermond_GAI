@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { TakeDamageModal } from '../components/play/TakeDamageModal';
 import type { HealthSlot } from '../types';
 
-describe('TakeDamageModal (GRW S. 162-165 & S. 81)', () => {
+describe('TakeDamageModal (GRW S. 172–173 & S. 81)', () => {
   const dummySlots: HealthSlot[] = Array.from({ length: 40 }, () => ({ type: 'empty' }));
 
   it('renders modal with damage inputs, damage types, SR, Splitterpunkt, and conditions', () => {

@@ -218,7 +218,7 @@ describe('Gefolge', () => {
 });
 
 describe('Schwäche ablegen', () => {
-  it('in der Steigerung einmal je neuem Heldengrad (GRW S. 84)', async () => {
+  it('in der Steigerung einmal je neuem Heldengrad (GRW S. 83–84, 88)', async () => {
     const { useItemHandlers } = await import('../hooks/useItemHandlers');
     const dispatch = vi.fn();
     const basis = { mode: 'xp' as const, strengthsList: [], resourcesList: [], weaknessesList: [e('Hitzkopf')], languagesList: [], spellsList: [] };

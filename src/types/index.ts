@@ -192,7 +192,7 @@ export interface AdvancementLogEntry {
 }
 
 export interface CharacterState {
-  /** Heldengrad, auf dem zuletzt eine Schwäche abgelegt wurde (GRW S. 84: einmal je neuem Heldengrad) */
+  /** Heldengrad, auf dem zuletzt eine Schwäche abgelegt wurde (GRW S. 83–84, 88: einmal je neuem Heldengrad) */
   schwaechenHg?: number;
   mode: AppMode;
   xpTotal: number;

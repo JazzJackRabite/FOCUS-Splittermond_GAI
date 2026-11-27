@@ -26,7 +26,7 @@ export interface FocusCostModalProps {
  * Fokuskosten nach dem Grundregelwerk:
  * - Drei Arten, Fokus einzusetzen (GRW S. 194–196): erschöpfen (Zahl), kanalisieren (K), verzehren (V). Die Zahl hinter V
  *   ist Teil der Gesamtkosten: „K6V2 sind 6 kanalisierte Punkte Fokus insgesamt, davon werden 2 sofort verzehrt.“
- * - Ein gewirkter Zauber kostet immer mindestens einen erschöpften oder kanalisierten Punkt (GRW S. 194).
+ * - Ein gewirkter Zauber kostet immer mindestens einen erschöpften oder kanalisierten Punkt (GRW S. 195).
  * - Misslungener Zauber (GRW S. 198): statt der Kosten erschöpft sich der Fokus um die negativen EG. Reicht der verbliebene
  *   Fokus nicht, werden bereits erschöpfte Punkte in Höhe der Differenz verzehrt.
  * Zauber mit Probe und Erfolgsgraden laufen weiter über „Zaubern“; dieser Dialog bucht Kosten aus Meisterschaften,
@@ -46,7 +46,7 @@ export const FocusCostModal: React.FC<FocusCostModalProps> = ({ onClose, maxFO, 
 
   const kosten = useMemo(() => parseFocusCost(notation), [notation]);
   const notationGueltig = /^\s*(K\d*(V\d+)?|\d+(V\d+)?)\s*$/i.test(notation) && kosten.total > 0;
-  // V ohne erschöpften oder kanalisierten Rest verstößt gegen die Mindestkosten (GRW S. 194)
+  // V ohne erschöpften oder kanalisierten Rest verstößt gegen die Mindestkosten (GRW S. 195)
   const unterMindestkosten = notationGueltig && kosten.exhausted + kosten.channeled === 0;
 
   // Misslungener Zauber: erschöpfen, soweit Fokus frei ist; der Rest verzehrt bereits erschöpfte Punkte (GRW S. 198)
@@ -210,7 +210,7 @@ export const FocusCostModal: React.FC<FocusCostModalProps> = ({ onClose, maxFO, 
 
               {unterMindestkosten && (
                 <p className="text-[11px] text-schaden m-0">
-                  Mindestens 1 Punkt muss erschöpft oder kanalisiert werden (GRW S. 194).
+                  Mindestens 1 Punkt muss erschöpft oder kanalisiert werden (GRW S. 195).
                 </p>
               )}
               {zuWenigFokus && (

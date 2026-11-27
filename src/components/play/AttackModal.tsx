@@ -85,7 +85,7 @@ export interface AttackSuccessResult {
   egManoeverExtra: number;
   /** weitere EG je Manöver */
   egManoeverExtraJe: Record<string, number>;
-  /** EG, die für die Deckung des Ziels nötig waren (Fernkampf, GRW S. 163) */
+  /** EG, die für die Deckung des Ziels nötig waren (Fernkampf, GRW S. 162) */
   egDeckung: number;
   /** zu wenige EG für das angesagte Manöver: Streiftreffer (GRW S. 161) */
   streiftreffer: boolean;
@@ -209,7 +209,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const [targetVTD, setTargetVTD] = useState<number>(target.targetVTD ?? 15);
   const [targetArmor, setTargetArmor] = useState<number>(0);
   const [situationalMod, setSituationalMod] = useState<number>(0);
-  // Lage beim Angriff aus dem Paket (GRW S. 162–163, 170–171)
+  // Lage beim Angriff aus dem Paket (GRW S. 161–162, 170–171)
   const lage = useMemo(() => kampfsituationen(), []);
   const positionen = useMemo(() => positionsNamen(), []);
   const art = nahkampf ? 'nahkampf' as const : 'fernkampf' as const;
@@ -347,7 +347,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const [egManoeverExtraJe, setEgManoeverExtraJe] = useState<Record<string, number>>({});
   const egManoeverExtra = Object.values(egManoeverExtraJe).reduce((a, b) => a + b, 0);
 
-  // Deckung (Fernkampf): zusätzliche EG für einen Treffer, sonst trifft der Angriff die Deckung (GRW S. 163)
+  // Deckung (Fernkampf): zusätzliche EG für einen Treffer, sonst trifft der Angriff die Deckung (GRW S. 162)
   const egGesamt = egCalculation?.eg ?? 0;
   const trifftDeckung = !!egCalculation?.isSuccess && egGesamt < egDeckung;
   const trifft = !!egCalculation?.isSuccess && !trifftDeckung;
@@ -742,7 +742,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
               </div>
             )}
 
-            {/* Lage beim Angriff: alle Werte aus dem GRW-Paket (Kampfpositionen S. 170, Situationen S. 162–163, 170–171) */}
+            {/* Lage beim Angriff: alle Werte aus dem GRW-Paket (Kampfpositionen S. 170, Situationen S. 161–162, 170–171) */}
             <div className="pt-2 border-t border-rahmen space-y-2 text-xs" data-testid="kampflage">
               {positionen.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
