@@ -74,7 +74,7 @@ export function kreaturZuordnung(ressourcen: number[], tiere: number[]): boolean
 }
 
 /**
- * Ressource Golem (Die Magie S. 203: „Ein Punkt in der Ressource Golem entspricht einer Stufe im Merkmal Golem.“):
+ * Ressource Golem (Die Magie S. 203: Punkte der Ressource gegen die Stufe des Merkmals Golem):
  * Jeder Golem „über Ressource Golem“ belegt eine eigene Ressource. Auslegung: Die Stufe des Golems darf höchstens so hoch
  * sein wie die Punkte der Ressource (wie bei Kreatur). Größte Golems an die größten Ressourcen.
  * `b`/`index`: der gerade bearbeitete Golem (ersetzt den Eintrag an `index` bzw. kommt neu hinzu).

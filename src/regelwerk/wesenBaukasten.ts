@@ -84,7 +84,7 @@ export function feinschliffBeschwoerbar(k: Katalog, stufe: number): { schwelle: 
   return { schwelle: zeile?.schwelle ?? null, grad: zeile?.grad ?? null, dienste: s?.dienste_anzahl ?? null };
 }
 
-/** Regeln zum Zusammenführen doppelter Merkmale (Feinschliff des Baukastens): Die Magie S. 196, Bestienmeister S. 58 */
+/** Regeln zum Zusammenführen doppelter Merkmale (Feinschliff des Baukastens): Die Magie S. 196, Bestienmeister S. 59 */
 const MERKMAL_REGEL: Record<BaukastenArt, string> = {
   beschwoerbar: 'magie:regel:regeln:baukasten-fuer-beschwoerbare-wesen-merkmale',
   kreatur: 'bestien:regel:regeln:schritt-6-feinschliff',

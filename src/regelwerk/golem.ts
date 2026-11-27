@@ -93,7 +93,7 @@ export function golemSchwelle(k: Katalog, stufe: number): number {
   return letzte && stufe > Number(letzte[0].split('-').pop()) ? Number(letzte[1]) : 0;
 }
 
-/** Animierungszauber, der einen Golem dieser Stufe animieren kann („Merkmal Golem 3 oder niedriger“) */
+/** Animierungszauber, der einen Golem dieser Stufe animieren kann (Höchststufe aus dem Paket, `golem_stufe_bis`) */
 export function animierung(k: Katalog, stufe: number): Eintrag | null {
   const z = Object.values(k.eintraege).filter(e => e.typ === 'zauber' && (e.daten.typus ?? []).includes('Animierung'))
     .map(e => ({ e, bis: Number(e.daten.golem_stufe_bis ?? 0) }))
@@ -293,7 +293,7 @@ export function golemMeisterschaften(k: Katalog, fertigkeiten: { id?: string; na
     .sort((a, b) => a.fertigkeit.localeCompare(b.fertigkeit, 'de') || a.schwelle - b.schwelle || a.name.localeCompare(b.name, 'de'));
 }
 
-/** Allgemeine Fertigkeiten (für „eine noch nicht freigeschaltete Fertigkeit“) */
+/** Allgemeine Fertigkeiten (Auswahl, wenn ein Modul eine weitere Fertigkeit freischaltet) */
 export function allgemeineFertigkeiten(k: Katalog) {
   return Object.values(k.eintraege).filter(e => e.typ === 'fertigkeit' && !e.daten.gruppierte_fertigkeit && e.daten.kategorie !== 'Magieschule' && e.daten.kategorie !== 'Kampffertigkeit')
     .sort((a, b) => a.name.localeCompare(b.name, 'de'));

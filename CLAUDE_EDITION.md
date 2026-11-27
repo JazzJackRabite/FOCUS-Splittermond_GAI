@@ -1397,6 +1397,16 @@ Seite nennt – dann steht keine. Gefolge: „ab 1, 3 und 6 Punkten“ aus dem P
 Kostenzeile: „Gratis: Heimat“ nur noch für die Kulturkunde der Heimat (vorher für alles mit 0 Punkten, z. B. Sprachen,
 Schwächen, Priester); Schwächen ohne Kostenzeile.
 
+## Stand 65 (27.11.2026): Seitenangaben zu den Grimoires geprüft, Zitate aus Erweiterungen entfernt
+
+- Alle Seitenangaben zu Erweiterungen im Quelltext (28 Stellen: Die Magie, Bestienmeister, Die Götter) mit dem Text der
+  Bücher abgeglichen (lokal, Werkzeuge/daten/*_lines.json.gz). Falsch war nur eine: Feinschliff des Kreatur-Baukastens
+  (doppelte Merkmale) steht im Bestienmeister auf S. 59, nicht 58. Richtig: Die Magie S. 182–184, 186–191, 196–197, 197–207,
+  203, 205–207, 207; Bestienmeister S. 15, 15–23, 50; Die Götter S. 171.
+- Wörtliche Zitate aus Erweiterungen im Quelltext gefunden (Abgleich aller Zitate „…“ mit dem Text der Bücher) und durch
+  eigene Worte bzw. den Verweis aufs Paketfeld ersetzt (FUNDAMENT 1.3): besitzer.ts (Ressource Golem), golem.ts (zwei
+  Kommentare). Die übrigen Treffer stammen aus dem GRW (S. 74, 187).
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.
