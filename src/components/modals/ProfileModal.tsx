@@ -305,8 +305,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ onClose, onSelectPro
                           {preset.rasse}
                         </span>
                       </div>
-                      <p className="text-xs text-leise my-2">{preset.kurz}</p>
-                      <div className="text-[11px] text-leise space-y-1 bg-erhoeht p-2 rounded-knopf border border-rahmen">
+                      <div className="mt-2 text-[11px] text-leise space-y-1 bg-erhoeht p-2 rounded-knopf border border-rahmen">
                         <div><strong>Ausbildung:</strong> {preset.ausbildung}</div>
                         <div><strong>Attribute:</strong> {Object.entries(preset.attribute).map(([k, v]) => `${k === 'STA' ? 'STÄ' : k} ${v}`).join(', ')}</div>
                         <div><strong>Kultur & Mond:</strong> {preset.kulturkunde} ({preset.mondzeichen})</div>

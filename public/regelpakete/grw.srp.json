@@ -70242,7 +70242,6 @@
    },
    "daten": {
     "titel": "Sandläufer der Tarr",
-    "kurzbeschreibung": "Varg-Kundschafter aus der Wüste, Jäger und Spurenleser mit Glefe, Langbogen und einem Sandfalken als Vertrautem.",
     "ausbildung_name": "Sandläufer (Waldläufer)",
     "rasse": "grw:rasse:varge",
     "kultur": "grw:kultur:tarr",
@@ -70755,7 +70754,6 @@
    },
    "daten": {
     "titel": "Ritter des Kaisers",
-    "kurzbeschreibung": "Selenischer Ritter und Schwertrichter: Anführer, Diplomat und Schwertkämpfer mit Langschwert und Schild.",
     "ausbildung_name": "Schwertrichter (Recke)",
     "rasse": "grw:rasse:menschen",
     "kultur": "grw:kultur:selenia",
@@ -71192,7 +71190,6 @@
    },
    "daten": {
     "titel": "Alchemist und Vagabund",
-    "kurzbeschreibung": "Gnomischer Heiler und Alchemist aus Keshabid, gewandter Händler mit leichter Armbrust und Heil- und Stärkungsmagie.",
     "ausbildung_name": "Trankmeister (Heiler)",
     "rasse": "grw:rasse:gnome",
     "kultur": "grw:kultur:keshabid",
@@ -71669,7 +71666,6 @@
    },
    "daten": {
     "titel": "Mertalische Protectorin",
-    "kurzbeschreibung": "Schattenklinge aus dem Mertalischen Städtebund: Klingenkämpferin, Kundschafterin der Straßen und Schattenmagierin.",
     "ausbildung_name": "Protectorin (Schattenklinge)",
     "rasse": "grw:rasse:menschen",
     "kultur": "grw:kultur:mertalischer-staedtebund",
@@ -72171,7 +72167,6 @@
    },
    "daten": {
     "titel": "Feuermagierin aus Farukan",
-    "kurzbeschreibung": "Feuerruferin aus Ashurmazaan: gelehrte Elementaristin mit Feuer-, Fels-, Wind- und Bannmagie.",
     "ausbildung_name": "Feuerruferin (Elementaristin)",
     "rasse": "grw:rasse:menschen",
     "kultur": "grw:kultur:ashurmazaan",
@@ -72718,8 +72713,7 @@
     ]
    },
    "daten": {
-    "titel": "Priester des Kashrok",
-    "kurzbeschreibung": "Zwergischer Hammerpriester aus Furgand: zäher Axtkämpfer mit Feuer-, Fels- und Stärkungsmagie.",
+    "titel": "Priester des Kahsrok",
     "ausbildung_name": "Hammerpriester (Wanderpriester)",
     "rasse": "grw:rasse:zwerge",
     "kultur": "grw:kultur:furgand",
@@ -73244,8 +73238,7 @@
     ]
    },
    "daten": {
-    "titel": "Seealbische Klingentänzerin",
-    "kurzbeschreibung": "Albische Klingentänzerin aus dem Seebund: wendige Kettensichel-Kämpferin mit Wasser-, Schutz- und Kampfmagie und einem Wasserelementar.",
+    "titel": "seealbische Klingentänzerin",
     "ausbildung_name": "Klingentänzerin (Mystische Kriegerin)",
     "rasse": "grw:rasse:alben",
     "kultur": "grw:kultur:albischer-seebund",

@@ -1369,6 +1369,15 @@ Untoter (Grabesbestie, Verstärkungen, Abnormität); Risikowurf, Schwäche nach 
   Gegenstandsart. Tiais Wasserelementar steht nicht im GRW und bleibt Ressource mit Text.
 - Schwächen, die in keinem Paket stehen, heißen nicht mehr „unbekannt“, sondern „eigene“ (eigene Schwächen sind erlaubt).
 
+## Stand 63 (27.11.2026): Archetypen nur mit Text aus dem GRW
+
+- Grundsatz des Projektinhabers: Was nicht im GRW steht, ist nicht wahr. Die selbst formulierten Kurzbeschreibungen der
+  Archetypen sind entfernt (Datenseite und Dialog „Archetypen“); die Karten zeigen nur Werte aus dem Buch.
+- Titel genau wie „Die Archetypen zur Übersicht“ (GRW S. 323): „Priester des Kahsrok“ (vorher „Kashrok“ nach dem Bogen,
+  der „Kashrok-Kirche“ schreibt) und „seealbische Klingentänzerin“; der Test hält alle sieben Titel fest.
+- Browsertest Stand 62: Arrous Falke „Rouharr“ als Begleiter, Glefe als Relikt mit +1 im Angriffsdialog, Telkins Siegel
+  (GW 19); die beiden Testcharaktere danach mit Zustimmung gelöscht.
+
 ## Google AI Studio
 
 Unverändert eine Vite-/React-App mit `metadata.json` im Wurzelordner; Import über „Import from GitHub“, Hosting über Cloud Run.

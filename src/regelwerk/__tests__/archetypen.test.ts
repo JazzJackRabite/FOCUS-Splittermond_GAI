@@ -31,6 +31,9 @@ describe('Archetypen im GRW-Paket', () => {
     const a = archetypen(K);
     expect(a.map((x) => x.name)).toEqual(['Arrou', 'Cederion von Falkenberg', 'Eshi bid-Herar', 'Keira Alvios', 'Selesha Maradoh', 'Telkin Feuerfaust', 'Tiai Schimmersee']);
     for (const x of a) expect(x.seiten.every((s) => s >= 323 && s <= 341)).toBe(true);
+    // Titel genau wie in „Die Archetypen zur Übersicht“ (GRW S. 323)
+    expect(a.map((x) => x.titel)).toEqual(['Sandläufer der Tarr', 'Ritter des Kaisers', 'Alchemist und Vagabund', 'Mertalische Protectorin',
+      'Feuermagierin aus Farukan', 'Priester des Kahsrok', 'seealbische Klingentänzerin']);
   });
 
   it.each(archetypen(K).map((a) => [a.name, a.id] as const))('%s: Erschaffung ohne Befund, Start-EP wie im Bogen', (_n, id) => {

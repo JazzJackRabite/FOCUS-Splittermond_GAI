@@ -33,7 +33,7 @@ interface AtRessource {
 interface AtGegenstand { id?: string; text?: string; anzahl: number }
 
 export interface ArchetypInfo {
-  id: string; name: string; titel: string; kurz: string; rasse: string; mondzeichen: string; kulturkunde: string; ausbildung: string;
+  id: string; name: string; titel: string; rasse: string; mondzeichen: string; kulturkunde: string; ausbildung: string;
   attribute: Record<string, number>; seiten: number[];
   /** Begründungen, wo der Bogen von einem Modul abweicht und deshalb frei gebaut wurde (aus dem Paket) */
   abweichungen: string[];
@@ -44,7 +44,7 @@ const name = (k: Katalog, id: string | undefined) => (id ? k.get(id)?.name ?? ''
 function info(k: Katalog, e: Eintrag): ArchetypInfo {
   const d = e.daten;
   return {
-    id: e.id, name: e.name, titel: d.titel, kurz: d.kurzbeschreibung, rasse: RASSE_EDITOR[d.rasse] ?? name(k, d.rasse),
+    id: e.id, name: e.name, titel: d.titel, rasse: RASSE_EDITOR[d.rasse] ?? name(k, d.rasse),
     mondzeichen: name(k, d.mondzeichen), kulturkunde: d.kulturkunde, ausbildung: d.ausbildung_name,
     attribute: attrEditor(d.attribute), seiten: e.quelle.buch_seiten ?? [],
     abweichungen: [d.kultur_frei, d.abstammung_frei].filter((x): x is string => typeof x === 'string' && !!x),
